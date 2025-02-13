@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+body {
+    @apply outline-none;
+    ::selection {
+        background-color: #1997ff;
+        color: black;
+    }
+}
+
+input[type="text"] {
+    @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-blue-500;
+}
+
+input[type="email"] {
+    @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-blue-500;
+}
+
+input[type="password"] {
+    @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-blue-500;
+}
+label {
+    @apply text-gray-800 text-sm;
+}
+button {
+    @apply bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600;
+}

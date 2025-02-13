@@ -5,8 +5,12 @@ export default {
     './components/**/*.{vue,ts}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        'herobg': "url('/darthome.jpeg')",
+
+    },
   },
   plugins: [],
 }
-
+}

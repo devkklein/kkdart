@@ -1,0 +1,109 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int              @id @default(autoincrement())
+  email          String           @unique
+  name           String?
+  password       String
+  matches        PlayerMatch[]
+  stats          Statistic?
+  Match          Match[]
+  Set            Set[]
+  Leg            Leg[]
+  PlayerLeg      PlayerLeg[]
+  MatchStatistic MatchStatistic[]
+  LegStatistic   LegStatistic[]
+}
+
+model Match {
+  id             Int              @id @default(autoincrement())
+  date           DateTime         @default(now())
+  players        PlayerMatch[]
+  winner         User?            @relation(fields: [winnerId], references: [id])
+  winnerId       Int?
+  sets           Set[]
+  MatchStatistic MatchStatistic[]
+}
+
+model Set {
+  id       Int   @id @default(autoincrement())
+  match    Match @relation(fields: [matchId], references: [id])
+  matchId  Int
+  legs     Leg[]
+  winner   User? @relation(fields: [winnerId], references: [id])
+  winnerId Int?
+}
+
+model Leg {
+  id       Int            @id @default(autoincrement())
+  set      Set            @relation(fields: [setId], references: [id])
+  setId    Int
+  players  PlayerLeg[]
+  winner   User?          @relation(fields: [winnerId], references: [id])
+  winnerId Int?
+  stats    LegStatistic[]
+}
+
+model PlayerMatch {
+  id       Int   @id @default(autoincrement())
+  match    Match @relation(fields: [matchId], references: [id])
+  matchId  Int
+  player   User  @relation(fields: [playerId], references: [id])
+  playerId Int
+  team     Int
+}
+
+model PlayerLeg {
+  id       Int  @id @default(autoincrement())
+  leg      Leg  @relation(fields: [legId], references: [id])
+  legId    Int
+  player   User @relation(fields: [playerId], references: [id])
+  playerId Int
+}
+
+model Statistic {
+  id                   Int   @id @default(autoincrement())
+  userId               Int   @unique
+  winRate              Float @default(0.0)
+  averagePointsPerTurn Float @default(0.0)
+  hundredPlus          Int   @default(0)
+  hundredFortyPlus     Int   @default(0)
+  oneEighty            Int   @default(0)
+  user                 User  @relation(fields: [userId], references: [id])
+}
+
+model MatchStatistic {
+  id                   Int   @id @default(autoincrement())
+  matchId              Int
+  playerId             Int
+  points               Int   @default(0)
+  averagePointsPerTurn Float @default(0.0)
+  hundredPlus          Int   @default(0)
+  hundredFortyPlus     Int   @default(0)
+  oneEighty            Int   @default(0)
+  match                Match @relation(fields: [matchId], references: [id])
+  player               User  @relation(fields: [playerId], references: [id])
+}
+
+model LegStatistic {
+  id                   Int   @id @default(autoincrement())
+  legId                Int
+  playerId             Int
+  points               Int   @default(0)
+  averagePointsPerTurn Float @default(0.0)
+  hundredPlus          Int   @default(0)
+  hundredFortyPlus     Int   @default(0)
+  oneEighty            Int   @default(0)
+  leg                  Leg   @relation(fields: [legId], references: [id])
+  player               User  @relation(fields: [playerId], references: [id])
+}

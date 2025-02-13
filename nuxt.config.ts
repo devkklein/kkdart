@@ -5,7 +5,8 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
-    '@formkit/auto-animate'
+    '@formkit/auto-animate',
+    '@prisma/nuxt',
   ],
   css: [
     '~/assets/css/main.css'
