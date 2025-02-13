@@ -1,12 +1,7 @@
 <template>
-    <div>
-        home
-
-    </div>
+  <div>home</div>
 </template>
 
-<script lang="ts" setup>
-
-</script>
+<script lang="ts" setup></script>
 
 <style></style>

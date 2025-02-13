@@ -1,14 +1,14 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
+  compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
   modules: [
-    '@nuxtjs/tailwindcss',
-    '@pinia/nuxt',
-    '@formkit/auto-animate',
-    '@prisma/nuxt',
+    "@nuxtjs/tailwindcss",
+    "@pinia/nuxt",
+    "@formkit/auto-animate",
+    "@prisma/nuxt",
+    "@nuxt/icon",
+    "@nuxt/eslint",
   ],
-  css: [
-    '~/assets/css/main.css'
-  ],
-})
+  css: ["~/assets/css/main.css"],
+});

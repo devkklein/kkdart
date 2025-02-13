@@ -7,7 +7,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "nuxt": "^3.15.4",
@@ -16,8 +17,11 @@
   },
   "devDependencies": {
     "@formkit/auto-animate": "^0.8.2",
+    "@nuxt/eslint": "^1.0.1",
+    "@nuxt/icon": "^1.10.3",
     "@nuxtjs/tailwindcss": "^6.13.1",
     "@pinia/nuxt": "^0.10.1",
-    "@prisma/nuxt": "^0.3.0"
+    "@prisma/nuxt": "^0.3.0",
+    "prettier": "^2.8.8"
   }
 }
