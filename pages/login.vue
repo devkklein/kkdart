@@ -49,6 +49,7 @@
 </template>
 
 <script lang="ts" setup>
+//@ts-ignore
 const client = useSupabaseClient();
 const router = useRouter();
 

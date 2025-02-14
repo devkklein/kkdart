@@ -9,28 +9,34 @@
         <Icon name="simple-icons:dart" size="20" />
         <router-link to="/">Home</router-link>
       </li>
+      <span></span>
+      <p> Game</p>
       <li>
-        <Icon name="simple-icons:dart" size="20" />
+        <Icon name="mdi:web" size="20" />
         <router-link to="/online">Online</router-link>
       </li>
       <li>
-        <Icon name="simple-icons:dart" size="20" />
+        <Icon name="game-icons:dart" size="20" />
         <router-link to="/offline">Offline</router-link>
       </li>
       <li>
-        <Icon name="simple-icons:dart" size="20" />
+        <Icon name="game-icons:laurels-trophy" size="20" />
         <router-link to="/tournaments">Tournaments</router-link>
       </li>
+      <span></span>
+      <p>Stats</p>
       <li>
-        <Icon name="simple-icons:dart" size="20" />
+        <Icon name="material-symbols:history" size="20" />
         <router-link to="/history">History</router-link>
       </li>
       <li>
-        <Icon name="simple-icons:dart" size="20" />
+        <Icon name="lets-icons:stat" size="20" />
         <router-link to="/statistics">Statistics</router-link>
       </li>
+      <span></span>
+      <p>Settings</p>
       <li>
-        <Icon name="simple-icons:dart" size="20" />
+        <Icon name="tdesign:dart-board" size="20" />
         <router-link to="/boards">Boards</router-link>
       </li>
     </ul>

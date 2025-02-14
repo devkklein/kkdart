@@ -7,12 +7,13 @@ export const useUserStore = defineStore('user', () => {
   const profileImage = ref<string | null>(null);
   const client = useSupabaseClient();
   const user = useSupabaseUser();
+  const id = ref<number | null>(null);
 
   async function fetchUserData() {
     if (user.value?.email) {
       const { data, error } = await client
         .from('User')
-        .select('username, picture')
+        .select('id, username, picture')
         .eq('email', user.value.email);
 
       if (error) {
@@ -20,6 +21,7 @@ export const useUserStore = defineStore('user', () => {
       } else if (data && data.length > 0) {
         username.value = data[0].username;
         profileImage.value = data[0].picture|| null;
+        id.value = data[0].id;
       }
     }
   }

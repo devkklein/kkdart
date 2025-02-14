@@ -39,8 +39,11 @@ button {
   @apply bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600;
 }
 ul {
-  @apply list-none items-center px-8;
+  @apply list-none items-center px-8 space-y-4;
 }
 li {
-  @apply  items-center  flex  space-x-4 text-lg  text-gray-200;
+  @apply  items-center  flex  space-x-4 text-lg  text-gray-200 hover:text-green-600;
+}
+ul p {
+  @apply text-gray-200 border-b-2 border-green-500;
 }
