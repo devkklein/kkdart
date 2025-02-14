@@ -6,7 +6,15 @@ export default {
       backgroundImage: {
         herobg: "url('/darthome.jpeg')",
       },
-    },
+      colors: {
+        primary: "#d71730",
+        secondary: {
+          100: "#E2E2D5",
+          200: "#888883",
+        },
+      },
+     
     plugins: [],
   },
-};
+}
+}

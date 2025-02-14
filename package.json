@@ -18,7 +18,9 @@
   "devDependencies": {
     "@formkit/auto-animate": "^0.8.2",
     "@nuxt/eslint": "^1.0.1",
+    "@nuxt/fonts": "^0.10.3",
     "@nuxt/icon": "^1.10.3",
+    "@nuxtjs/supabase": "^1.4.6",
     "@nuxtjs/tailwindcss": "^6.13.1",
     "@pinia/nuxt": "^0.10.1",
     "@prisma/nuxt": "^0.3.0",

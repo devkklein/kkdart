@@ -9,6 +9,24 @@ export default defineNuxtConfig({
     "@prisma/nuxt",
     "@nuxt/icon",
     "@nuxt/eslint",
+    "@nuxt/fonts",
+    "@nuxtjs/supabase"
   ],
+  supabase: {
+    redirectOptions: {
+      exclude: ["/login", "/register"],
+    }
+  },
   css: ["~/assets/css/main.css"],
+  icon: {
+    serverBundle: {
+      collections: ["game-icons"],
+    },
+  },
+  fonts: {
+    experimental: {
+      processCSSVariables: true,
+    },
+    
+  },
 });

@@ -1,28 +1,46 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+
+@theme{
+  --font-display: 'Inter', sans-serif;
+}
+
+
+
 body {
-  @apply outline-none;
+  @apply outline-none font-semibold;
   ::selection {
     background-color: #1997ff;
     color: black;
+    font-family: 'Inter', sans-serif;
+    
   }
 }
 
+
 input[type="text"] {
-  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-blue-500;
+  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-primary;
 }
 
 input[type="email"] {
-  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-blue-500;
+  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-primary;
 }
 
 input[type="password"] {
-  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-blue-500;
+  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-primary;
 }
 label {
   @apply text-gray-800 text-sm;
 }
 button {
   @apply bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600;
+}
+ul {
+  @apply list-none items-center px-8;
+}
+li {
+  @apply  items-center  flex  space-x-4 text-lg  text-gray-200;
 }

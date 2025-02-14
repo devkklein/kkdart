@@ -4,6 +4,7 @@
       class="w-1/2 bg-gray-200 min-h-full flex flex-col items-center justify-center"
     >
       <form
+      @submit.prevent="signUp"
         class="bg-white flex flex-col items-right justify-center p-8 rounded-lg shadow-xl space-y-4"
       >
         <h1 class="text-3xl">Willkommen zu Open Darts</h1>
@@ -11,21 +12,21 @@
 
         <div class="flex flex-col min-w-1/2">
           <label for="username">Benutzername</label>
-          <input type="text" placeholder="Benutzername" class="" />
+          <input v-model="username" type="text" placeholder="Benutzername" class="" />
         </div>
 
         <div class="flex flex-col">
           <label for="email"> Emailadresse</label>
-          <input type="email" placeholder="Email" class="" />
+            <input v-model="email" type="email" placeholder="Email" class="" />
         </div>
         <div class="flex items-center justify-center space-x-5">
           <div class="flex flex-col">
             <label for="password"> Passwort</label>
-            <input type="password" placeholder="Password" class="" />
+            <input v-model="password" type="password" placeholder="Password" class="" />
           </div>
           <div class="flex flex-col">
             <label for="password"> Passwort Bestätigen</label>
-            <input type="password" placeholder="Password" class="" />
+            <input v-model="password2" type="password" placeholder="Password" class="" />
           </div>
         </div>
         <div>
@@ -43,7 +44,7 @@
             zu
           </p>
         </div>
-        <button class="">Registrieren</button>
+        <button type="submit" class="">Registrieren</button>
         <div class="flex items-right space-x-2">
           <p class="text-xs text-gray-500">Bereits ein Account?</p>
           <nuxt-link
@@ -60,6 +61,61 @@
   </div>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+
+
+
+const client = useSupabaseClient();
+
+const username = ref<string>("");
+const email = ref<string>("");
+const password = ref<string>("");
+const password2 = ref<string>("");
+
+const errorMsg = ref<string>("");
+const successMsg = ref<string>("");
+
+async function saveUserData() {
+  try {
+    const { data, error } = await client
+      .from('User')
+      .insert([
+        { email: email.value, username: username.value }
+      ]);
+    if (error) throw error;
+    console.log('User data saved:', data);
+  } catch (error) {
+    console.error('Error saving user data:', error.message);
+  }
+}
+
+
+
+
+async function signUp() {
+  if (password.value === password2.value) {
+    try {
+      const{data, error} = await client.auth.signUp({
+        email: email.value,
+        password: password.value,
+      });
+      if (error) throw error;
+      successMsg.value = "Check your email to confirm your account!";
+      if (data.user) {
+        saveUserData();
+        console.log(data.user);
+        alert("Check your email to confirm your account!" );
+      }
+      else {
+        alert("gehtnicht ")
+      }
+    } catch (error) {
+      alert("die Email ist bereits vergeben"); 
+    }
+      
+  }
+  console.log("signUp");
+}
+</script>
 
 <style></style>
