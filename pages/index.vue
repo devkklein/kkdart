@@ -1,7 +1,7 @@
 <template>
   <div class="flex  h-screen">
     <Sidebar />
-    <div class=" h-full w-full bg-gray-200">
+    <div class=" h-full w-full ">
       <div class="grid grid-cols-4 gap-4 p-4">
         <div class="col-span-2 bg-white p-4">
           <AppOnline />

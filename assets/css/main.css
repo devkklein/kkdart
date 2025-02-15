@@ -11,7 +11,7 @@
 
 
 body {
-  @apply outline-none font-semibold;
+  @apply outline-none font-semibold bg-gradient-to-tr from-slate-800 via-green-700 to-green-500;
   ::selection {
     background-color: #1997ff;
     color: black;
@@ -22,15 +22,18 @@ body {
 
 
 input[type="text"] {
-  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-primary;
+  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-green-600;
+}
+input[type="number"] {
+  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-green-600;
 }
 
 input[type="email"] {
-  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-primary;
+  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-green-600;
 }
 
 input[type="password"] {
-  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-primary;
+  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-green-600;
 }
 label {
   @apply text-gray-800 text-sm;

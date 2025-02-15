@@ -26,5 +26,5 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  return { username, profileImage, fetchUserData };
+  return { username, profileImage, fetchUserData, id };
 });
