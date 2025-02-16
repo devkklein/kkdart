@@ -11,6 +11,11 @@ export default defineNuxtConfig({
     "@nuxt/fonts",
     "@nuxtjs/supabase",
   ],
+  nitro: {
+    experimental: {
+      websocket: true,
+    },
+  },
   supabase: {
     redirectOptions: {
       exclude: ["/login", "/register"],
