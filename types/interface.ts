@@ -11,10 +11,12 @@ export interface Players{
 export interface OfflineGame {
     id: string;
     creatorId: number;
-    players: Array<{ id: any; username: string; profileImage: string | null }>;
+    players: Player[];
     basescore: number;
     inMode: string;
     outMode: string;
     legCount: number;
     setCount: number;
-  }
+    // neu:
+    startingPlayerId?: string | null;
+}

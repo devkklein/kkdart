@@ -1,16 +1,7 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue';
+import type { OfflineGame } from '~/types/interface';
 
-export interface OfflineGame {
-  id: string;
-  creatorId: number;
-  players: Array<{ id: any; username: string; profileImage: string | null }>;
-  basescore: number;
-  inMode: string;
-  outMode: string;
-  legCount: number;
-  setCount: number;
-}
+
 
 const games = ref<OfflineGame[]>([]);
 

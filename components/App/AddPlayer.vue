@@ -5,14 +5,15 @@
     @click.self="emit('close')"></div>
   <div v-if="showPopup" class="absolute" @click.self="emit('close')">
     <div class="w-96">
-      <div class="bg-white rounded-2xl shadow-2xl p-6 text-center space-y-2">
+      <div class="bg-primary rounded-2xl shadow-2xl p-6 text-center space-y-2">
         <h2>Add Player</h2>
         <div class="space-x-4 flex items-center justify-center">
           <input
             v-model="playerName"
             type="text"
-            placeholder="Enter player name" />
-          <button @click="addPlayer" type="button">Add</button>
+            placeholder="Enter player name"
+            class="text-black"/>
+          <button class="" @click="addPlayer" type="button">Add</button>
         </div>
       </div>
     </div>

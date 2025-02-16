@@ -3,50 +3,51 @@
 @tailwind utilities;
 
 
-
-@theme{
-  --font-display: 'Inter', sans-serif;
+@font-face {
+  font-family: 'SF PRO';
+  src: url('/assets/fonts/sf-pro-display/SFPRODISPLAYREGULAR.OTF') format('opentype');
+  font-weight: 400;
+  font-style: normal;
 }
 
 
-
 body {
-  @apply outline-none font-semibold bg-gradient-to-tr from-slate-800 via-green-700 to-green-500;
+  @apply outline-none font-semibold bg-secondary-300 text-white;
   ::selection {
     background-color: #1997ff;
     color: black;
-    font-family: 'Inter', sans-serif;
+    font-family: 'SF PRO', sans-serif;
     
   }
 }
 
 
 input[type="text"] {
-  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-green-600;
+  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-secondary-300;
 }
 input[type="number"] {
-  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-green-600;
+  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-secondary-300;
 }
 
 input[type="email"] {
-  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-green-600;
+  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-secondary-300;
 }
 
 input[type="password"] {
-  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-green-600;
+  @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-secondary-300;
 }
 label {
   @apply text-gray-800 text-sm;
 }
 button {
-  @apply bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600;
+  @apply bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary-300;
 }
 ul {
   @apply list-none items-center px-8 space-y-4;
 }
 li {
-  @apply  items-center  flex  space-x-4 text-lg  text-gray-200 hover:text-green-600;
+  @apply  items-center px-3 flex  space-x-4 text-lg bg-primary p-1 rounded-full text-white hover:bg-secondary-300 cursor-pointer;
 }
 ul p {
-  @apply text-gray-200 border-b-2 border-green-500;
+  @apply text-gray-200 border-b-2 border-gray-500;
 }

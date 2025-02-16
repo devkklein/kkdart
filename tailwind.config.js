@@ -5,13 +5,34 @@ export default {
     extend: {
       backgroundImage: {
         herobg: "url('/darthome.jpeg')",
+        boardbg: "url('/dartt20.jpeg')",
       },
       colors: {
-        primary: "#d71730",
+        primary: "#222222",
+        
+
         secondary: {
           100: "#E2E2D5",
           200: "#888883",
+          300: "#151515",
         },
+        blue: {
+          500: "#3333cc",
+          400:  "#81caf9",
+        },
+        yellow: {
+          500: "#f2db34",
+          600: "#ee9d17",
+        },
+        green:{
+          500: "#53d05e",
+        },
+        red:{
+          500: "#ec573f",
+        }
+      },
+      fontFamily: {
+        sans: ["SF PRO", "sans-serif"],
       },
      
     plugins: [],
