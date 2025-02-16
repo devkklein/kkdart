@@ -7,26 +7,26 @@
       @submit.prevent="signUp"
         class="bg-white flex flex-col items-right justify-center p-8 rounded-lg shadow-xl space-y-4"
       >
-        <h1 class="text-3xl">Willkommen zu Open Darts</h1>
+        <h1 class="text-3xl text-black">Willkommen zu Open Darts</h1>
         <p class="text-gray-500 text-sm">Die opensource online Dartplatform</p>
 
         <div class="flex flex-col min-w-1/2">
           <label for="username">Benutzername</label>
-          <input v-model="username" type="text" placeholder="Benutzername" class="" />
+          <input class="text-black" v-model="username" type="text" placeholder="Benutzername"  />
         </div>
 
         <div class="flex flex-col">
           <label for="email"> Emailadresse</label>
-            <input v-model="email" type="email" placeholder="Email" class="" />
+            <input v-model="email" type="email" placeholder="Email" class="text-black" />
         </div>
         <div class="flex items-center justify-center space-x-5">
           <div class="flex flex-col">
             <label for="password"> Passwort</label>
-            <input v-model="password" type="password" placeholder="Password" class="" />
+            <input v-model="password" type="password" placeholder="Password" class="text-black" />
           </div>
           <div class="flex flex-col">
             <label for="password"> Passwort Bestätigen</label>
-            <input v-model="password2" type="password" placeholder="Password" class="" />
+            <input v-model="password2" type="password" placeholder="Password" class="text-black" />
           </div>
         </div>
         <div>
@@ -49,7 +49,7 @@
           <p class="text-xs text-gray-500">Bereits ein Account?</p>
           <nuxt-link
             to="/login"
-            class="border-b border-gray-400 hover:text-blue-500 text-xs"
+            class="border-b border-gray-400 hover:text-blue-500 text-xs text-black"
             >Einloggen</nuxt-link
           >
         </div>
@@ -75,13 +75,14 @@ const password2 = ref<string>("");
 const errorMsg = ref<string>("");
 const successMsg = ref<string>("");
 
-async function saveUserData() {
+async function saveUserData(userId: string) {
   try {
     const { data, error } = await client
       .from('User')
       .insert([
-        { email: email.value, username: username.value }
+        { id: userId, email: email.value, username: username.value }
       ]);
+      
     if (error) throw error;
     console.log('User data saved:', data);
   } catch (error) {
@@ -89,7 +90,17 @@ async function saveUserData() {
   }
 }
 
-
+async function saveUserStatistic(userId: string) {
+  try {
+    const { data, error } = await client
+      .from('Statistics')
+      .insert([{ User_id: userId }]); // Stelle sicher, dass in der Tabelle Statistics die Spalte "userId" vorhanden ist!
+    if (error) throw error;
+    console.log('Statistics created:', data);
+  } catch (error) {
+    console.error('Error saving statistics:', error.message);
+  }
+}
 
 
 async function signUp() {
@@ -102,8 +113,9 @@ async function signUp() {
       if (error) throw error;
       successMsg.value = "Check your email to confirm your account!";
       if (data.user) {
-        saveUserData();
+        saveUserData(data.user.id);
         console.log(data.user);
+        saveUserStatistic(data.user.id);
         alert("Check your email to confirm your account!" );
       }
       else {

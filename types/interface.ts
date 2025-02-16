@@ -1,5 +1,5 @@
 export interface Player{
-    id: number;
+    id: string;
     username: string;
     profileImage: string | null;  
     currentScore?: number;
@@ -10,7 +10,7 @@ export interface Players{
 
 export interface OfflineGame {
     id: string;
-    creatorId: number;
+    creatorId: string;
     players: Player[];
     basescore: number;
     inMode: string;

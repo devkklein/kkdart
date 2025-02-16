@@ -6,11 +6,10 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@pinia/nuxt",
     "@formkit/auto-animate",
-    "@prisma/nuxt",
     "@nuxt/icon",
     "@nuxt/eslint",
     "@nuxt/fonts",
-    "@nuxtjs/supabase"
+    "@nuxtjs/supabase",
   ],
   supabase: {
     redirectOptions: {

@@ -6,7 +6,7 @@
       <form @submit.prevent="login"
         class="bg-white flex flex-col items-right justify-center p-8 rounded-lg shadow-xl space-y-4"
       >
-        <h1 class="text-3xl">Willkommen zurück zu OpenDarts</h1>
+        <h1 class="text-3xl text-black">Willkommen zurück zu OpenDarts</h1>
         <p class="text-gray-500 text-sm">Die opensource online Dartplatform</p>
 
         <div class="flex flex-col min-w-1/2">
@@ -16,7 +16,7 @@
             type="email"
             id="email"
             placeholder="Email"
-            class="border rounded p-2"
+            class="border rounded p-2 text-black"
           />
         </div>
 
@@ -27,7 +27,7 @@
             type="password"
             id="password"
             placeholder="Password"
-            class="border rounded p-2"
+            class="border rounded p-2 text-black"
           />
         </div>
 
@@ -36,7 +36,7 @@
           <p class="text-xs text-gray-500">Noch keinen Account?</p>
           <nuxt-link
             to="/register"
-            class="border-b border-gray-400 hover:text-blue-500 text-xs"
+            class="border-b border-gray-400 hover:text-blue-500 text-xs text-black" 
             >Registrieren
           </nuxt-link>
         </div>

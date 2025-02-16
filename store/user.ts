@@ -7,7 +7,7 @@ export const useUserStore = defineStore('user', () => {
   const profileImage = ref<string | null>(null);
   const client = useSupabaseClient();
   const user = useSupabaseUser();
-  const id = ref<number | null>(null);
+  const id = ref<string | null>(null);
 
   async function fetchUserData() {
     if (user.value?.email) {
