@@ -98,7 +98,7 @@
         </div>
       </div>
 
-      <button type="submit">Create Game</button>
+      <button type="submit">Create Game </button>
     </form>
   </div>
 </template>
