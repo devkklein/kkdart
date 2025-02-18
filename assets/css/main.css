@@ -2,25 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @font-face {
-  font-family: 'SF PRO';
-  src: url('/assets/fonts/sf-pro-display/SFPRODISPLAYREGULAR.OTF') format('opentype');
+  font-family: "SF PRO";
+  src: url("/assets/fonts/sf-pro-display/SFPRODISPLAYREGULAR.OTF")
+    format("opentype");
   font-weight: 400;
   font-style: normal;
 }
-
 
 body {
   @apply outline-none font-semibold bg-secondary-300 text-white;
   ::selection {
     background-color: #1997ff;
     color: black;
-    font-family: 'SF PRO', sans-serif;
-    
+    font-family: "SF PRO", sans-serif;
   }
 }
-
 
 input[type="text"] {
   @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-secondary-300;
@@ -36,6 +33,34 @@ input[type="email"] {
 input[type="password"] {
   @apply bg-white border py-1 px-3 border-gray-300 rounded-lg outline-none focus:border-secondary-300;
 }
+
+input[type="range"]{
+  @apply bg-primary rounded-lg outline-none focus:border-secondary-300 shadow-lg;
+  height: 6px;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  @apply bg-white border border-secondary-300 rounded-full;
+  width: 16px;
+  height: 16px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+input[type="range"]::-moz-range-thumb {
+  @apply bg-white border border-secondary-300 rounded-full;
+  width: 16px;
+  height: 16px;
+  appearance: none;
+}
+input[type="range"]::-ms-thumb {
+  @apply bg-white border border-secondary-300 rounded-full;
+  width: 16px;
+  height: 16px;
+  appearance: none;
+}
+
+
+
 label {
   @apply text-gray-800 text-sm;
 }
@@ -46,8 +71,11 @@ ul {
   @apply list-none items-center px-8 space-y-4;
 }
 li {
-  @apply  items-center px-3 flex  space-x-4 text-lg bg-primary p-1 rounded-full text-white hover:bg-secondary-300 cursor-pointer;
+  @apply items-center px-3 flex  space-x-4 text-lg bg-primary p-1 rounded-full text-white hover:bg-secondary-300 cursor-pointer;
 }
 ul p {
   @apply text-gray-200 border-b-2 border-gray-500;
+}
+h1{
+  @apply text-white;
 }

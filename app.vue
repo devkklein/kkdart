@@ -1,9 +1,9 @@
-<script lang=ts setup>
-import { useUserStore } from './store/user';
-import { useStatsStore } from './store/stats';
+<script lang="ts" setup>
+import { useUserStore } from "./store/user";
+import { useStatsStore } from "./store/stats";
 
 const useStore = useUserStore();
-const statsStore=  useStatsStore();
+const statsStore = useStatsStore();
 const user = useSupabaseUser();
 
 onMounted(() => {
@@ -12,7 +12,6 @@ onMounted(() => {
     statsStore.fetchStatsData();
   }
 });
-
 </script>
 
 <template>

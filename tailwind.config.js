@@ -9,7 +9,6 @@ export default {
       },
       colors: {
         primary: "#222222",
-        
 
         secondary: {
           100: "#E2E2D5",
@@ -18,24 +17,24 @@ export default {
         },
         blue: {
           500: "#3333cc",
-          400:  "#81caf9",
+          400: "#81caf9",
         },
         yellow: {
           500: "#f2db34",
           600: "#ee9d17",
         },
-        green:{
+        green: {
           500: "#53d05e",
         },
-        red:{
+        red: {
           500: "#ec573f",
-        }
+        },
       },
       fontFamily: {
         sans: ["SF PRO", "sans-serif"],
       },
-     
-    plugins: [],
+
+      plugins: [],
+    },
   },
-}
-}
+};

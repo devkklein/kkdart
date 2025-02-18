@@ -3,7 +3,8 @@
     <div
       class="w-1/2 bg-gray-200 min-h-full flex flex-col items-center justify-center"
     >
-      <form @submit.prevent="login"
+      <form
+        @submit.prevent="login"
         class="bg-white flex flex-col items-right justify-center p-8 rounded-lg shadow-xl space-y-4"
       >
         <h1 class="text-3xl text-black">Willkommen zurück zu OpenDarts</h1>
@@ -12,7 +13,7 @@
         <div class="flex flex-col min-w-1/2">
           <label for="username">Email</label>
           <input
-          v-model="email"
+            v-model="email"
             type="email"
             id="email"
             placeholder="Email"
@@ -23,7 +24,7 @@
         <div class="flex flex-col">
           <label for="password">Passwort</label>
           <input
-          v-model="password"
+            v-model="password"
             type="password"
             id="password"
             placeholder="Password"
@@ -36,7 +37,7 @@
           <p class="text-xs text-gray-500">Noch keinen Account?</p>
           <nuxt-link
             to="/register"
-            class="border-b border-gray-400 hover:text-blue-500 text-xs text-black" 
+            class="border-b border-gray-400 hover:text-blue-500 text-xs text-black"
             >Registrieren
           </nuxt-link>
         </div>
@@ -49,7 +50,6 @@
 </template>
 
 <script lang="ts" setup>
-
 const client = useSupabaseClient();
 const router = useRouter();
 
@@ -57,15 +57,15 @@ const email = ref<string>("");
 const password = ref<string>("");
 
 async function login() {
-  const {user, session, error } = await client.auth.signInWithPassword({
+  const { user, session, error } = await client.auth.signInWithPassword({
     email: email.value,
     password: password.value,
   });
-  
+
   if (error) {
     console.error(error);
   } else {
-    console.log(user,session );
+    console.log(user, session);
     router.push("/");
   }
 }

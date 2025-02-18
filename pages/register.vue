@@ -4,7 +4,7 @@
       class="w-1/2 bg-gray-200 min-h-full flex flex-col items-center justify-center"
     >
       <form
-      @submit.prevent="signUp"
+        @submit.prevent="signUp"
         class="bg-white flex flex-col items-right justify-center p-8 rounded-lg shadow-xl space-y-4"
       >
         <h1 class="text-3xl text-black">Willkommen zu Open Darts</h1>
@@ -12,21 +12,41 @@
 
         <div class="flex flex-col min-w-1/2">
           <label for="username">Benutzername</label>
-          <input class="text-black" v-model="username" type="text" placeholder="Benutzername"  />
+          <input
+            class="text-black"
+            v-model="username"
+            type="text"
+            placeholder="Benutzername"
+          />
         </div>
 
         <div class="flex flex-col">
           <label for="email"> Emailadresse</label>
-            <input v-model="email" type="email" placeholder="Email" class="text-black" />
+          <input
+            v-model="email"
+            type="email"
+            placeholder="Email"
+            class="text-black"
+          />
         </div>
         <div class="flex items-center justify-center space-x-5">
           <div class="flex flex-col">
             <label for="password"> Passwort</label>
-            <input v-model="password" type="password" placeholder="Password" class="text-black" />
+            <input
+              v-model="password"
+              type="password"
+              placeholder="Password"
+              class="text-black"
+            />
           </div>
           <div class="flex flex-col">
             <label for="password"> Passwort Bestätigen</label>
-            <input v-model="password2" type="password" placeholder="Password" class="text-black" />
+            <input
+              v-model="password2"
+              type="password"
+              placeholder="Password"
+              class="text-black"
+            />
           </div>
         </div>
         <div>
@@ -62,9 +82,6 @@
 </template>
 
 <script lang="ts" setup>
-
-
-
 const client = useSupabaseClient();
 
 const username = ref<string>("");
@@ -78,35 +95,32 @@ const successMsg = ref<string>("");
 async function saveUserData(userId: string) {
   try {
     const { data, error } = await client
-      .from('User')
-      .insert([
-        { id: userId, email: email.value, username: username.value }
-      ]);
-      
+      .from("User")
+      .insert([{ id: userId, email: email.value, username: username.value }]);
+
     if (error) throw error;
-    console.log('User data saved:', data);
+    console.log("User data saved:", data);
   } catch (error) {
-    console.error('Error saving user data:', error.message);
+    console.error("Error saving user data:", error.message);
   }
 }
 
 async function saveUserStatistic(userId: string) {
   try {
     const { data, error } = await client
-      .from('Statistics')
+      .from("Statistics")
       .insert([{ User_id: userId }]); // Stelle sicher, dass in der Tabelle Statistics die Spalte "userId" vorhanden ist!
     if (error) throw error;
-    console.log('Statistics created:', data);
+    console.log("Statistics created:", data);
   } catch (error) {
-    console.error('Error saving statistics:', error.message);
+    console.error("Error saving statistics:", error.message);
   }
 }
-
 
 async function signUp() {
   if (password.value === password2.value) {
     try {
-      const{data, error} = await client.auth.signUp({
+      const { data, error } = await client.auth.signUp({
         email: email.value,
         password: password.value,
       });
@@ -116,15 +130,13 @@ async function signUp() {
         saveUserData(data.user.id);
         console.log(data.user);
         saveUserStatistic(data.user.id);
-        alert("Check your email to confirm your account!" );
-      }
-      else {
-        alert("gehtnicht ")
+        alert("Check your email to confirm your account!");
+      } else {
+        alert("gehtnicht ");
       }
     } catch (error) {
-      alert("die Email ist bereits vergeben"); 
+      alert("die Email ist bereits vergeben");
     }
-      
   }
   console.log("signUp");
 }

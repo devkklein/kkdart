@@ -1,13 +1,15 @@
 <template>
-  <div class="flex  h-screen">
+  <div class="flex h-screen">
     <Sidebar />
-    <div class=" h-full w-full flex justify-center items-center">
-      <div class="bg-primary p-4 rounded-xl shadow-xl flex justify-start flex-col space-y-4">
+    <div class="h-full w-full flex justify-center items-center">
+      <div
+        class="bg-primary p-4 rounded-xl shadow-xl flex justify-start flex-col space-y-4"
+      >
         <SidebarProfile />
         <div>
           <h1 class="text-xl font-bold">Statistics</h1>
           <p class="text-sm text-gray-300">Your personal statistics</p>
-          <p class=" border-b-2 border-gray-300"></p>
+          <p class="border-b-2 border-gray-300"></p>
         </div>
         <div>
           <h2 class="text-lg font-semibold">Matches</h2>
@@ -30,7 +32,7 @@
             </div>
           </div>
         </div>
-        <p class=" border-b-2 border-gray-300"></p>
+        <p class="border-b-2 border-gray-300"></p>
         <div>
           <h2 class="text-lg font-semibold">General</h2>
           <div class="grid grid-cols-4 gap-4">
@@ -48,7 +50,7 @@
             </div>
           </div>
         </div>
-        <p class=" border-b-2 border-gray-300"></p>
+        <p class="border-b-2 border-gray-300"></p>
         <div>
           <h2 class="text-lg font-semibold">Score</h2>
           <div class="grid grid-cols-4 gap-4">
@@ -58,7 +60,7 @@
             </div>
             <div class="">
               <p class="text-sm text-gray-300">100+</p>
-              <p class="text-lg font-semibold">{{  score_100 }}</p>
+              <p class="text-lg font-semibold">{{ score_100 }}</p>
             </div>
             <div class="">
               <p class="text-sm text-gray-300">140+</p>
@@ -76,7 +78,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useStatsStore } from '~/store/stats';
+import { useStatsStore } from "~/store/stats";
 
 const store = useStatsStore();
 const matches_played = ref<number>(0);
@@ -91,7 +93,6 @@ const score_100 = ref<number>(0);
 const score_140 = ref<number>(0);
 const score_180 = ref<number>(0);
 
-
 onMounted(() => {
   matches_played.value = store.matches_played;
   matches_won.value = store.matches_won;
@@ -105,11 +106,6 @@ onMounted(() => {
   score_140.value = store.score_140;
   score_180.value = store.score_180;
 });
-
-
-
 </script>
 
-<style>
-
-</style>
+<style></style>

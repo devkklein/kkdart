@@ -1,9 +1,9 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
-export const useStatsStore = defineStore('stasts', () => {  
+export const useStatsStore = defineStore("stasts", () => {
   const client = useSupabaseClient();
   const user = useSupabaseUser();
-  
+
   const matches_played = ref<number>(0);
   const matches_won = ref<number>(0);
   const matches_lost = ref<number>(0);
@@ -18,14 +18,18 @@ export const useStatsStore = defineStore('stasts', () => {
 
   async function fetchStatsData() {
     if (user.value?.id) {
+      console.log(user.value.id);
       const { data, error } = await client
-        .from('Statistics')
-        .select('avg, first9_avg, checkout, matches_played, matches_won, matches_lost, winrate, score_60, score_100, score_140, score_180')
-        .eq('User_id', user.value.id) 
+        .from("Statistics")
+        .select(
+          "avg, first9_avg, checkout, matches_played, matches_won, matches_lost, winrate, score_60, score_100, score_140, score_180"
+        )
+        .eq("User_id", user.value.id);
 
       if (error) {
-        console.error('Error fetching user data:', error.message);
+        console.error("Error fetching user data:", error.message);
       } else if (data && data.length > 0) {
+        
         matches_played.value = data[0].matches_played;
         matches_won.value = data[0].matches_won;
         matches_lost.value = data[0].matches_lost;
@@ -39,8 +43,19 @@ export const useStatsStore = defineStore('stasts', () => {
         score_180.value = data[0].score_180;
       }
     }
-   
   }
-  return { matches_played, matches_won, matches_lost, winrate, average, first9avg, checkout, score_60, score_100, score_140, score_180, fetchStatsData };
-
-})
+  return {
+    matches_played,
+    matches_won,
+    matches_lost,
+    winrate,
+    average,
+    first9avg,
+    checkout,
+    score_60,
+    score_100,
+    score_140,
+    score_180,
+    fetchStatsData,
+  };
+});

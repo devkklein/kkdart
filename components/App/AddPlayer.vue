@@ -2,7 +2,8 @@
   <div
     class="absolute inset-0"
     v-if="showPopup"
-    @click.self="emit('close')"></div>
+    @click.self="emit('close')"
+  ></div>
   <div v-if="showPopup" class="absolute" @click.self="emit('close')">
     <div class="w-96">
       <div class="bg-primary rounded-2xl shadow-2xl p-6 text-center space-y-2">
@@ -12,7 +13,8 @@
             v-model="playerName"
             type="text"
             placeholder="Enter player name"
-            class="text-black"/>
+            class="text-black"
+          />
           <button class="" @click="addPlayer" type="button">Add</button>
         </div>
       </div>
@@ -37,10 +39,8 @@ const addPlayer = () => {
   const player = {
     id: "offline_" + playerName,
     username: playerName,
-    profileImage: ""
+    profileImage: "",
   };
   emit("playerAdded", player);
-  
 };
 </script>
-

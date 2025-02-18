@@ -1,14 +1,9 @@
 <template>
-  <div class="flex  h-screen">
+  <div class="flex h-screen">
     <Sidebar />
-    <div class=" h-full w-full ">
-    </div>
+    <div class="h-full w-full"></div>
   </div>
 </template>
-<script lang="ts" setup>
+<script lang="ts" setup></script>
 
-</script>
-
-<style>
-
-</style>
+<style></style>

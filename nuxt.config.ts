@@ -19,7 +19,7 @@ export default defineNuxtConfig({
   supabase: {
     redirectOptions: {
       exclude: ["/login", "/register"],
-    }
+    },
   },
   css: ["~/assets/css/main.css"],
   icon: {
@@ -31,6 +31,5 @@ export default defineNuxtConfig({
     experimental: {
       processCSSVariables: true,
     },
-    
   },
 });

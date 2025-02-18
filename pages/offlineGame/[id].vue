@@ -9,17 +9,20 @@
           v-for="player in game.players"
           :key="player.id"
           :style="{ width: 100 / game.players.length + '%' }"
-          class="flex flex-col justify-around items-center rounded-xl bg-gray-900 shadow-xl p-4">
+          class="flex flex-col justify-around items-center rounded-xl bg-gray-900 shadow-xl p-4"
+        >
           <img
             v-if="player.profileImage"
             :src="player.profileImage"
             alt="Profilbild"
-            class="w-40 h-40 rounded-full object-cover" />
+            class="w-40 h-40 rounded-full object-cover"
+          />
           <img
             v-else
             src="/game-icons--dart.png"
             alt="Profilbild"
-            class="w-40 h-40 rounded-full object-fill" />
+            class="w-40 h-40 rounded-full object-fill"
+          />
           <div class="space-y-2 text-center">
             <h1 class="text-3xl text-white">{{ player.username }}</h1>
             <h1 class="text-7xl text-red-500">{{ game.basescore }}</h1>
@@ -31,11 +34,13 @@
         <div
           v-for="player in playersLeft"
           :key="player.id"
-          class="col-span-1 flex flex-col justify-around items-center rounded-xl shadow-lg p-4 bg-white">
+          class="col-span-1 flex flex-col justify-around items-center rounded-xl shadow-lg p-4 bg-white"
+        >
           {{ player.username }}
         </div>
         <div
-          class="col-span-2 flex flex-col justify-around items-center rounded-xl shadow-lg p-4 bg-white">
+          class="col-span-2 flex flex-col justify-around items-center rounded-xl shadow-lg p-4 bg-white"
+        >
           <GameInputButtons v-if="inputMode" />
           <GameInputTypeIn v-else @submitScore="handleSubmitScore" />
           <div v-if="!game.startingPlayerId" class="p-10">
@@ -45,13 +50,15 @@
               <option
                 v-for="player in game.players"
                 :key="player.id"
-                :value="player.id">
+                :value="player.id"
+              >
                 {{ player.username }}
               </option>
             </select>
             <button
               @click="confirmStartingPlayer"
-              class="ml-4 p-2 bg-green-500 text-white rounded">
+              class="ml-4 p-2 bg-green-500 text-white rounded"
+            >
               Startspieler festlegen
             </button>
           </div>
@@ -68,7 +75,8 @@
         <div
           v-for="player in playersRight"
           :key="player.id"
-          class="col-span-1 flex flex-col justify-around items-center rounded-xl shadow-lg p-4 bg-white">
+          class="col-span-1 flex flex-col justify-around items-center rounded-xl shadow-lg p-4 bg-white"
+        >
           {{ player.username }}
         </div>
       </div>
