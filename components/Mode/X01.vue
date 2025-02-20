@@ -88,6 +88,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
+const emit = defineEmits();
+
 const countLegs = ref(3);
 const countSets = ref(1);
 
@@ -98,9 +100,31 @@ const maxRounds = ref<string>('50');
 const bullOff = ref<string>('Normal');
 const lobbyMode = ref<string>('Public');
 
+watch([inMode, outMode, baseScore, maxRounds, bullOff, lobbyMode, countLegs, countSets], () => {
+  emit('sendMatchdata', {
+    baseScore: baseScore.value,
+    inMode: inMode.value,
+    outMode: outMode.value,
+    legCount: countLegs.value,
+    setCount: countSets.value,
+    lobbyMode: lobbyMode.value,
+  });
+});
+
 function setInMode(mode: string) {
   inMode.value = mode;
 }
+
+onMounted(() => {
+  emit('sendMatchdata', {
+    baseScore: baseScore.value,
+    inMode: inMode.value,
+    outMode: outMode.value,
+    legCount: countLegs.value,
+    setCount: countSets.value,
+    lobbyMode: lobbyMode.value,
+  });
+});
 </script>
 
 <style></style>

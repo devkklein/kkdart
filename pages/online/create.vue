@@ -2,7 +2,7 @@
   <div class="flex h-screen ">
     <Sidebar />
     <div class="h-full w-full flex justify-center items-center ">
-      <form type="submit" class="p-4 bg-primary shadow-md rounded-xl w-1/2 space-y-4">
+      <form  type="submit" class="p-4 bg-primary shadow-md rounded-xl w-1/2 space-y-4">
         <div class="mb-4 flex justify-center items-center flex-col">
           <SidebarProfile class=" scale-125"/>
           <div class="mb-4"></div>
@@ -10,7 +10,7 @@
             Match Name
           </label>
           <input
-          v-model="username"
+          v-model="matchName"
             class="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="matchName" type="text" placeholder="Enter match name" />
         </div>
@@ -27,7 +27,7 @@
           </div>
           <div class="bg-secondary-300 shadow-lg rounded-xl p-4">
             <ModeClock v-if="gameMode === 'clock'" />
-            <ModeX01 v-if="gameMode === 'x01'" />
+            <ModeX01 @sendMatchdata="updateSettings" v-if="gameMode === 'x01'" />
             <ModeCricket v-if="gameMode === 'cricket'" />
             <ModeX121 v-if="gameMode === '121'" />
           </div>
@@ -37,7 +37,7 @@
           <button type="button" class="flex items-center text-white " @click="$router.back()">
             <Icon name="ic:round-arrow-back-ios" size="24" />
           </button>
-          <button type="submit" class="bg-secondary-300 text-white rounded-lg p-2">Create Game</button>
+          <button @click="createGame" type="button" class="bg-secondary-300 text-white rounded-lg p-2">Create Game</button>
 
         </div>
       </form>
@@ -47,17 +47,48 @@
 
 <script lang="ts" setup>
 import { useUserStore } from '~/store/user';
+
+const router = useRouter();
+
 const user = useUserStore();
-
-const username =  ref<string>(user.username);
-
+const matchName =  ref<string>(user.username);
 const gameMode = ref<string>('x01');
+const matchid = ref<string>('');
+const matchSettings = ref<any>({});
+
+const ws = ref<WebSocket | null>(null);
 
 function setMode(mode: string) {
+
   gameMode.value = mode;
 }
+function updateSettings(settings: any) {
+  matchSettings.value = settings;
+}
+
+
+const createGame = () => {
+ 
+  ws.value = new WebSocket(`ws://${window.location.host}/api/ws`);
+  ws.value.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    if ( data.type === "match-created") {
+      matchid.value = data.matchId;
+      router.push(`/online/${matchid.value}`);
+     
+    }
+  };
+  ws.value.onopen = () => {
+    ws.value.send(JSON.stringify({ type: 'create-match', matchSettings }));
+  };
+  
+};
+
+
+
+
 onMounted(() => {
-  username.value = user.username + " Match";
+  matchName.value = user.username + " Match";
 });
 </script>
 
