@@ -75,7 +75,7 @@ const createGame = () => {
     if ( data.type === "match-created") {
       matchid.value = data.matchId;
       router.push(`/online/${matchid.value}`);
-     
+      
     }
   };
   ws.value.onopen = () => {
