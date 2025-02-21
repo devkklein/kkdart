@@ -68,19 +68,20 @@ function updateSettings(settings: any) {
 
 
 const createGame = () => {
- 
-  ws.value = new WebSocket(`ws://${window.location.host}/api/ws`);
-  ws.value.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    if ( data.type === "match-created") {
-      matchid.value = data.matchId;
-      router.push(`/online/${matchid.value}`);
-      
-    }
-  };
+  const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+  ws.value = new WebSocket(`${protocol}${window.location.host}/api/ws`);
   ws.value.onopen = () => {
     ws.value.send(JSON.stringify({ type: 'create-match', matchSettings }));
   };
+  ws.value.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    if (data.type === "match-created") {
+      matchid.value = data.matchId;
+      // Setz e den Query-Parameter, damit im [id].vue erkannt wird, dass es der Creator ist
+      router.replace({ path: `/online/${matchid.value}`, query: { creator: 'true' } });
+    }
+  };
+  
   
 };
 
@@ -90,6 +91,7 @@ const createGame = () => {
 onMounted(() => {
   matchName.value = user.username + " Match";
 });
+
 </script>
 
 <style></style>

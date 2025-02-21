@@ -28,8 +28,16 @@
 import { useUserStore } from "~/store/user";
 
 const userStore = useUserStore();
-const username = computed(() => userStore.username);
-const profileImage = computed(() => userStore.profileImage);
+const username = ref(userStore.username);
+const profileImage = ref(userStore.profileImage);
+
+watch(() => userStore.username, (newUsername) => {
+  username.value = newUsername;
+});
+
+watch(() => userStore.profileImage, (newProfileImage) => {
+  profileImage.value = newProfileImage;
+});
 
 // Hier kannst du den Benutzernamen setzen
 </script>

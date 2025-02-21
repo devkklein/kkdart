@@ -21,6 +21,12 @@ export default defineNuxtConfig({
       exclude: ["/login", "/register"],
     },
   },
+  devServer: {
+    https: {
+      key: "./assets/certificate/localhost-key.pem",
+      cert: "./assets/certificate/localhost.pem",
+    }
+  },
   css: ["~/assets/css/main.css"],
   icon: {
     serverBundle: {

@@ -95,8 +95,8 @@ const countSets = ref(1);
 
 const inMode = ref<string>('Singel');
 const outMode = ref<string>('Double');
-const baseScore = ref<string>('501');
-const maxRounds = ref<string>('50');
+const baseScore = ref<number>(501);
+const maxRounds = ref<number>(50);
 const bullOff = ref<string>('Normal');
 const lobbyMode = ref<string>('Public');
 

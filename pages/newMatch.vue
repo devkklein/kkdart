@@ -17,9 +17,10 @@
         class="flex-1 h-full shadow-xl rounded-xl bg-herobg bg-center bg-cover cursor-pointer transition-transform duration-700 hover:-translate-y-4"
       >
         <div
+          @click="browseLobbys"
           class="p-10 bg-primary bg-opacity-70 rounded-xl w-full h-full flex flex-col justify-end"
         >
-          <h1 class="text-4xl font-bold">Lobbys</h1>
+          <h1  class="text-4xl font-bold">Lobbys</h1>
           <p class="text-lg text-gray-300">Browse existing Game Lobbys</p>
         </div>
       </div>
@@ -32,6 +33,9 @@ const router = useRouter();
 
 function createLobby() {
   router.push("/online/create");
+}
+function browseLobbys() {
+  router.push("/online/lobby");
 }
 </script>
 

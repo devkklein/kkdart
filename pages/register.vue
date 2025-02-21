@@ -4,7 +4,7 @@
       class="w-1/2 bg-gray-200 min-h-full flex flex-col items-center justify-center"
     >
       <form
-        @submit.prevent="signUp"
+        
         class="bg-white flex flex-col items-right justify-center p-8 rounded-lg shadow-xl space-y-4"
       >
         <h1 class="text-3xl text-black">Willkommen zu Open Darts</h1>
@@ -64,7 +64,7 @@
             zu
           </p>
         </div>
-        <button type="submit" class="">Registrieren</button>
+        <button @click="signUp" type="button" class="">Registrieren</button>
         <div class="flex items-right space-x-2">
           <p class="text-xs text-gray-500">Bereits ein Account?</p>
           <nuxt-link

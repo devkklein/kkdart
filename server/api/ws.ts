@@ -1,23 +1,32 @@
+import { clearNuxtState } from "nuxt/app";
+
 interface PlayerScore {
   currentScore: number;
   legsWon: number;
   setsWon: number;
 }
+interface Player {
+  id: string;
+  username: string;
+  ws: WebSocket;
+}
+interface Settings{
+  baseScore: number;
+  inMode: string;
+  outMode: string;
+  legCount: number;
+  setCount: number;
+  lobbyMode?: string;
+}
 
 interface Match {
-  players: WebSocket[];
-  settings: {
-    baseScore: number;
-    inMode: string;
-    outMode: string;
-    legCount: number;
-    setCount: number;
-    lobbyMode?: string;
-  };
+  players:  Player[];
+  settings: Settings;
   scores: Record<string, PlayerScore>;
   currentLeg: number;
   currentSet: number;
   finished: boolean;
+  createdAt: number; // Zeitpunkt der Erstellung in ms
 }
 
 const matches: Record<string, Match> = {};
@@ -28,11 +37,23 @@ async function storeMatchResults(matchId: string, match: Match) {
   // Beispiel: await db.insert({ matchId, ...match });
 }
 
+// Überprüfe alle 1 Sekunde, ob Matches gelöscht werden sollen
+setInterval(() => {
+  const now = Date.now();
+  Object.entries(matches).forEach(([matchId, match]) => {
+    // Lösche Matches, die nicht beendet sind, weniger als 2 Spieler haben
+    // und älter als 5 Sekunden sind
+    if (!match.players.length && now - match.createdAt >= 5000) {
+      console.log(`Match ${matchId} wird gelöscht, da keine weiteren Spieler beigetreten sind.`);
+      delete matches[matchId];
+    }
+  });
+}, 1000);
 export default defineWebSocketHandler({
   open(socket) {
     console.log("Neuer Spieler verbunden");
   },
-  message(socket, message) {
+   message(socket, message) {
     let data: any;
     try {
       data = JSON.parse(message);
@@ -42,24 +63,21 @@ export default defineWebSocketHandler({
     }
 
     if (data.type === "create-match") {
+      console.log("Erstelle Match mit Einstellungen:", data.matchSettings);
       // Erhalte matchSettings aus der Nachricht; Beispiel aus den X01.vue Daten
+    
       const matchSettings = data.matchSettings;
+      
       const matchId = crypto.randomUUID();
       matches[matchId] = {
-        players: [socket],
-        settings: {
-          baseScore: Number(matchSettings.baseScore),
-          inMode: matchSettings.inMode,
-          outMode: matchSettings.outMode,
-          legCount: Number(matchSettings.countLegs),
-          setCount: Number(matchSettings.countSets),
-          lobbyMode: matchSettings.lobbyMode,
-        },
+        players: [],
+        settings: matchSettings,
         // Initialisiere die Scores erst, wenn beide Spieler beigetreten sind
         scores: {},
         currentLeg: 1,
         currentSet: 1,
         finished: false,
+        createdAt: Date.now(), // Zeitpunkt der Erstellung
       };
       socket.send(
         JSON.stringify({
@@ -68,15 +86,20 @@ export default defineWebSocketHandler({
         })
       );
     } else if (data.type === "join-match") {
-      const { matchId } = data;
-      const match = matches[matchId];
+       const match =  matches[data.matchId];
+       const matchId = data.matchId;
+       const player = {...data.player , ws: socket};
       if (match) {
-        if (match.players.length < 2) {
-          match.players.push(socket);
+        console.log("settings", match.settings);
+        if (match.players.length  < 2 ) {
+          match.players.push(player);
+          console.log("Spieler ist dem Match beigetreten");
+          console.log("Spieleranzahl: ", match.players);
+         
           socket.send(
             JSON.stringify({
               type: "match-joined",
-              matchId,
+              
             })
           );
           // Initialisiere die Spielerwerte (z.B. "Spieler1" und "Spieler2")
@@ -94,14 +117,15 @@ export default defineWebSocketHandler({
           }
           // Startet das Match, wenn beide Spieler da sind
           if (match.players.length === 2) {
-            match.players.forEach((ws) => {
-              ws.send(
-                JSON.stringify({
-                  type: "match-start",
-                  matchId,
-                  settings: match.settings,
-                  scores: match.scores,
-                })
+            match.players.forEach((player) => {
+              console.log("Match startet");
+              player.ws.send(
+              JSON.stringify({
+                type: "match-start",
+                matchId,
+                settings: match.settings,
+                scores: match.scores,
+              })
               );
             });
           }
@@ -121,7 +145,37 @@ export default defineWebSocketHandler({
           })
         );
       }
-    } else if (data.type === "dart-throw") {
+    } 
+    else if (data.type === "leave-match") {
+    const match = matches[data.matchId];
+    const player = data.player;
+    if (match) {
+      
+      if (player) {
+        match.players = match.players.filter(p => p.id !== player.id);
+        console.log("Spieler hat das Match verlassen");
+        socket.send(
+          JSON.stringify({
+            type: "match-left",
+          })
+        );
+        // Wenn das Match leer ist, lösche es
+        if (!match.players.length) {
+          delete matches[data.matchId];
+        }
+      } else {
+        socket.send(
+          JSON.stringify({
+            type: "error",
+            message: "Spieler nicht im Match",
+          })
+        );
+      }
+    
+    }
+  }
+
+    else if (data.type === "dart-throw") {
       // Erwarte data: { matchId, playerId (z.B. "Spieler1" oder "Spieler2"), points }
       const { matchId, playerId, points } = data;
       const match = matches[matchId];
@@ -153,7 +207,7 @@ export default defineWebSocketHandler({
   
         // Sende das Update an beide Spieler
         match.players.forEach((ws) => {
-          ws.send(
+          socket.send(
             JSON.stringify({
               type: "score-update",
               matchId,
@@ -173,7 +227,7 @@ export default defineWebSocketHandler({
   
           // Sende Leg-Update
           match.players.forEach((ws) => {
-            ws.send(
+            socket.send(
               JSON.stringify({
                 type: "leg-update",
                 matchId,
@@ -193,7 +247,7 @@ export default defineWebSocketHandler({
             match.currentSet++;
   
             match.players.forEach((ws) => {
-              ws.send(
+              socket.send(
                 JSON.stringify({
                   type: "set-update",
                   matchId,
@@ -208,7 +262,7 @@ export default defineWebSocketHandler({
             if (playerScore.setsWon >= match.settings.setCount) {
               match.finished = true;
               match.players.forEach((ws) => {
-                ws.send(
+                socket.send(
                   JSON.stringify({
                     type: "match-end",
                     matchId,
@@ -231,7 +285,21 @@ export default defineWebSocketHandler({
           })
         );
       }
-    } else {
+    } 
+    else if (data.type === "list-matches") {
+      // Filtere z. B. alle Matches, die noch nicht voll (weniger als 2 Spieler) und nicht beendet sind
+      const availableMatches = Object.entries(matches)
+        .filter(([matchId, match]) => match.players.length < 2 && !match.finished)
+        .map(([matchId, match]) => ({
+          matchId,
+          settings: match.settings,
+        }));
+        availableMatches.forEach((match) => {
+          console.log("Verfügbares Match:", match);
+        });
+      socket.send(JSON.stringify({ type: "matches-list", matches: availableMatches }));
+    }
+    else {
       console.log("Unbekannter Nachrichtentyp:", data.type);
     }
   },
