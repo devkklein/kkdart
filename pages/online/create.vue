@@ -71,7 +71,7 @@ const createGame = () => {
   const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
   ws.value = new WebSocket(`${protocol}${window.location.host}/api/ws`);
   ws.value.onopen = () => {
-    ws.value.send(JSON.stringify({ type: 'create-match', matchSettings }));
+    ws.value?.send(JSON.stringify({ type: 'create-match', matchSettings }));
   };
   ws.value.onmessage = (event) => {
     const data = JSON.parse(event.data);

@@ -10,18 +10,11 @@ interface Player {
   username: string;
   ws: WebSocket;
 }
-interface Settings{
-  baseScore: number;
-  inMode: string;
-  outMode: string;
-  legCount: number;
-  setCount: number;
-  lobbyMode?: string;
-}
+
 
 interface Match {
   players:  Player[];
-  settings: Settings;
+  settings: any;
   scores: Record<string, PlayerScore>;
   currentLeg: number;
   currentSet: number;
@@ -43,7 +36,7 @@ setInterval(() => {
   Object.entries(matches).forEach(([matchId, match]) => {
     // Lösche Matches, die nicht beendet sind, weniger als 2 Spieler haben
     // und älter als 5 Sekunden sind
-    if (!match.players.length && now - match.createdAt >= 5000) {
+    if (!match.players.length  && now - match.createdAt >= 5000 || match.finished || match.players.length === 1 && now - match.createdAt >= 70000) {
       console.log(`Match ${matchId} wird gelöscht, da keine weiteren Spieler beigetreten sind.`);
       delete matches[matchId];
     }
@@ -105,12 +98,12 @@ export default defineWebSocketHandler({
           // Initialisiere die Spielerwerte (z.B. "Spieler1" und "Spieler2")
           if (!match.scores["Spieler1"] && !match.scores["Spieler2"]) {
             match.scores["Spieler1"] = {
-              currentScore: match.settings.baseScore,
+              currentScore: match.settings._value.baseScore,
               legsWon: 0,
               setsWon: 0,
             };
             match.scores["Spieler2"] = {
-              currentScore: match.settings.baseScore,
+              currentScore: match.settings._value.baseScore,
               legsWon: 0,
               setsWon: 0,
             };
@@ -121,8 +114,9 @@ export default defineWebSocketHandler({
               console.log("Match startet");
               player.ws.send(
               JSON.stringify({
-                type: "match-start",
+                type: "match-start",  
                 matchId,
+                players: match.players.map(p => ({ id: p.id, username: p.username })), 
                 settings: match.settings,
                 scores: match.scores,
               })
@@ -206,8 +200,8 @@ export default defineWebSocketHandler({
         playerScore.currentScore = newScore;
   
         // Sende das Update an beide Spieler
-        match.players.forEach((ws) => {
-          socket.send(
+        match.players.forEach((player) => {
+          player.ws.send(
             JSON.stringify({
               type: "score-update",
               matchId,
@@ -226,8 +220,8 @@ export default defineWebSocketHandler({
           match.currentLeg++;
   
           // Sende Leg-Update
-          match.players.forEach((ws) => {
-            socket.send(
+          match.players.forEach((player) => {
+            player.ws.send(
               JSON.stringify({
                 type: "leg-update",
                 matchId,
@@ -246,8 +240,8 @@ export default defineWebSocketHandler({
             match.scores["Spieler2"].legsWon = 0;
             match.currentSet++;
   
-            match.players.forEach((ws) => {
-              socket.send(
+            match.players.forEach((player) => {
+              player.ws.send(
                 JSON.stringify({
                   type: "set-update",
                   matchId,
@@ -261,8 +255,8 @@ export default defineWebSocketHandler({
             // Prüfe, ob der Spieler auch den finalen Set gewonnen hat
             if (playerScore.setsWon >= match.settings.setCount) {
               match.finished = true;
-              match.players.forEach((ws) => {
-                socket.send(
+              match.players.forEach((player) => {
+                player.ws.send(
                   JSON.stringify({
                     type: "match-end",
                     matchId,

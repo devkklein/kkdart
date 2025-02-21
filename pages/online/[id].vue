@@ -1,17 +1,19 @@
 <template>
   <div class="flex justify-center items-center h-full w-full">
     <div v-if="matchStarted" class="bg-primary p-20">
-      <h1>Match Started</h1>
-      <div class="mt-4">
-        <p><strong>Dein Score:</strong> {{ scores[playerRole]?.currentScore }}</p>
-        <p>
-          <strong>Gegner Score:</strong>
-          {{
-            playerRole === 'Spieler1'
-              ? scores['Spieler2']?.currentScore
-              : scores['Spieler1']?.currentScore
-          }}
-        </p>
+      <div class="flex">
+        <div class="flex flex-col">
+          <GameProfile :User="players[0]" />
+          <p>Current Score: {{ scores.Spieler1.currentScore }}</p>
+          <p>Legs Won: {{ scores.Spieler1.legsWon }}</p>
+          <p>Sets Won: {{ scores.Spieler1.setsWon }}</p>
+        </div>
+        <div class="flex flex-col">
+          <GameProfile :User="players[1]" />
+          <p>Current Score: {{ scores.Spieler2.currentScore }}</p>
+          <p>Legs Won: {{ scores.Spieler2.legsWon }}</p>
+          <p>Sets Won: {{ scores.Spieler2.setsWon }}</p>
+        </div>
       </div>
     </div>
     <div v-else class="bg-primary p-20">
@@ -29,15 +31,21 @@ const user = useUserStore();
 const route = useRoute();
 const matchId = ref<string | null>(null);
 const ws = ref<WebSocket | null>(null);
-const matchStarted = ref<boolean>(false);
-const scores = ref<Record<string, { currentScore: number; legsWon: number; setsWon: number }>>({});
+const matchStarted = ref<boolean>(true);
+const scores = ref<Record<string, { currentScore: number; legsWon: number; setsWon: number }>>({
+  Spieler1: { currentScore: 501, legsWon: 0, setsWon: 0 },
+  Spieler2: { currentScore: 501, legsWon: 0, setsWon: 0 }
+});
 const settings = ref<any>({});
 const playerRole = ref<string>('');
-const joinCalled = ref<boolean>(false); // Flag verhindern doppelten Join
+const joinCalled = ref<boolean>(false); 
+const players = ref<any>([
+  { id: '1', username: 'Player1', image: null },
+  { id: '2', username: 'Player2', image: null }
+]);
 
-// Einheitliche Funktion zum Beitreten – mit optionaler Rollenangabe.
-const joinMatch =  (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
-  if (joinCalled.value) return; // Falls schon join ausgeführt, tue nichts
+const joinMatch = (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
+  if (joinCalled.value) return;
   joinCalled.value = true;
   
   ws.value = new WebSocket(
@@ -55,11 +63,13 @@ const joinMatch =  (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
       matchStarted.value = true;
       scores.value = data.scores;
       settings.value = data.settings;
+      players.value = data.players;
+      console.log("Match started", data.scores, data.settings);
     }
   };
 
   ws.value.onopen = () => {
-    ws.value?.send(JSON.stringify({ type: 'join-match', matchId: matchIdVal , player: {id: user.id , username: user.username}  }));
+    ws.value?.send(JSON.stringify({ type: 'join-match', matchId: matchIdVal, player: { id: user.id, username: user.username, image: user.profileImage || null } }));
   };
 };
 
@@ -68,7 +78,6 @@ onMounted(() => {
  
   if (matchId.value) {
     if (route.query.creator === 'true') {
-      // Ersteller als Spieler1: Übergib explizit die Rolle, damit joinMatch sie nicht überschreibt.
       joinMatch(matchId.value, 'Spieler1');
     } else {
       joinMatch(matchId.value);
@@ -77,14 +86,14 @@ onMounted(() => {
 
   window.addEventListener('beforeunload', () => {
     if (ws.value) {
-      ws.value.send(JSON.stringify({ type: 'leave-match', matchId: matchId.value , player: {id: user.id , username: user.username} }));
+      ws.value.send(JSON.stringify({ type: 'leave-match', matchId: matchId.value, player: { id: user.id, username: user.username } }));
     }
   });
 });
 
 onBeforeUnmount(() => {
   if (ws.value) {
-    ws.value.send(JSON.stringify({ type: 'leave-match', matchId: matchId.value , player: {id: user.id , username: user.username} }));
+    ws.value.send(JSON.stringify({ type: 'leave-match', matchId: matchId.value, player: { id: user.id, username: user.username } }));
     ws.value.close();
   }
 });
