@@ -6,6 +6,7 @@ export default {
       backgroundImage: {
         herobg: "url('/darthome.jpeg')",
         boardbg: "url('/dartt20.jpeg')",
+        dartboard: "url('/dartboard.png')",
       },
       colors: {
         primary: "#222222",

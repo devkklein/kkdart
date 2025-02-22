@@ -1,13 +1,20 @@
 import { clearNuxtState } from "nuxt/app";
+import type { DartScore } from "~/types/interface";
+
+
 
 interface PlayerScore {
   currentScore: number;
   legsWon: number;
   setsWon: number;
+  dart1: DartScore;
+  dart2: DartScore;
+  dart3: DartScore;
 }
 interface Player {
   id: string;
   username: string;
+  image?: string;
   ws: WebSocket;
 }
 
@@ -101,26 +108,32 @@ export default defineWebSocketHandler({
               currentScore: match.settings._value.baseScore,
               legsWon: 0,
               setsWon: 0,
+              dart1: {value: 0, multiplier: 1},
+              dart2: {value: 0, multiplier: 1},
+              dart3: {value: 0, multiplier: 1},
             };
             match.scores["Spieler2"] = {
               currentScore: match.settings._value.baseScore,
               legsWon: 0,
               setsWon: 0,
+              dart1: {value: 0, multiplier: 1},
+              dart2: {value: 0, multiplier: 1},
+              dart3: {value: 0, multiplier: 1},
             };
           }
           // Startet das Match, wenn beide Spieler da sind
           if (match.players.length === 2) {
             match.players.forEach((player) => {
               console.log("Match startet");
-              player.ws.send(
-              JSON.stringify({
+                player.ws.send(
+                JSON.stringify({
                 type: "match-start",  
                 matchId,
-                players: match.players.map(p => ({ id: p.id, username: p.username })), 
+                players: match.players.map(p => ({ id: p.id, username: p.username, image: p.image || null })), 
                 settings: match.settings,
                 scores: match.scores,
-              })
-              );
+                })
+                );
             });
           }
         } else {

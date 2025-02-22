@@ -12,10 +12,14 @@
         <button @click="joinMatch(match.matchId)" class="bg-secondary-300 text-white rounded p-2">Beitreten</button>
       </li>
     </ul>
+    <button @click="backTo" class="absolute flex bottom-4 text-center items-center left-4 p-3 rounded">
+      <Icon name="mdi:logout" size="20" class="scale-x-[-1] text-center" />
+    </button>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { NuxtLink } from '#components';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -47,6 +51,10 @@ onMounted(() => {
     }
   };
 });
+//util function to navigate back
+function backTo() {
+  router.back();
+}
 </script>
 
 <style scoped>

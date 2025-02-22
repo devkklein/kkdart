@@ -1,16 +1,16 @@
 <template>
-  <div class=" flex flex-col text-center  items-center space-x-4 cursor-pointer p-4 justify-center">
-    <div class="w-20 h-20 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+  <div class="flex flex-col text-center items-center space-y-4 cursor-pointer justify-center">
+    <div class="w-full h-full rounded-full overflow-hidden flex items-center justify-center">
       <img
         v-if="props.User.image"
         :src="props.User.image"
         alt="Profilbild"
-        class="w-full h-full object-cover"
+        class="w-52 h-52 rounded-full object-cover"
       />
-      <img v-else src="/blankPb.png" alt="Profilbild" class="w-20 h-20 rounded-full object-fill" />
+      <img v-else src="/blankPb.png" alt="Profilbild" class=" w-52 h-52 rounded-full object-fill" />
     </div>
-    <div class="flex  justify-center text-center items-center space-x-2">
-      <p class="text-lg font-semibold">{{ props.User.username }}</p>
+    <div>
+      <p class="text-lg text-center font-semibold">{{ props.User.username }}</p>
     </div>
   </div>
 </template>
