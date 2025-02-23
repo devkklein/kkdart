@@ -34,7 +34,7 @@ const joinMatch = (matchId: string) => {
 };
 
 onMounted(() => {
-  ws.value = new WebSocket(`${window.location.protocol === 'https:' ? 'wss://' : 'ws://'}${window.location.host}/api/ws`);
+  ws.value = new WebSocket(`${window.location.protocol === 'https:' ? 'wss://' : 'ws://'}${window.location.host}/api/webSocket/ws`);
   
   ws.value.onopen = () => {
     ws.value?.send(JSON.stringify({ type: "list-matches" }));
