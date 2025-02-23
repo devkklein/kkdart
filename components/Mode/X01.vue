@@ -108,6 +108,8 @@ watch([inMode, outMode, baseScore, maxRounds, bullOff, lobbyMode, countLegs, cou
     legCount: countLegs.value,
     setCount: countSets.value,
     lobbyMode: lobbyMode.value,
+    bullOff: bullOff.value,
+    maxRounds: maxRounds.value,
   
   });
 });
@@ -124,6 +126,8 @@ onMounted(() => {
     legCount: countLegs.value,
     setCount: countSets.value,
     lobbyMode: lobbyMode.value,
+    bullOff: bullOff.value,
+    maxRounds: maxRounds.value,
   
   });
 });
