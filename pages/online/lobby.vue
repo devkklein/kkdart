@@ -45,7 +45,7 @@ onMounted(() => {
     if (data.type === "matches-list") {
       matches.value = data.matches.map((match: any) => ({
         matchId: match.matchId,
-        settings: match.settings._value || match.settings // Füge dies hinzu, um sicherzustellen, dass du auf die richtigen Werte zugreifst
+        settings: match.settings// Füge dies hinzu, um sicherzustellen, dass du auf die richtigen Werte zugreifst
       }));
       console.log("Received matches:", matches.value);
     }

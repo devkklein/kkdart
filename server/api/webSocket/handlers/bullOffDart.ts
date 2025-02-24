@@ -1,11 +1,13 @@
 import { matches } from "../ws";
+import { resetPlayerDartScores } from "../utils";
 
 export function  handleBullOff(socket: WebSocket, data: any) {
 
     try {
               const { matchId, player, score, multiplier } = data;
               console.log("Bull-Off-Dart: data received");
-              const match = matches[matchId];
+              const match = matches[matchId].match;
+              const sockets = matches[matchId].sockets;
               if (match && !match.finished) {
                 const currentPlayer = match.players[match.currentPlayerIndex];
                 if (!currentPlayer || currentPlayer.id !== player.id) {
@@ -34,18 +36,19 @@ export function  handleBullOff(socket: WebSocket, data: any) {
                   };
                 }
                 currentPlayer.scores.thrownDarts++;
+                match.players.map((p) => {
+                  if (p.id === currentPlayer.id) {
+                    return currentPlayer;
+                  }
+                  return p;
+                });
     
-                match.players.forEach((player) => {
-                  player.ws.send(
+                sockets.ws.forEach((ws) => {
+                 ws.send(
                     JSON.stringify({
                       type: "bulloff-update",
                       matchId,
-                      player: {
-                        id: currentPlayer.id,
-                        username: currentPlayer.username,
-                        image: currentPlayer.image || null,
-                        scores: currentPlayer.scores,
-                      },
+                      match,
                     })
                   );
                 });
@@ -53,12 +56,12 @@ export function  handleBullOff(socket: WebSocket, data: any) {
                 if (currentPlayer.scores.thrownDarts === 3) {
                   if (match.currentPlayerIndex === 0) {
                     match.currentPlayerIndex = 1;
-                    match.players.forEach((player) => {
-                      player.ws.send(
+                    sockets.ws.forEach((ws) => {
+                      ws.send(
                         JSON.stringify({
                           type: "switch-turn",
                           matchId,
-                          currentPlayer: match.currentPlayerIndex,
+                          match,
                         })
                       );
                     });
@@ -84,25 +87,21 @@ export function  handleBullOff(socket: WebSocket, data: any) {
                       match.currentPlayerIndex = 0;
                       match.bullOffFinished = true;
                       match.startPlayerIndex = 0;
-                      match.players.forEach((player) => {
-                        player.scores.dart1 = {};
-                        player.scores.dart2 = {};
-                        player.scores.dart3 = {};
-                        player.scores.thrownDarts = 0;
+                     resetPlayerDartScores(match.players);
+                      match.players.map((p) => {
+                        if(p.id === player1.id) {
+                          return player1;
+                        }
+                        return p;
                       });
-                      match.players.forEach((player) => {
-                        player.ws.send(
+
+                      sockets.ws.forEach((ws) => {
+                        ws.send(
                           JSON.stringify({
                             type: "bulloff-winner",
                             matchId,
                             winner: player1.username,
-                            currentPlayer: 0,
-                            players: match.players.map((p) => ({
-                              id: p.id,
-                              username: p.username,
-                              image: p.image || null,
-                              scores: p.scores,
-                            })),
+                           match,
                           })
                         );
                       });
@@ -110,46 +109,31 @@ export function  handleBullOff(socket: WebSocket, data: any) {
                       match.currentPlayerIndex = 1;
                       match.bullOffFinished = true;
                       match.startPlayerIndex = 1;
-                      match.players.forEach((player) => {
-                        player.scores.dart1 = {};
-                        player.scores.dart2 = {};
-                        player.scores.dart3 = {};
-                        player.scores.thrownDarts = 0;
+                      resetPlayerDartScores(match.players);
+                      match.players.map((p) => {
+                        if(p.id === player2.id) {
+                          return player2;
+                        }
+                        return p;
                       });
-                      match.players.forEach((player) => {
-                        player.ws.send(
+                      sockets.ws.forEach((ws) => {
+                        ws.send(
                           JSON.stringify({
                             type: "bulloff-winner",
                             matchId,
-                            winner: player2.username,
-                            currentPlayer: 1,
-                            players: match.players.map((p) => ({
-                              id: p.id,
-                              username: p.username,
-                              image: p.image || null,
-                              scores: p.scores,
-                            })),
+                            winner: player2.username,                              
+                           match,
                           })
                         );
                       });
                     } else {
-                      match.players.forEach((player) => {
-                        player.scores.dart1 = {};
-                        player.scores.dart2 = {};
-                        player.scores.dart3 = {};
-                        player.scores.thrownDarts = 0;
-                      });
-                      match.players.forEach((player) => {
-                        player.ws.send(
+                      resetPlayerDartScores(match.players);
+                      sockets.ws.forEach((ws) => {
+                        ws.send(
                           JSON.stringify({
                             type: "bulloff-tie",
                             matchId,
-                            players: match.players.map((p) => ({
-                              id: p.id,
-                              username: p.username,
-                              image: p.image || null,
-                              scores: p.scores,
-                            })),
+                            match
                           })
                         );
                       });

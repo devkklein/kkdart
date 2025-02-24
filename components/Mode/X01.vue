@@ -72,11 +72,11 @@
       <div class="flex flex-col flex-1 space-y-2 justify-center">
         <div>
           <h1>Legs {{ countLegs }}</h1>
-          <input type="range" v-model="countLegs" min="1" max="10" />
+          <input type="range" v-model="countLegs" min=1 max=10 />
         </div>
         <div>
           <h1>Sets {{ countSets }}</h1>
-          <input type="range" v-model="countSets" min="1" max="10" />
+          <input type="range" v-model="countSets" min=1 max=10 />
         </div>
       </div>
     </div>
@@ -90,8 +90,8 @@ import { ref } from 'vue';
 
 const emit = defineEmits();
 
-const countLegs = ref(3);
-const countSets = ref(1);
+const countLegs = ref<number>(3);
+const countSets = ref<number>(1);
 
 const inMode = ref<string>('Singel');
 const outMode = ref<string>('Double');
@@ -105,8 +105,8 @@ watch([inMode, outMode, baseScore, maxRounds, bullOff, lobbyMode, countLegs, cou
     baseScore: baseScore.value,
     inMode: inMode.value,
     outMode: outMode.value,
-    legCount: countLegs.value,
-    setCount: countSets.value,
+    legCount: Number(countLegs.value),
+    setCount: Number(countSets.value),
     lobbyMode: lobbyMode.value,
     bullOff: bullOff.value,
     maxRounds: maxRounds.value,

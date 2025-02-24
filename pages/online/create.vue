@@ -48,13 +48,16 @@
 <script lang="ts" setup>
 import { useUserStore } from '~/store/user';
 
+
+
+
 const router = useRouter();
 
 const user = useUserStore();
 const matchName =  ref<string>(user.username);
 const gameMode = ref<string>('x01');
 const matchid = ref<string>('');
-const matchSettings = ref<any>({});
+const matchSettings = ref<any>({  });
 
 const ws = ref<WebSocket | null>(null);
 
@@ -63,7 +66,10 @@ function setMode(mode: string) {
   gameMode.value = mode;
 }
 function updateSettings(settings: any) {
-  matchSettings.value = settings;
+  if (settings && settings.__v_isRef && settings._value) {
+    matchSettings.value = settings._value; // Gib nur die reinen Werte zurück
+  }
+  matchSettings.value= settings
 }
 
 

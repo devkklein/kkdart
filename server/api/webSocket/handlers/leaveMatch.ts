@@ -2,7 +2,7 @@ import { matches } from "../ws";
 
 export function handleLeaveMatch(socket: WebSocket, data: any) {
     try {
-        const match = matches[data.matchId];
+        const match = matches[data.matchId].match;
         const player = data.player;
         if (match) {
           if (player) {

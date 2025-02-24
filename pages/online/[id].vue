@@ -2,7 +2,8 @@
   <div class=" justify-center items-center h-full w-full p-4">
     <PopupsLeaveMatch :showPopup="showLeave" @close="showLeave = false" />
     <PopupsBullOffWinner v-if="viewBullOffWinner" :winner="bullOffWinner" />
-    <div v-if="matchStarted" class="w-full ">
+    <PopupsWinnerPopup v-if="matchWinner" :winner="matchWinner"  />
+    <div v-if="matchStarted && match" class="w-full ">
       <div class="flex flex-col justify-end">
         <div class="flex">
           <div class="flex flex-col">
@@ -18,28 +19,28 @@
 
                     <div class="">
                       <div class="flex flex-col items-center justify-center">
-                        <GameProfile :User="players[0]" />
+                        <GameProfile :User="match.players[0]" />
                         <div class="flex space-x-3">
-                          <p>Legs: {{ players[0].scores.legsWon }}</p>
-                          <p>Sets: {{ players[0].scores.setsWon }}</p>
+                          <p>Legs: {{ match.players[0].scores.legsWon }}</p>
+                          <p>Sets: {{ match.players[0].scores.setsWon }}</p>
                         </div>
-                        <h1 class="text-6xl">{{ players[0].scores.currentScore }}</h1>
+                        <h1 class="text-6xl">{{ match.players[0].scores.currentScore }}</h1>
                       </div>
                     </div>
                     <div class="flex space-x-3 mt-4">
                       <div class="w-20 h-20 bg-secondary-300 shadow-xl rounded-xl flex items-center justify-center">
-                        <div v-if="players[0].scores.dart1.multiplier"
+                        <div v-if="match.players[0].scores.dart1.multiplier"
                           class="flex flex-col justify-center items-center ">
-                          <div v-if="players[0].scores.dart1.value != 0"
+                          <div v-if="match.players[0].scores.dart1.value != 0"
                             class="flex flex-col justify-center items-center">
-                            <p class="text-3xl">{{ players[0].scores.dart1.value * players[0].scores.dart1.multiplier }}
+                            <p class="text-3xl">{{ (match.players[0].scores.dart1.value ?? 0) * match.players[0].scores.dart1.multiplier }}
                             </p>
-                            <p class="text-sm text-gray-300" v-if="players[0].scores.dart1.multiplier === 1">S{{
-                              players[0].scores.dart1.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="players[0].scores.dart1.multiplier === 2">D{{
-                              players[0].scores.dart1.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="players[0].scores.dart1.multiplier === 3">T{{
-                              players[0].scores.dart1.value }}</p>
+                            <p class="text-sm text-gray-300" v-if="match.players[0].scores.dart1.multiplier === 1">S{{
+                              match.players[0].scores.dart1.value }}</p>
+                            <p class="text-sm text-gray-300" v-if="match.players[0].scores.dart1.multiplier === 2">D{{
+                              match.players[0].scores.dart1.value }}</p>
+                            <p class="text-sm text-gray-300" v-if="match.players[0].scores.dart1.multiplier === 3">T{{
+                              match.players[0].scores.dart1.value }}</p>
 
                           </div>
 
@@ -47,18 +48,18 @@
                         </div>
                       </div>
                       <div class="w-20 h-20 bg-secondary-300 shadow-xl rounded-xl flex items-center justify-center">
-                        <div v-if="players[0].scores.dart2.multiplier"
+                        <div v-if="match.players[0].scores.dart2.multiplier"
                           class="flex flex-col justify-center items-center ">
-                          <div v-if="players[0].scores.dart2.value != 0"
+                          <div v-if="match.players[0].scores.dart2.value != 0"
                             class="flex flex-col justify-center items-center ">
-                            <p class="text-3xl">{{ players[0].scores.dart2.value * players[0].scores.dart2.multiplier }}
+                            <p class="text-3xl">{{ (match.players[0].scores.dart2.value ?? 0 )  * match.players[0].scores.dart2.multiplier }}
                             </p>
-                            <p class="text-sm text-gray-300" v-if="players[0].scores.dart2.multiplier === 1">S{{
-                              players[0].scores.dart2.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="players[0].scores.dart2.multiplier === 2">D{{
-                              players[0].scores.dart2.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="players[0].scores.dart2.multiplier === 3">T{{
-                              players[0].scores.dart2.value }}</p>
+                            <p class="text-sm text-gray-300" v-if="match.players[0].scores.dart2.multiplier === 1">S{{
+                              match.players[0].scores.dart2.value }}</p>
+                            <p class="text-sm text-gray-300" v-if="match.players[0].scores.dart2.multiplier === 2">D{{
+                              match.players[0].scores.dart2.value }}</p>
+                            <p class="text-sm text-gray-300" v-if="match.players[0].scores.dart2.multiplier === 3">T{{
+                              match.players[0].scores.dart2.value }}</p>
 
                           </div>
 
@@ -66,18 +67,18 @@
                         </div>
                       </div>
                       <div class="w-20 h-20 bg-secondary-300 shadow-xl rounded-xl flex items-center justify-center">
-                        <div v-if="players[0].scores.dart3.multiplier"
+                        <div v-if="match.players[0].scores.dart3.multiplier"
                           class="flex flex-col justify-center items-center ">
-                          <div v-if="players[0].scores.dart3.value != 0"
+                          <div v-if="match.players[0].scores.dart3.value != 0"
                             class="flex flex-col justify-center items-center ">
-                            <p class="text-3xl">{{ players[0].scores.dart3.value * players[0].scores.dart3.multiplier }}
+                            <p class="text-3xl">{{ (match.players[0].scores.dart3.value ?? 0) * match.players[0].scores.dart3.multiplier }}
                             </p>
-                            <p class="text-sm text-gray-300" v-if="players[0].scores.dart3.multiplier === 1">S{{
-                              players[0].scores.dart3.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="players[0].scores.dart3.multiplier === 2">D{{
-                              players[0].scores.dart3.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="players[0].scores.dart3.multiplier === 3">T{{
-                              players[0].scores.dart3.value }}</p>
+                            <p class="text-sm text-gray-300" v-if="match.players[0].scores.dart3.multiplier === 1">S{{
+                              match.players[0].scores.dart3.value }}</p>
+                            <p class="text-sm text-gray-300" v-if="match.players[0].scores.dart3.multiplier === 2">D{{
+                              match.players[0].scores.dart3.value }}</p>
+                            <p class="text-sm text-gray-300" v-if="match.players[0].scores.dart3.multiplier === 3">T{{
+                              match.players[0].scores.dart3.value }}</p>
 
                           </div>
 
@@ -96,28 +97,28 @@
                     :class="{ ' scale-110': currentPlayerIndex === 1 }">
                     <div class="">
                       <div class="flex flex-col items-center justify-center">
-                        <GameProfile :User="players[1]" />
+                        <GameProfile :User="match.players[1]" />
                         <div class="flex space-x-3">
-                          <p>Legs: {{ players[1].scores.legsWon }}</p>
-                          <p>Sets: {{ players[1].scores.setsWon }}</p>
+                          <p>Legs: {{ match.players[1].scores.legsWon }}</p>
+                          <p>Sets: {{ match.players[1].scores.setsWon }}</p>
                         </div>
-                        <h1 class="text-6xl">{{ players[1].scores.currentScore }}</h1>
+                        <h1 class="text-6xl">{{ match.players[1].scores.currentScore }}</h1>
                       </div>
                     </div>
                     <div class="flex space-x-3 mt-4">
                       <div class="w-20 h-20 bg-secondary-300 shadow-xl rounded-xl flex items-center justify-center">
-                        <div v-if="players[1].scores.dart1.multiplier"
+                        <div v-if="match.players[1].scores.dart1.multiplier"
                           class="flex flex-col justify-center items-center ">
-                          <div v-if="players[1].scores.dart1.value != 0"
+                          <div v-if="match.players[1].scores.dart1.value != 0"
                             class="flex flex-col justify-center items-center ">
-                            <p class="text-3xl">{{ players[1].scores.dart1.value * players[1].scores.dart1.multiplier }}
+                            <p class="text-3xl">{{ (match.players[1].scores.dart1.value ?? 0) * match.players[1].scores.dart1.multiplier }}
                             </p>
-                            <p class="text-sm text-gray-300" v-if="players[1].scores.dart1.multiplier === 1">S{{
-                              players[1].scores.dart1.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="players[1].scores.dart1.multiplier === 2">D{{
-                              players[1].scores.dart1.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="players[1].scores.dart1.multiplier === 3">T{{
-                              players[1].scores.dart1.value }}</p>
+                            <p class="text-sm text-gray-300" v-if="match.players[1].scores.dart1.multiplier === 1">S{{
+                              match.players[1].scores.dart1.value }}</p>
+                            <p class="text-sm text-gray-300" v-if="match.players[1].scores.dart1.multiplier === 2">D{{
+                              match.players[1].scores.dart1.value }}</p>
+                            <p class="text-sm text-gray-300" v-if="match.players[1].scores.dart1.multiplier === 3">T{{
+                              match.players[1].scores.dart1.value }}</p>
 
                           </div>
 
@@ -125,18 +126,18 @@
                         </div>
                       </div>
                       <div class="w-20 h-20 bg-secondary-300 shadow-xl rounded-xl flex items-center justify-center">
-                        <div v-if="players[1].scores.dart2.multiplier"
+                        <div v-if="match.players[1].scores.dart2.multiplier"
                           class="flex flex-col justify-center items-center ">
-                          <div v-if="players[1].scores.dart2.value != 0"
+                          <div v-if="match.players[1].scores.dart2.value != 0"
                             class="flex flex-col justify-center items-center ">
-                            <p class="text-3xl">{{ players[1].scores.dart2.value * players[1].scores.dart2.multiplier }}
+                            <p class="text-3xl">{{ (match.players[1].scores.dart2.value?? 0) * match.players[1].scores.dart2.multiplier }}
                             </p>
-                            <p class="text-sm text-gray-300" v-if="players[1].scores.dart2.multiplier === 1">S{{
-                              players[1].scores.dart2.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="players[1].scores.dart2.multiplier === 2">D{{
-                              players[1].scores.dart2.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="players[1].scores.dart2.multiplier === 3">T{{
-                              players[1].scores.dart2.value }}</p>
+                            <p class="text-sm text-gray-300" v-if="match.players[1].scores.dart2.multiplier === 1">S{{
+                              match.players[1].scores.dart2.value }}</p>
+                            <p class="text-sm text-gray-300" v-if="match.players[1].scores.dart2.multiplier === 2">D{{
+                              match.players[1].scores.dart2.value }}</p>
+                            <p class="text-sm text-gray-300" v-if="match.players[1].scores.dart2.multiplier === 3">T{{
+                              match.players[1].scores.dart2.value }}</p>
 
                           </div>
 
@@ -144,18 +145,18 @@
                         </div>
                       </div>
                       <div class="w-20 h-20 bg-secondary-300 shadow-xl rounded-xl flex items-center justify-center">
-                        <div v-if="players[1].scores.dart3.multiplier"
+                        <div v-if="match.players[1].scores.dart3.multiplier"
                           class="flex flex-col justify-center items-center ">
-                          <div v-if="players[1].scores.dart3.value != 0"
+                          <div v-if="match.players[1].scores.dart3.value != 0"
                             class="flex flex-col justify-center items-center ">
-                            <p class="text-3xl">{{ players[1].scores.dart3.value * players[1].scores.dart3.multiplier }}
+                            <p class="text-3xl">{{ (match.players[1].scores.dart3.value?? 0)* match.players[1].scores.dart3.multiplier }}
                             </p>
-                            <p class="text-sm text-gray-300" v-if="players[1].scores.dart3.multiplier === 1">S{{
-                              players[1].scores.dart3.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="players[1].scores.dart3.multiplier === 2">D{{
-                              players[1].scores.dart3.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="players[1].scores.dart3.multiplier === 3">T{{
-                              players[1].scores.dart3.value }}</p>
+                            <p class="text-sm text-gray-300" v-if="match.players[1].scores.dart3.multiplier === 1">S{{
+                              match.players[1].scores.dart3.value }}</p>
+                            <p class="text-sm text-gray-300" v-if="match.players[1].scores.dart3.multiplier === 2">D{{
+                              match.players[1].scores.dart3.value }}</p>
+                            <p class="text-sm text-gray-300" v-if="match.players[1].scores.dart3.multiplier === 3">T{{
+                              match.players[1].scores.dart3.value }}</p>
 
                           </div>
 
@@ -193,18 +194,18 @@
               <h1> Match settings</h1>
               <h1 class="text-sm text-gray-300">General</h1>
               <div class="flex flex-col space-y-2 border-t-2 border-primary">
-                <p>Legs: {{ settings.legCount }}</p>
-                <p>Sets: {{ settings.setCount }}</p>
-                <p>Max Rounds: {{ settings.maxRounds }}</p>
-                <p>BaseScore: {{ settings.baseScore }}</p>
+                <p>Legs: {{ match.settings.legCount }}</p>
+                <p>Sets: {{ match.settings.setCount }}</p>
+                <p>Max Rounds: {{ match.settings.maxRounds }}</p>
+                <p>BaseScore: {{ match.settings.baseScore }}</p>
 
               </div>
               <div class="mt-4"></div>
               <h1 class="text-sm text-gray-300">Lobby</h1>
               <div class="flex flex-col space-y-4 border-t-2 border-primary">
-                <p>In Mode: {{ settings.inMode }}</p>
-                <p>Out Mode: {{ settings.outMode }}</p>
-                <p>Bull Off: {{ settings.bullOff }}</p>
+                <p>In Mode: {{ match.settings.inMode }}</p>
+                <p>Out Mode: {{ match.settings.outMode }}</p>
+                <p>Bull Off: {{ match.settings.bullOff }}</p>
 
               </div>
 
@@ -249,7 +250,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { DartScore } from '~/types/websocket';
+import type { DartScore,Match } from '~/types/websocket';
 import { useUserStore } from '~/store/user';
 
 
@@ -260,30 +261,14 @@ const route = useRoute();
 const matchId = ref<string | null>(null);
 const ws = ref<WebSocket | null>(null);
 const matchStarted = ref<boolean>(false);
-const settings = ref<any>({});
-const bullOff = ref<string>('Normal');
 const bullOffTie = ref<boolean>(false);
 const bullOffFinished = ref<boolean>(false);
 const playerRole = ref<string>('');
 const currentPlayerIndex = ref<number>(0);
 const viewBullOffWinner = ref<boolean>(false);
 const bullOffWinner = ref<string>('');
-const players = ref<any>([
-  /*{ id: '1', username: 'Player1', image: null, scores:{
-    currentScore: 501, legsWon: 0, setsWon: 0, dart1: { value: 20, multiplier: 3 },
-    dart2: { value: 20, multiplier: 1 },
-    dart3: { value: 15, multiplier: 2 },
-    thrownDarts:0,
-  } },
-  { id: '2', username: 'Player2', image: null, scores:{
-    currentScore: 501, legsWon: 0, setsWon: 0, dart1: { value: 20, multiplier: 3},
-    dart2: { value: 20, multiplier: 1 },
-    dart3: { value: 19, multiplier: 1 },
-    thrownDarts:0,
-  } } */
-
-]);
-
+const matchWinner = ref<string>('');
+const match = ref<Match | null>(null);
 // websocket functions
 const joinMatch = (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
 
@@ -302,45 +287,25 @@ const joinMatch = (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
     }
     if (data.type === "match-start") {
       matchStarted.value = true;
-      settings.value = data.settings._value;
-      players.value = data.players;;
-      bullOff.value = data.settings._value.bullOff;
-      bullOffFinished.value = data.bullOff;
-      if (bullOff.value === "Off") {
-        currentPlayerIndex.value = 0;
-        bullOffFinished.value = true;
-      }
-      console.log("Match started", data.scores, data.settings);
+      matchId.value = data.matchId;
+      match.value = data.match;
     }
     if (data.type === "bulloff-update") {
 
-      const { player } = data;
-      players.value = players.value.map((p: any) => {
-        if (p.id === player.id) {
-          return player;
-        }
-        return p;
-      });
+      match.value = data.match;
 
     }
     if (data.type === "switch-turn") {
-      currentPlayerIndex.value = data.currentPlayer;
-      if (data.player) {
-        const { player } = data;
-        players.value = players.value.map((p: any) => {
-          if (p.id === player.id) {
-            return player;
-          }
-          return p;
-        });
-      }
+      currentPlayerIndex.value = data.match.currentPlayerIndex;
+      match.value = data.match;
+      
     }
     if (data.type === "bulloff-tie") {
       bullOffTie.value = true;
       setTimeout(() => {
         bullOffTie.value = false;
         currentPlayerIndex.value = 0;
-        players.value = data.players;
+        match.value = data.match;
       }, 3000);
 
     }
@@ -355,28 +320,29 @@ const joinMatch = (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
 
       setTimeout(() => {
         viewBullOffWinner.value = false;
-        if (!data.currentPlayer) {
+        if (!data.match.currentPlayerIndex) {
           currentPlayerIndex.value = 0;
         }
         else {
           currentPlayerIndex.value = 1;
         }
-        players.value = data.players;
+        match.value = data.match;
       }, 3000);
     }
-    if (data.type === "score-update") {
-      const { player } = data;
-      players.value = players.value.map((p: any) => {
-        if (p.id === player.id) {
-          return player;
-        }
-        return p;
-      });
+    if (data.type === "dart-update") {
+      match.value = data.match;
+      
     }
+    
 
     if (data.type === "leg-update") {
-      players.value = data.players;
-      currentPlayerIndex.value = data.currentPlayer;
+     match.value = data.match;
+      currentPlayerIndex.value = data.match.currentPlayerIndex;
+    }
+    if (data.type === "match-finished") {
+      match.value = data.match;
+      currentPlayerIndex.value = 2;
+      matchWinner.value = data.winner;
     }
 
 
@@ -420,14 +386,15 @@ function leaveMatch() {
 }
 
 function bullOffScoring(score: number, multiplier: number) {
-  const currentPlayer = players.value.find((player: any) => player.id === user.id);
-
+  const currentPlayer = match.value?.players.find((player: any) => player.id === user.id);
+  
   ws.value?.send(JSON.stringify({ type: 'bulloff-dart', matchId: matchId.value, player: currentPlayer, score, multiplier }));
 }
 function score(score: number, multiplier: number) {
-  const currentPlayer = players.value.find((player: any) => player.id === user.id);
+  const currentPlayer = match.value?.players.find((player: any) => player.id === user.id);
 
-  ws.value?.send(JSON.stringify({ type: 'dart-throw', matchId: matchId.value, player: currentPlayer, score, multiplier }));
+  //ws.value?.send(JSON.stringify({ type: 'dart-throw', matchId: matchId.value, player: currentPlayer, score, multiplier }));
+  ws.value?.send(JSON.stringify({ type: 'x01-match', matchId: matchId.value, player: currentPlayer, score, multiplier }));
 }
 </script>
 

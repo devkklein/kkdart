@@ -2,25 +2,29 @@ import { matches } from "../ws";
 export function handleJoinMatch (socket: WebSocket, data: any) {
     try {
      
-        const match = matches[data.matchId];
+        const match = matches[data.matchId].match;
+        const sockets = matches[data.matchId].sockets;
         const matchId = data.matchId;
         const player = {
           ...data.player,
-          ws: socket,
           scores: {
-            currentScore: match.settings._value.baseScore,
+            currentScore: match.settings.baseScore,
             legsWon: 0,
             setsWon: 0,
             dart1: {},
             dart2: {},
             dart3: {},
             thrownDarts: 0,
+            roundScore: 0,
+            legScores: [],
           },
         };
+        const ws = socket;
         if (match) {
         
           if (match.players.length < 2) {
             match.players.push(player);
+            sockets.ws.push(ws);
             
 
             socket.send(
@@ -30,20 +34,13 @@ export function handleJoinMatch (socket: WebSocket, data: any) {
             );
 
             if (match.players.length === 2) {
-              match.players.forEach((player) => {
+              sockets.ws.forEach((ws) => {
                 
-                player.ws.send(
+                ws.send(
                   JSON.stringify({
                     type: "match-start",
                     matchId,
-                    players: match.players.map((p) => ({
-                      id: p.id,
-                      username: p.username,
-                      image: p.image || null,
-                      scores: p.scores,
-                    })),
-                    settings: match.settings,
-                    bullOff: match.bullOffFinished,
+                    match,
                   })
                 );
               });

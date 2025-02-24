@@ -2,9 +2,9 @@ import { matches } from "../ws";
 export function handleListMatches(socket: WebSocket) {
     const availableMatches = Object.entries(matches)
               .filter(
-                ([matchId, match]) => match.players.length < 2 && !match.finished
+                ([matchId, {sockets, match}]) => match.players.length < 2 && !match.finished
               )
-              .map(([matchId, match]) => ({
+              .map(([matchId, {sockets, match}]) => ({
                 matchId,
                 settings: match.settings,
               }));
