@@ -1,6 +1,5 @@
 <template>
-  <div class="flex h-screen">
-    <Sidebar />
+  <div>
     <div class="p-8">
     <h1 class="text-2xl font-bold mb-4">Verfügbare Matches</h1>
     <ul>
@@ -20,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-
+import { NuxtLink } from '#components';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -58,6 +57,6 @@ function backTo() {
 }
 </script>
 
-<style scoped>
-/* Füge hier deine Styles hinzu */
+<style>
+
 </style>

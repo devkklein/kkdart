@@ -30,30 +30,16 @@ export function handleDartThrow(socket: WebSocket, data: any) {
             );
             return;
           }
+          currentPlayer.scores.thrownDarts++;
          
-         
-          if (currentPlayer.scores.thrownDarts === 0) {
-            currentPlayer.scores.dart1 = {
-              value: score,
-              multiplier: multiplier,
-            };
-            
-          } else if (currentPlayer.scores.thrownDarts === 1) {
-            currentPlayer.scores.dart2 = {
-              value: score,
-              multiplier: multiplier,
-            };
-            
-          } else if (currentPlayer.scores.thrownDarts === 2) {
-            currentPlayer.scores.dart3 = {
-              value: score,
-              multiplier: multiplier,
-            };
-            
-          }
+          currentPlayer.scores.dartScores[currentPlayer.scores.thrownDarts] = {
+            value: score,
+            multiplier: multiplier,
+            points: score * multiplier,
+          };
 
          
-          currentPlayer.scores.thrownDarts++;
+          
           
           handleX01Match(match, sockets, matchId, currentPlayer, score, multiplier);
           

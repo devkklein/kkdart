@@ -10,6 +10,9 @@ export function handleX01Match(match: Match, sockets: Sockets, matchId: string, 
             const newScore = currentPlayer.scores.currentScore - points;
             if(newScore < 0){
                 currentPlayer.scores.currentScore = currentPlayer.scores.currentScore + currentPlayer.scores.roundScore;
+                currentPlayer.scores.legScores[match.currentLeg].roundScores[match.currentRound] = {
+                    scores: [],
+                  };
                 mapPlayer(match, currentPlayer);
                 if(currentPlayer.scores.thrownDarts < 3){
                     switchplayers(match, sockets, currentPlayer);
@@ -17,11 +20,14 @@ export function handleX01Match(match: Match, sockets: Sockets, matchId: string, 
             }
             else if(newScore === 1 && match.settings.outMode === 'Double' || match.settings.outMode === 'Master'){
                      
-                    updateScore(currentPlayer, points);
+                    updateScore(currentPlayer, points, match);
                     currentPlayer.scores.currentScore = currentPlayer.scores.currentScore + currentPlayer.scores.roundScore;
+                    currentPlayer.scores.legScores[match.currentLeg].roundScores[match.currentRound] = {
+                        scores: [],
+                      };
                     mapPlayer(match, currentPlayer);
                     if(currentPlayer.scores.thrownDarts < 3){
-                        console.log("switching players");
+                       
                         switchplayers(match, sockets, currentPlayer);
                     }
                 
@@ -30,10 +36,14 @@ export function handleX01Match(match: Match, sockets: Sockets, matchId: string, 
             else if(newScore === 0){
                 if(match.settings.outMode === 'Double'){
                     if(multiplier === 2){
+                        updateScore(currentPlayer, points, match);
                         endLeg(match, currentPlayer, sockets);
                     }
                     else{
                         currentPlayer.scores.currentScore = currentPlayer.scores.currentScore + currentPlayer.scores.roundScore;
+                        currentPlayer.scores.legScores[match.currentLeg].roundScores[match.currentRound] = {
+                            scores: [],
+                          };
                         mapPlayer(match, currentPlayer);
                         if(currentPlayer.scores.thrownDarts < 3){
                             switchplayers(match, sockets, currentPlayer);
@@ -42,18 +52,18 @@ export function handleX01Match(match: Match, sockets: Sockets, matchId: string, 
                 }
                 else if(match.settings.outMode === 'Master'){
                     if(multiplier === 2 || multiplier === 3){
+                        updateScore(currentPlayer, points, match);
                         endLeg(match, currentPlayer, sockets);
                     }
                 }
                 else{
-                    updateScore(currentPlayer, points);
-                    mapPlayer(match, currentPlayer);
+                    updateScore(currentPlayer, points, match);
                     endLeg(match, currentPlayer, sockets);
                 }
                 
             }
             else{
-                updateScore(currentPlayer, points);
+                updateScore(currentPlayer, points, match);
                 mapPlayer(match, currentPlayer);
                 
             }

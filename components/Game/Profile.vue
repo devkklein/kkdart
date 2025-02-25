@@ -7,7 +7,7 @@
         alt="Profilbild"
         class="w-52 h-52 rounded-full object-cover"
       />
-      <img v-else src="/blankPb.png" alt="Profilbild" class=" w-52 h-52 rounded-full object-fill" />
+     <img v-else src="/blankPb.png" alt="Profilbild" class=" w-1/2  h-auto rounded-full object-fill" />
     </div>
     <div>
       <p class="text-lg text-center font-semibold">{{ props.User.username }}</p>

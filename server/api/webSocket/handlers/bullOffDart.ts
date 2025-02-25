@@ -19,23 +19,13 @@ export function  handleBullOff(socket: WebSocket, data: any) {
                   return;
                 }
     
-                if (currentPlayer.scores.thrownDarts === 0) {
-                  currentPlayer.scores.dart1 = {
-                    value: score,
-                    multiplier: multiplier,
-                  };
-                } else if (currentPlayer.scores.thrownDarts === 1) {
-                  currentPlayer.scores.dart2 = {
-                    value: score,
-                    multiplier: multiplier,
-                  };
-                } else if (currentPlayer.scores.thrownDarts === 2) {
-                  currentPlayer.scores.dart3 = {
-                    value: score,
-                    multiplier: multiplier,
-                  };
-                }
+                
                 currentPlayer.scores.thrownDarts++;
+                currentPlayer.scores.dartScores[currentPlayer.scores.thrownDarts] = {
+                  value: score,
+                  multiplier: multiplier,
+                  points: score * multiplier,
+                }
                 match.players.map((p) => {
                   if (p.id === currentPlayer.id) {
                     return currentPlayer;
@@ -68,20 +58,11 @@ export function  handleBullOff(socket: WebSocket, data: any) {
                   } else {
                     const player1 = match.players[0];
                     const player2 = match.players[1];
-                    const player1Score =
-                      (player1.scores.dart1.value ?? 0) *
-                        (player1.scores.dart1.multiplier ?? 0) +
-                      (player1.scores.dart2.value ?? 0) *
-                        (player1.scores.dart2.multiplier ?? 0) +
-                      (player1.scores.dart3.value ?? 0) *
-                        (player1.scores.dart3.multiplier ?? 0);
-                    const player2Score =
-                      (player2.scores.dart1.value ?? 0) *
-                        (player2.scores.dart1.multiplier ?? 0) +
-                      (player2.scores.dart2.value ?? 0) *
-                        (player2.scores.dart2.multiplier ?? 0) +
-                      (player2.scores.dart3.value ?? 0) *
-                        (player2.scores.dart3.multiplier ?? 0);
+                    const player1Score = (player1.scores.dartScores[1].points?? 0)  + (player1.scores.dartScores[2].points?? 0) + (player1.scores.dartScores[3].points?? 0);
+                    const player2Score = (player2.scores.dartScores[1].points?? 0)  + (player2.scores.dartScores[2].points?? 0) + (player2.scores.dartScores[3].points?? 0); 
+                      
+                        
+                      
     
                     if (player1Score > player2Score) {
                       match.currentPlayerIndex = 0;

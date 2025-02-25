@@ -1,5 +1,6 @@
 import { matches } from "../ws";
 
+
 export function handleCreateMatch(socket: WebSocket, data: any) {
     try {
         console.log("Erstelle Match mit Einstellungen:", data.matchSettings);
@@ -16,12 +17,14 @@ export function handleCreateMatch(socket: WebSocket, data: any) {
           createdAt: Date.now(),
           bullOffFinished: false,
           currentPlayerIndex: 0,
+          startPlayerIndex: 0,
           currentRound: 1,
           },
           sockets: {
             ws: [],
           },
         };
+  
         
         socket.send(
           JSON.stringify({

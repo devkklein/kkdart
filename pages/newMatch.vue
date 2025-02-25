@@ -1,6 +1,7 @@
 <template>
   <div class="flex h-screen">
     <Sidebar />
+    <div class="h-full w-full">
     <div class="h-full w-full flex justify-center items-center p-20 space-x-10">
       <div
         class="flex-1 h-full shadow-xl rounded-xl bg-boardbg bg-center bg-cover cursor-pointer transition-transform duration-700 hover:-translate-y-4"
@@ -25,6 +26,7 @@
         </div>
       </div>
     </div>
+  </div>
   </div>
 </template>
 

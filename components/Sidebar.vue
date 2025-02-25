@@ -1,17 +1,22 @@
 <template>
-  <div class="h-screen w-64 bg-black text-white flex flex-col justify-between">
-    <div>
+  <div class="h-screen w-64 bg-secondary-300 text-white flex flex-col justify-between  border-r border-primary">
+    <div class=" h-full">
       <SidebarProfile />
 
-      <ul>
+      <ul class=" space-y-3">
+        <div>
+          <div class=" p-1 space-y-2 bg-primary rounded-xl shadow-xl">
         <li>
           <div class="flex justify-center bg-yellow-600 rounded-full p-1">
             <Icon name="simple-icons:dart" size="20" />
           </div>
           <router-link to="/">Home</router-link>
         </li>
+      </div>
+      </div>
         <span></span>
         <p>Game</p>
+        <div class=" p-1 space-y-2 bg-primary rounded-xl shadow-xl">
         <li>
           <div class="flex justify-center bg-blue-500 rounded-full p-1">
             <Icon name="mdi:web" size="20" />
@@ -30,8 +35,10 @@
           </div>
           <router-link to="/tournaments">Tournaments</router-link>
         </li>
+      </div>
         <span></span>
         <p>Stats</p>
+        <div class=" p-1 space-y-2 bg-primary rounded-xl shadow-xl">
         <li>
           <div class="flex justify-center bg-red-500 rounded-full p-1">
             <Icon name="material-symbols:history" size="20" />
@@ -44,14 +51,17 @@
           </div>
           <router-link to="/statistics">Statistics</router-link>
         </li>
+      </div>
         <span></span>
         <p>Settings</p>
+        <div class=" p-1 space-y-2 bg-primary rounded-xl shadow-xl">
         <li>
           <div class="flex justify-center bg-blue-400 rounded-full p-1">
             <Icon name="tdesign:dart-board" size="20" />
           </div>
           <router-link to="/boards">Boards</router-link>
         </li>
+      </div>
       </ul>
     </div>
     <div class="p-4">

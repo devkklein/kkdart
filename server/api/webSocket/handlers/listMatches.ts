@@ -1,5 +1,9 @@
 import { matches } from "../ws";
+
+
+
 export function handleListMatches(socket: WebSocket) {
+
     const availableMatches = Object.entries(matches)
               .filter(
                 ([matchId, {sockets, match}]) => match.players.length < 2 && !match.finished

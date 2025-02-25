@@ -2,23 +2,27 @@ export interface PlayerScore {
     currentScore: number;
     legsWon: number;
     setsWon: number;
-    dart1: DartScore;
-    dart2: DartScore;
-    dart3: DartScore;
+    dartScores: DartScore;
     roundScore: number;
-    legScores: legScore[];
+    legScores: legScores;
     thrownDarts: number;
 }
-
-export interface legScore{
-    leg: number;
-    scores: number[];
+export interface RoundScores{
+    [key: number]: {
+    scores: number[] ;
+    }
+}
+export interface legScores{
+    [key: number]: {
+     roundScores: RoundScores;
+    }
 }
 export interface Player {
     id: string;
     username: string;
     image?: string;
     scores: PlayerScore;
+    stats?: PlayerStatistic;
 }
 
 export interface Match {
@@ -43,8 +47,12 @@ export interface Matches {
     };
 }
 export interface DartScore {
+    [key: string]: {
     value?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 25;
     multiplier?: 1 | 2 | 3;
+    points?: number;
+    }
+
 }
 export interface MatchSettings {
     baseScore: number;
@@ -55,4 +63,13 @@ export interface MatchSettings {
     lobbyMode: string;
     bullOff: string;
     maxRounds: number;
+  }
+  export interface PlayerStatistic{
+    average: number;
+    checkoutPercentage: number;
+    first9Average: number;
+    score60: number;
+    score100: number;
+    score140: number;
+    score180: number;
   }

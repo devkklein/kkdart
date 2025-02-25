@@ -6,6 +6,13 @@ const useStore = useUserStore();
 const statsStore = useStatsStore();
 const user = useSupabaseUser();
 
+watch(user, () => {
+  if (user.value) {
+    useStore.fetchUserData();
+    statsStore.fetchStatsData();
+  }
+});
+
 onMounted(() => {
   if (user.value) {
     useStore.fetchUserData();

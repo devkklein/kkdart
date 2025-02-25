@@ -1,187 +1,79 @@
 <template>
-  <div class=" justify-center items-center h-full w-full p-4">
+ <div class="flex h-screen  ">
+  <Sidebar />
+  <div class=" h-full w-full ">
     <PopupsLeaveMatch :showPopup="showLeave" @close="showLeave = false" />
     <PopupsBullOffWinner v-if="viewBullOffWinner" :winner="bullOffWinner" />
-    <PopupsWinnerPopup v-if="matchWinner" :winner="matchWinner"  />
-    <div v-if="matchStarted && match" class="w-full ">
+    <PopupsWinnerPopup v-if="matchWinner" :winner="matchWinner" />
+    <div v-if="matchStarted && match" class="w-full p-4 ">
       <div class="flex flex-col justify-end">
         <div class="flex">
-          <div class="flex flex-col">
-            <div class="grid grid-flow-col py-4">
-              <div class=" px-10 py-5">
-                <div class="grid grid-flow-col w-full ">
-                  <div class="h-full w-10 flex flex-col py-3 mx-2 justify-end">
-                    <h1>100</h1>
-                  </div>
-                  <div
-                    class=" w-full items-center justify-center bg-primary p-4 rounded-xl transition-transform duration-700 shadow-xl"
-                    :class="{ ' scale-110': currentPlayerIndex === 0 }">
+          <div class="flex w-8/12 flex-col">
+            <div class="grid grid-flow-col py-4 space-x-5">
+              <div v-for="(player, playerIndex) in match.players" :key="playerIndex"
+                :class="playerIndex === 1 ? 'py-5 '  : 'py-5'">
+                
+                 
 
-                    <div class="">
-                      <div class="flex flex-col items-center justify-center">
-                        <GameProfile :User="match.players[0]" />
-                        <div class="flex space-x-3">
-                          <p>Legs: {{ match.players[0].scores.legsWon }}</p>
-                          <p>Sets: {{ match.players[0].scores.setsWon }}</p>
-                        </div>
-                        <h1 class="text-6xl">{{ match.players[0].scores.currentScore }}</h1>
+                  <div class=" flex w-full flex-col items-center bg-secondary-300  justify-center bg-secondary border-2 p-4 rounded-xl shadow-xl "
+                  :class="match.currentPlayerIndex === playerIndex ? 'border-blue-500' : 'border-primary'">
+                    <div class="flex">
+                    <div class="flex flex-col items-center justify-center">
+                      <GameProfile :User="player" />
+                      <div class="flex space-x-3">
+                        <p>Legs: {{ player.scores.legsWon }}</p>
+                        <p>Sets: {{ player.scores.setsWon }}</p>
+                      </div>
+                      <h1 class="text-8xl">{{ player.scores.currentScore }}</h1>
+                       
+                    </div>
+                    <div
+                    class=" w-16 h-auto max-h-80 overflow-hidden relative flex flex-col items-center justify-end ">
+                    <div class="absolute top-0 left-0 w-full h-16 bg-gradient-to-b from-secondary-300 to-transparent"></div>
+                    <div v-for="(score, index) in player.scores.legScores" :key="index">
+                      <h1 class="text-gray-300 text-xs text-nowrap ">Leg: {{ index }}</h1>
+                      <div v-for="(s, i) in score.roundScores" :key="i" class="text-xl">
+                        <p>{{s.scores.reduce((acc, val) => acc + val, 0)}}</p>
                       </div>
                     </div>
-                    <div class="flex space-x-3 mt-4">
-                      <div class="w-20 h-20 bg-secondary-300 shadow-xl rounded-xl flex items-center justify-center">
-                        <div v-if="match.players[0].scores.dart1.multiplier"
-                          class="flex flex-col justify-center items-center ">
-                          <div v-if="match.players[0].scores.dart1.value != 0"
+                   
+                  </div>
+                </div>
+
+                    <div class="flex w-full justify-center space-x-2 mt-4">
+                      <div v-for="dartNum in 3" :key="dartNum"
+                       
+                        class="w-24 h-20 p-1 border-2 border-primary rounded flex items-center justify-center">
+                        <div v-if="player.scores.dartScores[dartNum].multiplier"
+                          class="flex flex-col justify-center items-center">
+                          <div v-if="player.scores.dartScores[dartNum].value != 0"
                             class="flex flex-col justify-center items-center">
-                            <p class="text-3xl">{{ (match.players[0].scores.dart1.value ?? 0) * match.players[0].scores.dart1.multiplier }}
-                            </p>
-                            <p class="text-sm text-gray-300" v-if="match.players[0].scores.dart1.multiplier === 1">S{{
-                              match.players[0].scores.dart1.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="match.players[0].scores.dart1.multiplier === 2">D{{
-                              match.players[0].scores.dart1.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="match.players[0].scores.dart1.multiplier === 3">T{{
-                              match.players[0].scores.dart1.value }}</p>
-
+                            <p class="text-3xl">{{ (player.scores.dartScores[dartNum].value ?? 0) *
+                              player.scores.dartScores[dartNum].multiplier }}</p>
+                            <p class="text-sm text-gray-200" v-if="player.scores.dartScores[dartNum].multiplier === 1">
+                              S{{ player.scores.dartScores[dartNum].value }}</p>
+                            <p class="text-sm text-gray-200" v-if="player.scores.dartScores[dartNum].multiplier === 2">
+                              D{{ player.scores.dartScores[dartNum].value }}</p>
+                            <p class="text-sm text-gray-200" v-if="player.scores.dartScores[dartNum].multiplier === 3">
+                              T{{ player.scores.dartScores[dartNum].value }}</p>
                           </div>
-
                           <p v-else>Miss</p>
-                        </div>
-                      </div>
-                      <div class="w-20 h-20 bg-secondary-300 shadow-xl rounded-xl flex items-center justify-center">
-                        <div v-if="match.players[0].scores.dart2.multiplier"
-                          class="flex flex-col justify-center items-center ">
-                          <div v-if="match.players[0].scores.dart2.value != 0"
-                            class="flex flex-col justify-center items-center ">
-                            <p class="text-3xl">{{ (match.players[0].scores.dart2.value ?? 0 )  * match.players[0].scores.dart2.multiplier }}
-                            </p>
-                            <p class="text-sm text-gray-300" v-if="match.players[0].scores.dart2.multiplier === 1">S{{
-                              match.players[0].scores.dart2.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="match.players[0].scores.dart2.multiplier === 2">D{{
-                              match.players[0].scores.dart2.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="match.players[0].scores.dart2.multiplier === 3">T{{
-                              match.players[0].scores.dart2.value }}</p>
-
-                          </div>
-
-                          <p v-else>Miss</p>
-                        </div>
-                      </div>
-                      <div class="w-20 h-20 bg-secondary-300 shadow-xl rounded-xl flex items-center justify-center">
-                        <div v-if="match.players[0].scores.dart3.multiplier"
-                          class="flex flex-col justify-center items-center ">
-                          <div v-if="match.players[0].scores.dart3.value != 0"
-                            class="flex flex-col justify-center items-center ">
-                            <p class="text-3xl">{{ (match.players[0].scores.dart3.value ?? 0) * match.players[0].scores.dart3.multiplier }}
-                            </p>
-                            <p class="text-sm text-gray-300" v-if="match.players[0].scores.dart3.multiplier === 1">S{{
-                              match.players[0].scores.dart3.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="match.players[0].scores.dart3.multiplier === 2">D{{
-                              match.players[0].scores.dart3.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="match.players[0].scores.dart3.multiplier === 3">T{{
-                              match.players[0].scores.dart3.value }}</p>
-
-                          </div>
-
-                          <p v-else>Miss</p>
-
                         </div>
                       </div>
                     </div>
-
                   </div>
-                </div>
+                
               </div>
-              <div class=" px-10 py-5 border-l-2 border-primary ">
-                <div class="grid grid-flow-col">
-                  <div class="w-full bg-primary p-4 rounded-xl transition-transform duration-700 shadow-xl"
-                    :class="{ ' scale-110': currentPlayerIndex === 1 }">
-                    <div class="">
-                      <div class="flex flex-col items-center justify-center">
-                        <GameProfile :User="match.players[1]" />
-                        <div class="flex space-x-3">
-                          <p>Legs: {{ match.players[1].scores.legsWon }}</p>
-                          <p>Sets: {{ match.players[1].scores.setsWon }}</p>
-                        </div>
-                        <h1 class="text-6xl">{{ match.players[1].scores.currentScore }}</h1>
-                      </div>
-                    </div>
-                    <div class="flex space-x-3 mt-4">
-                      <div class="w-20 h-20 bg-secondary-300 shadow-xl rounded-xl flex items-center justify-center">
-                        <div v-if="match.players[1].scores.dart1.multiplier"
-                          class="flex flex-col justify-center items-center ">
-                          <div v-if="match.players[1].scores.dart1.value != 0"
-                            class="flex flex-col justify-center items-center ">
-                            <p class="text-3xl">{{ (match.players[1].scores.dart1.value ?? 0) * match.players[1].scores.dart1.multiplier }}
-                            </p>
-                            <p class="text-sm text-gray-300" v-if="match.players[1].scores.dart1.multiplier === 1">S{{
-                              match.players[1].scores.dart1.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="match.players[1].scores.dart1.multiplier === 2">D{{
-                              match.players[1].scores.dart1.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="match.players[1].scores.dart1.multiplier === 3">T{{
-                              match.players[1].scores.dart1.value }}</p>
-
-                          </div>
-
-                          <p v-else>Miss</p>
-                        </div>
-                      </div>
-                      <div class="w-20 h-20 bg-secondary-300 shadow-xl rounded-xl flex items-center justify-center">
-                        <div v-if="match.players[1].scores.dart2.multiplier"
-                          class="flex flex-col justify-center items-center ">
-                          <div v-if="match.players[1].scores.dart2.value != 0"
-                            class="flex flex-col justify-center items-center ">
-                            <p class="text-3xl">{{ (match.players[1].scores.dart2.value?? 0) * match.players[1].scores.dart2.multiplier }}
-                            </p>
-                            <p class="text-sm text-gray-300" v-if="match.players[1].scores.dart2.multiplier === 1">S{{
-                              match.players[1].scores.dart2.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="match.players[1].scores.dart2.multiplier === 2">D{{
-                              match.players[1].scores.dart2.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="match.players[1].scores.dart2.multiplier === 3">T{{
-                              match.players[1].scores.dart2.value }}</p>
-
-                          </div>
-
-                          <p v-else>Miss</p>
-                        </div>
-                      </div>
-                      <div class="w-20 h-20 bg-secondary-300 shadow-xl rounded-xl flex items-center justify-center">
-                        <div v-if="match.players[1].scores.dart3.multiplier"
-                          class="flex flex-col justify-center items-center ">
-                          <div v-if="match.players[1].scores.dart3.value != 0"
-                            class="flex flex-col justify-center items-center ">
-                            <p class="text-3xl">{{ (match.players[1].scores.dart3.value?? 0)* match.players[1].scores.dart3.multiplier }}
-                            </p>
-                            <p class="text-sm text-gray-300" v-if="match.players[1].scores.dart3.multiplier === 1">S{{
-                              match.players[1].scores.dart3.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="match.players[1].scores.dart3.multiplier === 2">D{{
-                              match.players[1].scores.dart3.value }}</p>
-                            <p class="text-sm text-gray-300" v-if="match.players[1].scores.dart3.multiplier === 3">T{{
-                              match.players[1].scores.dart3.value }}</p>
-
-                          </div>
-
-
-                          <p v-else>Miss</p>
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-                  <div class="h-full w-10 flex flex-col py-3 mx-4 justify-end">
-                    <h1>100</h1>
-                  </div>
-                </div>
-              </div>
-
             </div>
-            <GameInputButtons v-if="bullOffFinished" @score="score" />
+
+           <GameInputButtons v-if="bullOffFinished" @score="score" />
             <div v-if="!bullOffFinished">
               <div class="flex flex-col items-center justify-center space-y-4">
                 <h1>Normal Bull Off</h1>
                 <div class="flex space-x-4">
-                  <button @click="bullOffScoring(0, 1)" class=" p-4 rounded-xl shadow-xl">00</button>
-                  <button @click="bullOffScoring(25, 1)" class=" p-4 rounded-xl bg-green-500 shadow-xl">25</button>
-                  <button @click="bullOffScoring(25, 2)" class="p-4 rounded-xl bg-red-500 shadow-xl">50</button>
+                  <button @click="bullOffScoring(0, 1, 0)" class=" p-4 rounded-xl shadow-xl">00</button>
+                  <button @click="bullOffScoring(25, 1, 25)" class=" p-4 rounded-xl bg-green-500 shadow-xl">25</button>
+                  <button @click="bullOffScoring(25, 2, 50)" class="p-4 rounded-xl bg-red-500 shadow-xl">50</button>
                 </div>
                 <h1 v-if="bullOffTie" class="text-2xl"> BullOff TIE! Starting next round... </h1>
               </div>
@@ -189,24 +81,26 @@
             </div>
             <div></div>
           </div>
-          <div class=" w-full flex  bg-secondary-300 p-4 rounded-xl   space-x-5">
+          <div class=" w-8/12 flex  p-4 rounded-xl   space-x-5">
             <div class="flex flex-col w-1/2 ">
               <h1> Match settings</h1>
               <h1 class="text-sm text-gray-300">General</h1>
-              <div class="flex flex-col space-y-2 border-t-2 border-primary">
-                <p>Legs: {{ match.settings.legCount }}</p>
-                <p>Sets: {{ match.settings.setCount }}</p>
-                <p>Max Rounds: {{ match.settings.maxRounds }}</p>
-                <p>BaseScore: {{ match.settings.baseScore }}</p>
-
+              <div class="flex flex-col space-y-2 border-t-2 border-primary py-2">
+                <div class=" bg-primary p-2 rounded-lg shadow-xl ">
+                <div><p >Legs: {{ match.settings.legCount }}</p></div>
+                <div><p>Sets: {{ match.settings.setCount }}</p></div>
+                <div><p>Max Rounds: {{ match.settings.maxRounds }}</p></div>
+                <div><p>BaseScore: {{ match.settings.baseScore }}</p></div>
+              </div>
               </div>
               <div class="mt-4"></div>
               <h1 class="text-sm text-gray-300">Lobby</h1>
-              <div class="flex flex-col space-y-4 border-t-2 border-primary">
+              <div class="flex flex-col space-y-4 border-t-2 py-2 border-primary">
+                <div class=" bg-primary p-2 rounded-lg shadow-xl ">
                 <p>In Mode: {{ match.settings.inMode }}</p>
                 <p>Out Mode: {{ match.settings.outMode }}</p>
                 <p>Bull Off: {{ match.settings.bullOff }}</p>
-
+              </div>
               </div>
 
             </div>
@@ -225,12 +119,13 @@
 
       </div>
     </div>
-    <div v-else class="bg-primary p-20">
+    <div v-else class="flex flex-col h-full w-full justify-center items-center">
       <h1>Waiting for Enemy player</h1>
+      <GameMatchList />
     </div>
 
   </div>
-  <footer class="absolute bottom-0 p-4 w-full flex justify-between">
+  <footer class="absolute bottom-0 p-4 w-full flex justify-around">
     <div class="bg-primary flex w-1/8 justify-start items-center rounded-xl shadow-xl px-3">
       <button @click="leaveMatch" class="flex items-center justify-center p-3 rounded ">
         <Icon name="mdi:logout" size="20" class="scale-x-[-1] text-red-500" />
@@ -246,11 +141,11 @@
       </button>
     </div>
   </footer>
-
+</div>
 </template>
 
 <script lang="ts" setup>
-import type { DartScore,Match } from '~/types/websocket';
+import type { DartScore, Match } from '~/types/websocket';
 import { useUserStore } from '~/store/user';
 
 
@@ -260,7 +155,7 @@ const user = useUserStore();
 const route = useRoute();
 const matchId = ref<string | null>(null);
 const ws = ref<WebSocket | null>(null);
-const matchStarted = ref<boolean>(false);
+const matchStarted = ref<boolean>(true);
 const bullOffTie = ref<boolean>(false);
 const bullOffFinished = ref<boolean>(false);
 const playerRole = ref<string>('');
@@ -269,88 +164,204 @@ const viewBullOffWinner = ref<boolean>(false);
 const bullOffWinner = ref<string>('');
 const matchWinner = ref<string>('');
 const match = ref<Match | null>(null);
-// websocket functions
-const joinMatch = (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
+/*const match: Match = {
+  players: [
+    {
+      id: '1',
+      username: 'PlayerOne',
+      stats: {
+        average: 51.2,
+        checkoutPercentage: 32.5,
+        first9Average: 56.2,
+        score60: 12,
+        score100: 5,
+        score140: 2,
+        score180: 1,
 
-
-
-  ws.value = new WebSocket(
-    `${window.location.protocol === 'https:' ? 'wss://' : 'ws://'}${window.location.host}/api/webSocket/ws`
-  );
-
-  ws.value.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    if (data.type === "match-joined") {
-      if (!playerRole.value) {
-        playerRole.value = role ? role : 'Spieler2';
+      },
+      scores: {
+        currentScore: 501,
+        legsWon: 0,
+        setsWon: 0,
+        dartScores: {
+          1: { value: 1, multiplier: 2 },
+          2: { value: 5, multiplier: 3 },
+          3: { value: 20, multiplier: 2 }
+        },
+        roundScore: 0,
+        thrownDarts: 0,
+        legScores: {
+          0: {
+            roundScores: {
+              1: { scores: [2, 15, 40] },
+              2: { scores: [2, 15, 40] },
+              3: { scores: [2, 15, 40] }
+            }
+          }, 1: {
+            roundScores: {
+              1: { scores: [2, 15, 40] },
+              2: { scores: [2, 15, 40] },
+              3: { scores: [2, 15, 40] }
+            }
+          }, 2: {
+            roundScores: {
+              1: { scores: [2, 15, 40] },
+              2: { scores: [2, 15, 40] },
+              3: { scores: [2, 15, 40] }
+            }
+          },
+          3: {
+            roundScores: {
+              1: { scores: [2, 15, 40] },
+              2: { scores: [2, 15, 40] },
+              3: { scores: [2, 15, 40] }
+            }
+          }
+        }
+      }
+    },
+    {
+      id: '2',
+      username: 'PlayerTwo',
+      scores: {
+        currentScore: 501,
+        legsWon: 0,
+        setsWon: 0,
+        dartScores: {
+          1: { value: 1, multiplier: 2 },
+          2: { value: 5, multiplier: 3 },
+          3: { value: 20, multiplier: 2 }
+        },
+        roundScore: 0,
+        thrownDarts: 0,
+        legScores: {
+          0: {
+            roundScores: {
+              0: { scores: [2, 15, 40] },
+              1: { scores: [2, 15, 40] },
+              2: { scores: [2, 15, 40] }
+            }
+          }, 1: {
+            roundScores: {
+              0: { scores: [2, 15, 40] },
+              1: { scores: [2, 15, 40] },
+              2: { scores: [2, 15, 40] }
+            }
+          }, 2: {
+            roundScores: {
+              0: { scores: [2, 15, 40] },
+              1: { scores: [2, 15, 40] },
+              2: { scores: [2, 15, 40] }
+            }
+          }
+        }
       }
     }
-    if (data.type === "match-start") {
-      matchStarted.value = true;
-      matchId.value = data.matchId;
-      match.value = data.match;
-    }
-    if (data.type === "bulloff-update") {
-
-      match.value = data.match;
-
-    }
-    if (data.type === "switch-turn") {
-      currentPlayerIndex.value = data.match.currentPlayerIndex;
-      match.value = data.match;
-      
-    }
-    if (data.type === "bulloff-tie") {
-      bullOffTie.value = true;
-      setTimeout(() => {
-        bullOffTie.value = false;
-        currentPlayerIndex.value = 0;
+  ],
+  settings: {
+    baseScore: 501,
+    inMode: 'double',
+    outMode: 'double',
+    legCount: 5,
+    setCount: 3,
+    lobbyMode: 'private',
+    bullOff: '25',
+    maxRounds: 20
+  },
+  currentLeg: 0,
+  currentSet: 0,
+  finished: false,
+  createdAt: Date.now(),
+  bullOffFinished: false,
+  currentPlayerIndex: 0,
+  startPlayerIndex: 0,
+  currentRound: 0
+};*/
+//const match = ref<Match | null>(null);
+// websocket functions
+const joinMatch = (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
+  
+  
+  
+    ws.value = new WebSocket(
+      `${window.location.protocol === 'https:' ? 'wss://' : 'ws://'}${window.location.host}/api/webSocket/ws`
+    );
+  
+    ws.value.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === "match-joined") {
+        if (!playerRole.value) {
+          playerRole.value = role ? role : 'Spieler2';
+        }
+      }
+      if (data.type === "match-start") {
+        matchStarted.value = true;
+        matchId.value = data.matchId;
         match.value = data.match;
-      }, 3000);
-
-    }
-    if (data.type === "bulloff-winner") {
-      bullOffFinished.value = true;
-      bullOffWinner.value = data.winner;
-
-      currentPlayerIndex.value = 2;
-      setTimeout(() => {
-        viewBullOffWinner.value = true;
-      }, 1000);
-
-      setTimeout(() => {
-        viewBullOffWinner.value = false;
-        if (!data.match.currentPlayerIndex) {
+        currentPlayerIndex.value = data.match.currentPlayerIndex;
+      }
+      if (data.type === "bulloff-update") {
+  
+        match.value = data.match;
+  
+      }
+      if (data.type === "switch-turn") {
+        
+        match.value = data.match;
+        
+      }
+      if (data.type === "bulloff-tie") {
+        bullOffTie.value = true;
+        setTimeout(() => {
+          bullOffTie.value = false;
           currentPlayerIndex.value = 0;
-        }
-        else {
-          currentPlayerIndex.value = 1;
-        }
+          match.value = data.match;
+        }, 3000);
+  
+      }
+      if (data.type === "bulloff-winner") {
+        bullOffFinished.value = true;
+        bullOffWinner.value = data.winner;
         match.value = data.match;
-      }, 3000);
-    }
-    if (data.type === "dart-update") {
-      match.value = data.match;
+  
+        match.value?.currentPlayerIndex === 2;
+        setTimeout(() => {
+          viewBullOffWinner.value = true;
+        }, 1000);
+  
+        setTimeout(() => {
+          viewBullOffWinner.value = false;
+          if (!data.match.currentPlayerIndex) {
+            match.value?.currentPlayerIndex === 0;
+          }
+          else {
+            match.value?.currentPlayerIndex === 1;
+          }
+          match.value = data.match;
+        }, 3000);
+      }
+      if (data.type === "dart-update") {
+        match.value = data.match;
+        
+      }
       
-    }
-    
-
-    if (data.type === "leg-update") {
-     match.value = data.match;
-      currentPlayerIndex.value = data.match.currentPlayerIndex;
-    }
-    if (data.type === "match-finished") {
-      match.value = data.match;
-      currentPlayerIndex.value = 2;
-      matchWinner.value = data.winner;
-    }
-
-
-  };
-
-  ws.value.onopen = () => {
-    ws.value?.send(JSON.stringify({ type: 'join-match', matchId: matchIdVal, player: { id: user.id, username: user.username, image: user.profileImage || null } }));
-  };
+  
+      if (data.type === "leg-update") {
+       match.value = data.match;
+        
+      }
+      if (data.type === "match-finished") {
+        match.value = data.match;
+        match.value?.currentPlayerIndex === 2;
+        matchWinner.value = data.winner;
+      }
+  
+  
+    };
+  
+    ws.value.onopen = () => {
+      ws.value?.send(JSON.stringify({ type: 'join-match', matchId: matchIdVal, player: { id: user.id, username: user.username, image: user.profileImage || null } }));
+    };
 };
 
 
@@ -385,17 +396,22 @@ function leaveMatch() {
   showLeave.value = true;
 }
 
-function bullOffScoring(score: number, multiplier: number) {
-  const currentPlayer = match.value?.players.find((player: any) => player.id === user.id);
-  
-  ws.value?.send(JSON.stringify({ type: 'bulloff-dart', matchId: matchId.value, player: currentPlayer, score, multiplier }));
-}
-function score(score: number, multiplier: number) {
+function bullOffScoring(score: number, multiplier: number, points: number) {
   const currentPlayer = match.value?.players.find((player: any) => player.id === user.id);
 
-  //ws.value?.send(JSON.stringify({ type: 'dart-throw', matchId: matchId.value, player: currentPlayer, score, multiplier }));
-  ws.value?.send(JSON.stringify({ type: 'x01-match', matchId: matchId.value, player: currentPlayer, score, multiplier }));
+  ws.value?.send(JSON.stringify({ type: 'bulloff-dart', matchId: matchId.value, player: currentPlayer, score, multiplier, points }));
+}
+function score(score: number, multiplier: number, points: number) {
+  const currentPlayer = match.value?.players.find((player: any) => player.id === user.id);
+
+  ws.value?.send(JSON.stringify({ type: 'dart-throw', matchId: matchId.value, player: currentPlayer, score, multiplier, points }));
+  //ws.value?.send(JSON.stringify({ type: 'x01-match', matchId: matchId.value, player: currentPlayer, score, multiplier, points }));
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.grid-container{
+  direction: rtl;
+}
+
+</style>

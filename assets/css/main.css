@@ -11,7 +11,7 @@
 }
 
 body {
-  @apply outline-none font-semibold bg-secondary-300 text-white;
+  @apply outline-none font-semibold bg-black text-white;
   ::selection {
     background-color: #1997ff;
     color: black;
@@ -68,10 +68,10 @@ button {
   @apply bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary-300;
 }
 ul {
-  @apply list-none items-center px-8 space-y-4;
+  @apply list-none items-center px-3 ;
 }
 li {
-  @apply items-center px-3 flex  space-x-4 text-lg bg-primary p-1 rounded-full text-white hover:bg-secondary-300 cursor-pointer;
+  @apply items-center px-3 flex  space-x-4 text-lg bg-primary p-1  text-white hover:bg-secondary-300 cursor-pointer;
 }
 ul p {
   @apply text-gray-200 border-b-2 border-gray-500;
