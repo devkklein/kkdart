@@ -5,3 +5,4 @@ export {handleDartThrow} from "./handlers/dartThrow";
 export {handleBullOff} from "./handlers/bullOffDart";
 export {handleCreateMatch} from "./handlers/createMatch";
 export {handleX01Match} from "./handlers/x01Match";
+export {handleMatchStats, trackRoundScore,trackCheckoutAttempt,trackScore} from "./handlers/matchStats";

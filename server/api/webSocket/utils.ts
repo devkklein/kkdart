@@ -1,4 +1,5 @@
 import type { Player, Match, Sockets, } from '~/types/websocket';
+import { handleMatchStats ,trackRoundScore} from './index';
 
 export function resetPlayerDartScores(players: Player[]) {
   players.forEach((player) => {
@@ -14,11 +15,42 @@ export function resetPlayerDartScores(players: Player[]) {
 
 
 export function switchplayers(match: Match, sockets: Sockets, currentPlayer: Player) {
+  const currentRound = match.currentRound;
+  const currentLeg = match.currentLeg;
+  
+  // Zugriff auf die Scores der aktuellen Runde
+  const roundScores = currentPlayer.scores.legScores[currentLeg]?.roundScores[currentRound]?.scores;
+  
+  // Tracke den Rundenscore für die Statistik
+  if (roundScores && roundScores.length > 0) {
+    const roundTotal = roundScores.reduce((sum, score) => sum + score, 0);
+    
+    // Nur tracken, wenn tatsächlich Punkte erzielt wurden (vermeidet Mehrfachtracking)
+    if (roundTotal > 0 && !currentPlayer.scores.trackedRounds?.[currentLeg]?.[currentRound]) {
+      trackRoundScore(currentPlayer, roundTotal);
+      
+      // Markiere diese Runde als getrackt
+      if (!currentPlayer.scores.trackedRounds) {
+        currentPlayer.scores.trackedRounds = {};
+      }
+      if (!currentPlayer.scores.trackedRounds[currentLeg]) {
+        currentPlayer.scores.trackedRounds[currentLeg] = {};
+      }
+      currentPlayer.scores.trackedRounds[currentLeg][currentRound] = true;
+    }
+  }
+  
+  // WICHTIG: Da wir die Darts bereits einzeln zählen, 
+  // kommentieren wir diese Zeilen aus, um doppelte Zählung zu vermeiden
+  // if (currentPlayer.scores.thrownDarts > 0) {
+  //   currentPlayer.scores.legDartsCount[match.currentLeg] += currentPlayer.scores.thrownDarts;
+  // }
+  
   currentPlayer.scores.thrownDarts = 0;
+  
   match.currentPlayerIndex = (match.currentPlayerIndex + 1) % 2;
   if (match.currentPlayerIndex === match.startPlayerIndex) {
     match.currentRound++;
-    
   }
 
   const nextPlayer = match.players[match.currentPlayerIndex];
@@ -31,7 +63,7 @@ export function switchplayers(match: Match, sockets: Sockets, currentPlayer: Pla
     scores: [],
   };
 
-  updateMatch(match,  sockets);
+  updateMatch(match, sockets);
 }
 export function updateMatch(match: Match,  sockets: Sockets) {
 
@@ -59,9 +91,9 @@ export function mapPlayer(match: Match, player: Player) {
 export function updateScore(player: Player, points: number, match: Match) {
   player.scores.currentScore -= points;
   player.scores.roundScore += points;
-
+  player.stats.allPoints += points;
   player.scores.legScores[match.currentLeg].roundScores[match.currentRound].scores.push(points);
-
+  handleMatchStats( player, match);
 
 }
 
@@ -74,14 +106,17 @@ export function initializeLeg(match: Match) {
     p.scores.dartScores[2] = {};
     p.scores.dartScores[3] = {};
   });
+  
   if (match.startPlayerIndex === 0) {
     match.startPlayerIndex = 1;
   }
   else {
     match.startPlayerIndex = 0;
   }
+  
   match.currentPlayerIndex = match.startPlayerIndex;
   match.currentRound = 1;
+  
   match.players.forEach((player) => {
     player.scores.legScores[match.currentLeg] = {
       roundScores: {
@@ -90,14 +125,31 @@ export function initializeLeg(match: Match) {
         },
       },
     };
+    
+    // Initialisiere legDartsCount für das neue Leg
+    if (!player.scores.legDartsCount) {
+      player.scores.legDartsCount = {};
+    }
+    player.scores.legDartsCount[match.currentLeg] = 0;
+    
+    // First9Points werden für jedes neue Leg nicht zurückgesetzt,
+    // da sie für die Gesamtstatistik des Spielers relevant sind
   });
 }
 
-
-
-
 export function endLeg(match: Match, player: Player, sockets: Sockets) {
+  const currentRound = match.currentRound;
+  const currentLeg = match.currentLeg;
+  const roundScores = player.scores.legScores[currentLeg]?.roundScores[currentRound]?.scores;
+  
+  if (roundScores && roundScores.length > 0) {
+    const roundTotal = roundScores.reduce((sum, score) => sum + score, 0);
+    trackRoundScore(player, roundTotal);
+  }
+  
+  
   player.scores.legsWon++;
+  player.stats.checkouts++;
   match.currentLeg++;
 
   if (player.scores.legsWon === match.settings.legCount) {

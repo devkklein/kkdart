@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     "@nuxt/eslint",
     "@nuxt/fonts",
     "@nuxtjs/supabase",
+    "nuxt-echarts",
   ],
   nitro: {
     experimental: {

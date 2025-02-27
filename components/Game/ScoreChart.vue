@@ -1,0 +1,280 @@
+<template>
+  <div class="w-full h-full">
+    <div ref="chartContainer" class="chart-container" style="width: 100%; height: 300px;"></div>
+    <div class="flex justify-center space-x-4 mt-2">
+      <div v-for="(leg, index) in Object.keys(selectedLegData)" :key="index"
+           @click="selectLeg(Number(leg))"
+           class="cursor-pointer px-3 py-1 rounded-md"
+           :class="selectedLeg === Number(leg) ? 'bg-primary text-white' : 'bg-secondary-300 hover:bg-secondary'">
+        Leg {{ Number(leg) }}
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { ref, onMounted, watch, computed, onUnmounted, nextTick } from 'vue';
+import * as echarts from 'echarts';
+import type { Player } from '~/types/websocket';
+
+const props = defineProps<{
+  player: Player
+}>();
+
+const chartContainer = ref<HTMLElement | null>(null);
+let chart: echarts.ECharts | null = null;
+const selectedLeg = ref(0);
+const lastLegWatched = ref<number | null>(null);
+
+// Berechne die verfügbaren Legs aus dem Spielerobjekt
+const selectedLegData = computed(() => {
+  return props.player.scores.legScores || {};
+});
+
+function selectLeg(legIndex: number) {
+  selectedLeg.value = legIndex;
+  updateChart();
+}
+
+const initializeSelectedLeg = () => {
+  if (Object.keys(selectedLegData.value).length > 0) {
+    // Nimm das höchste Leg (das neueste)
+    const legKeys = Object.keys(selectedLegData.value).map(Number).sort((a, b) => b - a);
+    if (legKeys.length > 0) {
+      selectedLeg.value = legKeys[0];
+    }
+  }
+};
+
+// Prüft, ob eine Runde vollständig ist (alle 3 Darts geworfen wurden)
+function isRoundComplete(roundData: any): boolean {
+  return roundData && 
+         roundData.scores && 
+         roundData.scores.length === 3 && 
+         roundData.scores.every((score: number | undefined) => score !== undefined);
+}
+
+// Holen nur der Rundenpunktzahlen mit vollständigen Daten
+function getRoundScoresData() {
+  const legData = props.player.scores.legScores[selectedLeg.value];
+  
+  if (!legData || !legData.roundScores) {
+    return {
+      rounds: [],
+      roundScores: []
+    };
+  }
+
+  // Sortiere die Round-Keys numerisch
+  const roundKeys = Object.keys(legData.roundScores)
+    .map(Number)
+    .sort((a, b) => a - b);
+
+  const rounds: number[] = [];
+  const roundScores: number[] = [];
+  
+  // Nur vollständige Runden mit allen 3 Darts hinzufügen
+  roundKeys.forEach(roundIndex => {
+    const roundData = legData.roundScores[roundIndex];
+    
+    // Prüfen, ob alle 3 Darts geworfen wurden
+    if (isRoundComplete(roundData)) {
+      const roundScore = roundData.scores.reduce((sum, score) => sum + score, 0);
+      rounds.push(roundIndex);
+      roundScores.push(roundScore);
+    }
+  });
+
+  return { rounds, roundScores };
+}
+
+function initChart() {
+  if (!chartContainer.value) return;
+
+  chart = echarts.init(chartContainer.value);
+  initializeSelectedLeg();
+  updateChart();
+
+  // Event-Listener für Resize
+  window.addEventListener('resize', () => chart?.resize());
+}
+
+function updateChart() {
+  if (!chart) return;
+  
+  const { rounds, roundScores } = getRoundScoresData();
+
+  // Keine Daten anzeigen, wenn keine vollständigen Runden vorhanden sind
+  if (rounds.length === 0) {
+    chart.setOption({
+      title: {
+        text: `Waiting for scores... ${selectedLeg.value}`,
+        textStyle: {
+          color: '#ffffff',
+          fontWeight: 'normal'
+        },
+        left: 'center'
+      },
+      xAxis: { data: [] },
+      series: [{ data: [] }]
+    });
+    return;
+  }
+
+  const option = {
+    title: {
+      text: `Scores - ${props.player.username} - Leg ${selectedLeg.value}`,
+      textStyle: {
+        color: '#ffffff',
+        fontWeight: 'normal'
+      },
+      left: 'center'
+    },
+    tooltip: {
+      trigger: 'axis',
+      formatter: function(params: any) {
+        const roundIndex = params[0].dataIndex;
+        const score = params[0].value;
+        
+        return `Round ${rounds[roundIndex]}<br/>Score: ${score}`;
+      }
+    },
+    grid: {
+      left: '5%',
+      right: '5%',
+      bottom: '10%',
+      top: '15%',
+      containLabel: true
+    },
+    xAxis: {
+      type: 'category',
+      data: rounds.map(r => r.toString()),
+      name: 'Round',
+      nameLocation: 'middle',
+      nameGap: 25,
+      nameTextStyle: {
+        color: '#aaaaaa'
+      },
+      axisLine: {
+        lineStyle: {
+          color: '#555555'
+        }
+      },
+      axisLabel: {
+        color: '#bbbbbb'
+      }
+    },
+    yAxis: {
+      type: 'value',
+      name: 'Points per round',
+      nameLocation: 'middle',
+      nameGap: 40,
+      nameTextStyle: {
+        color: '#aaaaaa'
+      },
+      min: 0,
+      max: 180, // Maximale mögliche Punktzahl pro Runde (3x T20)
+      axisLine: {
+        lineStyle: {
+          color: '#555555'
+        }
+      },
+      axisLabel: {
+        color: '#bbbbbb'
+      },
+      splitLine: {
+        lineStyle: {
+          color: '#333333'
+        }
+      }
+    },
+    series: [{
+      name: 'Score',
+      data: roundScores,
+      type: 'line',
+      smooth: true,
+      symbol: 'circle',
+      symbolSize: 8,
+      lineStyle: {
+        width: 3,
+        color: '#192a56'
+      },
+      itemStyle: {
+        color: '#192a56'
+      },
+      areaStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: 'rgba(25, 42, 86, 0.6)' },
+          { offset: 1, color: 'rgba(25, 42, 86, 0.1)' }
+        ])
+      }
+    }]
+  };
+
+  chart.setOption(option);
+}
+
+// Überwachen, ob ein neues Leg hinzugefügt wurde
+watch(() => Object.keys(selectedLegData.value).length, async (newCount, oldCount) => {
+  if (newCount > oldCount) {
+    // Ein neues Leg wurde hinzugefügt, warte ein bisschen und aktualisiere dann
+    await nextTick();
+    initializeSelectedLeg();
+    updateChart();
+  }
+});
+
+// Beobachten der Rundendaten und nur bei vollständigen Runden aktualisieren
+watch(() => {
+  if (!props.player?.scores?.legScores?.[selectedLeg.value]?.roundScores) return null;
+  
+  const roundScores = props.player.scores.legScores[selectedLeg.value].roundScores;
+  
+  // Zähle nur Runden, bei denen alle 3 Darts geworfen wurden
+  const completeRoundsFingerprint = Object.keys(roundScores)
+    .filter(key => {
+      const round = roundScores[Number(key)];
+      return isRoundComplete(round);
+    })
+    .join(',');
+  
+  // Wenn sich das Leg geändert hat, speichern wir das aktuelle Leg
+  if (lastLegWatched.value !== selectedLeg.value) {
+    lastLegWatched.value = selectedLeg.value;
+  }
+  
+  return completeRoundsFingerprint; // Gibt einen eindeutigen Wert zurück, der sich nur ändert, wenn eine neue vollständige Runde vorliegt
+}, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    updateChart();
+  }
+});
+
+// Bei Leg-Änderungen aktualisieren
+watch(() => selectedLeg.value, () => {
+  updateChart();
+});
+
+// Initialisieren bei Komponenten-Mount
+onMounted(async () => {
+  await nextTick();
+  initChart();
+});
+
+// Aufräumen bei Unmount
+onUnmounted(() => {
+  if (chart) {
+    chart.dispose();
+  }
+  window.removeEventListener('resize', () => chart?.resize());
+});
+</script>
+
+<style>
+.chart-container {
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 8px;
+  padding: 10px;
+  border: 2px solid var(--color-primary, #222222);
+}
+</style>

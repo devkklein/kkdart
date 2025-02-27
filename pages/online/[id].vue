@@ -6,12 +6,21 @@
     <PopupsBullOffWinner v-if="viewBullOffWinner" :winner="bullOffWinner" />
     <PopupsWinnerPopup v-if="matchWinner" :winner="matchWinner" />
     <div v-if="matchStarted && match" class="w-full p-4 ">
+      <div class="w-full bg-secondary-300 border-2 border-primary flex space-x-10 text-sm justify-center rounded-xl py-1 shadow-xl px-3">
+                <p>In Mode: {{ match.settings.inMode }}</p>
+                <p>Out Mode: {{ match.settings.outMode }}</p>
+                <p>Bull Off: {{ match.settings.bullOff }}</p>
+                <div><p >Legs: {{ match.settings.legCount }}</p></div>
+                <div><p>Sets: {{ match.settings.setCount }}</p></div>
+                <div><p>Max Rounds: {{ match.settings.maxRounds }}</p></div>
+                <div><p>BaseScore: {{ match.settings.baseScore }}</p></div>
+      </div>
       <div class="flex flex-col justify-end">
-        <div class="flex">
+        <div class="flex ">
           <div class="flex w-8/12 flex-col">
             <div class="grid grid-flow-col py-4 space-x-5">
               <div v-for="(player, playerIndex) in match.players" :key="playerIndex"
-                :class="playerIndex === 1 ? 'py-5 '  : 'py-5'">
+              >
                 
                  
 
@@ -81,31 +90,12 @@
             </div>
             <div></div>
           </div>
-          <div class=" w-8/12 flex  p-4 rounded-xl   space-x-5">
-            <div class="flex flex-col w-1/2 ">
-              <h1> Match settings</h1>
-              <h1 class="text-sm text-gray-300">General</h1>
-              <div class="flex flex-col space-y-2 border-t-2 border-primary py-2">
-                <div class=" bg-primary p-2 rounded-lg shadow-xl ">
-                <div><p >Legs: {{ match.settings.legCount }}</p></div>
-                <div><p>Sets: {{ match.settings.setCount }}</p></div>
-                <div><p>Max Rounds: {{ match.settings.maxRounds }}</p></div>
-                <div><p>BaseScore: {{ match.settings.baseScore }}</p></div>
-              </div>
-              </div>
-              <div class="mt-4"></div>
-              <h1 class="text-sm text-gray-300">Lobby</h1>
-              <div class="flex flex-col space-y-4 border-t-2 py-2 border-primary">
-                <div class=" bg-primary p-2 rounded-lg shadow-xl ">
-                <p>In Mode: {{ match.settings.inMode }}</p>
-                <p>Out Mode: {{ match.settings.outMode }}</p>
-                <p>Bull Off: {{ match.settings.bullOff }}</p>
-              </div>
-              </div>
+          <div class=" w-8/12 flex py-4 pl-4  pr-0  rounded-xl ">
+            <div  class="flex flex-col  w-full ">
+              
 
-            </div>
-            <div class="flex flex-col w-1/2">
-              <h1>Match Statistics</h1>
+              <GameScoreChart :player="match.players[getPlayerIndex(match)]" />
+              <GameLiveStatsChart :player="match.players[getPlayerIndex(match)]" />
 
 
             </div>
@@ -147,6 +137,7 @@
 <script lang="ts" setup>
 import type { DartScore, Match } from '~/types/websocket';
 import { useUserStore } from '~/store/user';
+import { GameLiveStatsChart } from '#components';
 
 
 const showLeave = ref<boolean>(false);
@@ -155,7 +146,7 @@ const user = useUserStore();
 const route = useRoute();
 const matchId = ref<string | null>(null);
 const ws = ref<WebSocket | null>(null);
-const matchStarted = ref<boolean>(true);
+const matchStarted = ref<boolean>(false);
 const bullOffTie = ref<boolean>(false);
 const bullOffFinished = ref<boolean>(false);
 const playerRole = ref<string>('');
@@ -164,6 +155,8 @@ const viewBullOffWinner = ref<boolean>(false);
 const bullOffWinner = ref<string>('');
 const matchWinner = ref<string>('');
 const match = ref<Match | null>(null);
+
+
 /*const match: Match = {
   players: [
     {
@@ -177,7 +170,6 @@ const match = ref<Match | null>(null);
         score100: 5,
         score140: 2,
         score180: 1,
-
       },
       scores: {
         currentScore: 501,
@@ -189,6 +181,11 @@ const match = ref<Match | null>(null);
           3: { value: 20, multiplier: 2 }
         },
         roundScore: 0,
+        roundDartsCount: {
+          1: 3,
+          2: 3,
+          3: 3,
+        },
         thrownDarts: 0,
         legScores: {
           0: {
@@ -199,9 +196,10 @@ const match = ref<Match | null>(null);
             }
           }, 1: {
             roundScores: {
-              1: { scores: [2, 15, 40] },
+              1: { scores: [2, 15, 1] },
               2: { scores: [2, 15, 40] },
-              3: { scores: [2, 15, 40] }
+              3: { scores: [2, 60, 40] },
+              4: { scores: [32, 32, 56] }
             }
           }, 2: {
             roundScores: {
@@ -218,11 +216,21 @@ const match = ref<Match | null>(null);
             }
           }
         }
+       
       }
     },
     {
       id: '2',
       username: 'PlayerTwo',
+      stats: {
+        average: 51.2,
+        checkoutPercentage: 32.5,
+        first9Average: 56.2,
+        score60: 12,
+        score100: 5,
+        score140: 2,
+        score180: 1,
+      },
       scores: {
         currentScore: 501,
         legsWon: 0,
@@ -234,6 +242,11 @@ const match = ref<Match | null>(null);
         },
         roundScore: 0,
         thrownDarts: 0,
+        roundDartsCount: {
+          1: 3,
+          2: 3,
+          3: 3,
+        },
         legScores: {
           0: {
             roundScores: {
@@ -383,6 +396,15 @@ onMounted(() => {
     }
   });
 });
+// Function to get player index for the current user
+function getPlayerIndex(match:Match): number {
+  if (!match || !user.id) return -1;
+  
+  const index = match.players.findIndex((player) => player.id === user.id);
+  return index;
+}
+
+
 
 onBeforeUnmount(() => {
   if (ws.value) {

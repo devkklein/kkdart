@@ -6,6 +6,16 @@ export interface PlayerScore {
     roundScore: number;
     legScores: legScores;
     thrownDarts: number;
+    legDartsCount: {
+        [key: number]: number;
+    };
+    trackedRounds?: {
+        [legIndex: number]: {
+            [roundIndex: number]: boolean;
+        };
+    };
+    currentVisitHasCheckoutAttempt?: boolean; // Tracking für aktuelle Visit
+    // roundDartsCount entfernen oder als veraltet markieren
 }
 export interface RoundScores{
     [key: number]: {
@@ -22,7 +32,7 @@ export interface Player {
     username: string;
     image?: string;
     scores: PlayerScore;
-    stats?: PlayerStatistic;
+    stats: PlayerStatistic;
 }
 
 export interface Match {
@@ -65,6 +75,8 @@ export interface MatchSettings {
     maxRounds: number;
   }
   export interface PlayerStatistic{
+    allPoints: number;
+    first9Points: number; // Neu hinzugefügt
     average: number;
     checkoutPercentage: number;
     first9Average: number;
@@ -72,4 +84,6 @@ export interface MatchSettings {
     score100: number;
     score140: number;
     score180: number;
+    checkouts: number;
+    checkoutsAttemps: number;
   }
