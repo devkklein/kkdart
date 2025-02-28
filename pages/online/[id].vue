@@ -171,6 +171,7 @@ const match = ref<Match | null>(null);
 /*const match: Match = {
   players: [
     {
+
       id: '1',
       username: 'PlayerOne',
       stats: {
@@ -304,7 +305,6 @@ const match = ref<Match | null>(null);
 //const match = ref<Match | null>(null);
 // websocket functions
 const joinMatch = (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
-
 
 
   ws.value = new WebSocket(
