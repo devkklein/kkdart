@@ -16,6 +16,7 @@ export function handleCreateMatch(socket: WebSocket, data: any) {
           finished: false,
           createdAt: Date.now(),
           bullOffFinished: false,
+          started: false,
           currentPlayerIndex: 0,
           startPlayerIndex: 0,
           currentRound: 1,
@@ -24,7 +25,10 @@ export function handleCreateMatch(socket: WebSocket, data: any) {
             ws: [],
           },
         };
-  
+        
+        if(matchSettings.bullOff === "Off"){
+          matches[matchId].match.bullOffFinished = true;
+        }
         
         socket.send(
           JSON.stringify({

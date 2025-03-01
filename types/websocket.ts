@@ -41,6 +41,7 @@ export interface Match {
     currentLeg: number;
     currentSet: number;
     finished: boolean;
+    started: boolean;
     createdAt: number;
     bullOffFinished: boolean;
     currentPlayerIndex: number;

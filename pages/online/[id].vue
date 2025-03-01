@@ -2,11 +2,10 @@
   <div class="flex h-screen  ">
     <Sidebar />
     <div class=" h-full w-full overflow-y-auto">
-      <PopupsLeaveMatch :showPopup="showLeave" @close="showLeave = false" />
       <PopupsBullOffWinner v-if="viewBullOffWinner" :winner="bullOffWinner" />
-      <GameMatchSummary v-if="matchWinner && match" :match=match />
+      <GameMatchSummary v-if="match?.finished && match" :match=match />
 
-      <div v-if="matchStarted && match" class="w-full p-4 ">
+      <div v-if="match?.started && match" class="w-full p-4 ">
         <div
           class="w-full bg-secondary-300 border-2 border-primary flex space-x-10 text-sm justify-center rounded-xl py-1 shadow-xl px-3">
           <p>In Mode: {{ match.settings.inMode }}</p>
@@ -29,13 +28,13 @@
           <div class="flex ">
             <div class="flex w-8/12 flex-col">
               <div class="grid grid-flow-col py-4 space-x-5">
-                <div v-for="(player, playerIndex) in match.players" :key="playerIndex">
+                <div v-for="(player, playerIndex) in sortedPlayers" :key="playerIndex">
 
 
 
                   <div
                     class=" flex w-full flex-col items-center bg-secondary-300  justify-center bg-secondary border-2 p-4 rounded-xl shadow-xl "
-                    :class="match.currentPlayerIndex === playerIndex ? 'border-blue-500' : 'border-primary'">
+                    :class="match.currentPlayerIndex === getOriginalPlayerIndex(player) ? 'border-blue-500' : 'border-primary'">
                     <div class="flex">
                       <div class="flex flex-col items-center justify-end stat-column">
                         <div class="stat-container">
@@ -103,8 +102,8 @@
                 </div>
               </div>
 
-              <GameInputButtons v-if="bullOffFinished" @score="score" />
-              <div v-if="!bullOffFinished">
+              <GameInputButtons v-if="match.bullOffFinished" @score="score" />
+              <div v-if="!match.bullOffFinished">
                 <div class="flex flex-col items-center justify-center space-y-4">
                   <h1>Normal Bull Off</h1>
                   <div class="flex space-x-4">
@@ -160,9 +159,7 @@ const user = useUserStore();
 const route = useRoute();
 const matchId = ref<string | null>(null);
 const ws = ref<WebSocket | null>(null);
-const matchStarted = ref<boolean>(false);
 const bullOffTie = ref<boolean>(false);
-const bullOffFinished = ref<boolean>(false);
 const playerRole = ref<string>('');
 const currentPlayerIndex = ref<number>(0);
 const viewBullOffWinner = ref<boolean>(false);
@@ -323,7 +320,7 @@ const joinMatch = (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
       }
     }
     if (data.type === "match-start") {
-      matchStarted.value = true;
+
       waitingForPlayer.value = false;
       matchId.value = data.matchId;
       match.value = data.match;
@@ -349,7 +346,7 @@ const joinMatch = (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
 
     }
     if (data.type === "bulloff-winner") {
-      bullOffFinished.value = true;
+
       bullOffWinner.value = data.winner;
       match.value = data.match;
 
@@ -381,7 +378,7 @@ const joinMatch = (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
     }
     if (data.type === "match-finished") {
       match.value = data.match;
-      matchStarted.value = false;
+
       matchWinner.value = data.winner;
     }
 
@@ -392,6 +389,21 @@ const joinMatch = (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
     ws.value?.send(JSON.stringify({ type: 'join-match', matchId: matchIdVal, player: { id: user.id, username: user.username, image: user.profileImage || null } }));
   };
 };
+const sortedPlayers = computed(() => {
+
+  if (!match.value || !match.value.players) { return []; }
+
+  const players = [...match.value.players];
+
+  players.sort((a, b) => {
+    if (a.id === user.id) return -1;
+    if (b.id === user.id) return 1;
+
+    return 0;
+  });
+  return players;
+});
+
 
 
 // mount functions 
@@ -419,6 +431,11 @@ function getPlayerIndex(match: Match): number {
 
   const index = match.players.findIndex((player) => player.id === user.id);
   return index;
+}
+function getOriginalPlayerIndex(player: any): number {
+  if (!match.value || !match.value.players) return -1;
+
+  return match.value.players.findIndex(p => p.id === player.id);
 }
 
 

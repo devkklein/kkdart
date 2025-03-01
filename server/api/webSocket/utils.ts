@@ -161,6 +161,7 @@ export function endLeg(match: Match, player: Player, sockets: Sockets) {
     initializeLeg(match);
     updateMatch(match,  sockets);
     if (player.scores.setsWon === match.settings.setCount) {
+      match.finished = true;
       endMatch(match, player, sockets);
     }
   }

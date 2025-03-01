@@ -645,19 +645,23 @@ function renderLegPerformanceChart(chart: ECharts) {
 
 // Helper function to calculate leg average (dummy implementation)
 function calculateLegAverage(player: Player, legIndex: number): number {
-  if (!player.scores?.legScores?.[legIndex]) {
-    return 0;
-  }
+  if (!player.scores.legScores[legIndex]) return 0;
+  let total = 0;
+  const rounds = player.scores.legScores[legIndex].roundScores;
+  for (const roundIndex in rounds) {
+    const roundScores = rounds[roundIndex].scores;
+    total += roundScores.reduce((acc, score) => acc + score, 0);
 
-  // In a real implementation, you would sum up all points for this leg and divide by the number of darts
-  // This is just a placeholder that returns reasonable darts averages
-  const baseAvg = player.stats?.average || 50;
-  // Add some variation per leg
-  return baseAvg + ((Math.random() * 20) - 10);
+  }
+  const legDarts = player.scores.legDartsCount[legIndex];
+  return total / legDarts * 3;
+
 }
 
 // Set up resize handler
 let resizeHandler: (() => void) | null = null;
+
+
 
 onMounted(async () => {
   await nextTick();

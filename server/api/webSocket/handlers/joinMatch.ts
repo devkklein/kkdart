@@ -68,7 +68,7 @@ export function handleJoinMatch(socket: WebSocket, data: any) {
         );
 
         if (match.players.length === 2) {
-          
+          match.started = true;
           sockets.ws.forEach((ws) => {
 
             ws.send(
