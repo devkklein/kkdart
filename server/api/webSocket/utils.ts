@@ -138,6 +138,9 @@ export function initializeLeg(match: Match) {
 }
 
 export function endLeg(match: Match, player: Player, sockets: Sockets) {
+  // Add this debug log at the beginning of the function
+
+
   const currentRound = match.currentRound;
   const currentLeg = match.currentLeg;
   const roundScores = player.scores.legScores[currentLeg]?.roundScores[currentRound]?.scores;
@@ -146,10 +149,9 @@ export function endLeg(match: Match, player: Player, sockets: Sockets) {
     const roundTotal = roundScores.reduce((sum, score) => sum + score, 0);
     trackRoundScore(player, roundTotal);
   }
-  
-  
+
+
   player.scores.legsWon++;
-  player.stats.checkouts++;
   match.currentLeg++;
 
   if (player.scores.legsWon === match.settings.legCount) {

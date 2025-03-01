@@ -54,6 +54,7 @@ export function handleDartThrow(socket: WebSocket, data: any) {
               currentPlayer.stats.first9Points = 0;
             }
             currentPlayer.stats.first9Points += score * multiplier;
+            currentPlayer.stats.first9DartsThrown ++;
           }
           
           currentPlayer.scores.dartScores[currentPlayer.scores.thrownDarts] = {

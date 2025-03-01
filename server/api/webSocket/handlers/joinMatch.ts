@@ -13,7 +13,8 @@ export function handleJoinMatch(socket: WebSocket, data: any) {
       stats:{
         average: 0,
         first9Average: 0,
-        first9Points: 0, // Neu für First 9 Tracking
+        first9Points: 0,
+        first9DartsThrown: 0, // Neu für First 9 Tracking
         checkoutPercentage: 0,
         checkouts: 0,
         checkoutsAttemps: 0,

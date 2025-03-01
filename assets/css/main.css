@@ -6,8 +6,8 @@
   font-family: "SF PRO";
   src: url("/assets/fonts/sf-pro-display/SFPRODISPLAYREGULAR.OTF")
     format("opentype");
-  font-weight: 400;
   font-style: normal;
+  font-weight: 900; /* Making the font thinner */
 }
 
 body {

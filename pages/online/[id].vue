@@ -1,10 +1,11 @@
 <template>
   <div class="flex h-screen  ">
     <Sidebar />
-    <div class=" h-full w-full ">
+    <div class=" h-full w-full overflow-y-auto">
       <PopupsLeaveMatch :showPopup="showLeave" @close="showLeave = false" />
       <PopupsBullOffWinner v-if="viewBullOffWinner" :winner="bullOffWinner" />
-      <PopupsWinnerPopup v-if="matchWinner" :winner="matchWinner" />
+      <GameMatchSummary v-if="matchWinner && match" :match=match />
+
       <div v-if="matchStarted && match" class="w-full p-4 ">
         <div
           class="w-full bg-secondary-300 border-2 border-primary flex space-x-10 text-sm justify-center rounded-xl py-1 shadow-xl px-3">
@@ -36,6 +37,23 @@
                     class=" flex w-full flex-col items-center bg-secondary-300  justify-center bg-secondary border-2 p-4 rounded-xl shadow-xl "
                     :class="match.currentPlayerIndex === playerIndex ? 'border-blue-500' : 'border-primary'">
                     <div class="flex">
+                      <div class="flex flex-col items-center justify-end stat-column">
+                        <div class="stat-container">
+                          <p class="stat-label">Average</p>
+                          <p class="stat-value">{{ player.stats.average }}</p>
+                        </div>
+
+                        <div class="stat-container">
+                          <p class="stat-label">First9Avg</p>
+                          <p class="stat-value">{{ player.stats.first9Average }}</p>
+                        </div>
+                        <div class="stat-container">
+                          <p class="stat-label">Checkout</p>
+                          <p class="stat-value"> {{ player.stats.checkoutPercentage }}%</p>
+                        </div>
+                      </div>
+
+
                       <div class="flex flex-col items-center justify-center">
                         <GameProfile :User="player" />
                         <div class="flex space-x-3">
@@ -106,7 +124,7 @@
 
 
                 <GameScoreChart :player="match.players[getPlayerIndex(match)]" />
-                <GameLiveStatsChart :player="match.players[getPlayerIndex(match)]" />
+
 
 
               </div>
@@ -120,35 +138,20 @@
 
         </div>
       </div>
-      <div v-else class="flex flex-col h-full w-full justify-center items-center">
+      <div v-if="waitingForPlayer" class="flex flex-col h-full w-full justify-center items-center">
         <h1>Waiting for Enemy player</h1>
         <GameMatchList />
       </div>
 
     </div>
-    <footer class="absolute bottom-0 p-4 w-full flex justify-around">
-      <div class="bg-primary flex w-1/8 justify-start items-center rounded-xl shadow-xl px-3">
-        <button @click="leaveMatch" class="flex items-center justify-center p-3 rounded ">
-          <Icon name="mdi:logout" size="20" class="scale-x-[-1] text-red-500" />
-          <span class="ml-2">Leave Match</span>
-        </button>
-      </div>
-      <div class="bg-primary flex w-1/8 justify-end items-center rounded-xl shadow-xl px-3 space-x-4">
-        <button class="flex items-center justify-center p-3 rounded ">
-          <Icon name="mdi:cog" size="20" class="text-white" />
-        </button>
-        <button class="flex items-center justify-center p-3 rounded ">
-          <Icon name="mdi:chat" size="20" class="text-white" />
-        </button>
-      </div>
-    </footer>
+
   </div>
 </template>
 
 <script lang="ts" setup>
 import type { DartScore, Match } from '~/types/websocket';
 import { useUserStore } from '~/store/user';
-import { GameLiveStatsChart } from '#components';
+
 
 
 const showLeave = ref<boolean>(false);
@@ -165,6 +168,7 @@ const currentPlayerIndex = ref<number>(0);
 const viewBullOffWinner = ref<boolean>(false);
 const bullOffWinner = ref<string>('');
 const matchWinner = ref<string>('');
+const waitingForPlayer = ref<boolean>(true);
 const match = ref<Match | null>(null);
 
 
@@ -320,6 +324,7 @@ const joinMatch = (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
     }
     if (data.type === "match-start") {
       matchStarted.value = true;
+      waitingForPlayer.value = false;
       matchId.value = data.matchId;
       match.value = data.match;
       currentPlayerIndex.value = data.match.currentPlayerIndex;
@@ -376,7 +381,7 @@ const joinMatch = (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
     }
     if (data.type === "match-finished") {
       match.value = data.match;
-      match.value?.currentPlayerIndex === 2;
+      matchStarted.value = false;
       matchWinner.value = data.winner;
     }
 
@@ -446,5 +451,36 @@ function score(score: number, multiplier: number, points: number) {
 <style scoped>
 .grid-container {
   direction: rtl;
+}
+
+.stat-label {
+  @apply text-xs text-gray-500;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+/* New styles for fixed width stats */
+.stat-column {
+  width: 70px;
+  min-width: 70px;
+}
+
+.stat-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.stat-container:last-child {
+  margin-bottom: 0;
+}
+
+.stat-value {
+  width: 44px;
+  min-width: 44px;
+  text-align: right;
+  font-weight: 500;
+  padding-left: 4px;
 }
 </style>

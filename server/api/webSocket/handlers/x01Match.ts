@@ -10,18 +10,9 @@ export function handleX01Match(match: Match, sockets: Sockets, matchId: string, 
             const points = score * multiplier;
             const newScore = currentPlayer.scores.currentScore - points;
             
-            // Checkout-Versuch tracken
-            // Überprüfe, ob es sich um einen möglichen Checkout-Versuch handelt
+            // Add debug marker for checkout attempt checking
             const isCheckoutAttempt = isCheckoutAttemptDart(currentPlayer.scores.currentScore, match.settings.outMode);
             
-            if (isCheckoutAttempt && currentPlayer.scores.thrownDarts === currentPlayer.scores.dartScores.length) {
-                // Nur wenn es der letzte Dart eines Besuchs ist oder der Spieler bereits alle 3 Darts geworfen hat
-                if (!currentPlayer.scores.currentVisitHasCheckoutAttempt) {
-                    trackCheckoutAttempt(currentPlayer, newScore === 0 && isValidOutshot(multiplier, match.settings.outMode));
-                    currentPlayer.scores.currentVisitHasCheckoutAttempt = true;
-                }
-            }
-
             if(newScore < 0){
                 currentPlayer.scores.currentScore = currentPlayer.scores.currentScore + currentPlayer.scores.roundScore;
                 currentPlayer.scores.legScores[match.currentLeg].roundScores[match.currentRound] = {
@@ -51,6 +42,8 @@ export function handleX01Match(match: Match, sockets: Sockets, matchId: string, 
             else if(newScore === 0){
                 if(match.settings.outMode === 'Double'){
                     if(multiplier === 2){
+                       
+                        trackCheckoutAttempt(currentPlayer, true)
                         updateScore(currentPlayer, points, match);
                         endLeg(match, currentPlayer, sockets);
                     }
@@ -68,17 +61,25 @@ export function handleX01Match(match: Match, sockets: Sockets, matchId: string, 
                 }
                 else if(match.settings.outMode === 'Master'){
                     if(multiplier === 2 || multiplier === 3){
+                        
+                        trackCheckoutAttempt(currentPlayer, true)
                         updateScore(currentPlayer, points, match);
                         endLeg(match, currentPlayer, sockets);
                     }
                 }
                 else{
+                    
+                    trackCheckoutAttempt(currentPlayer, true)
                     updateScore(currentPlayer, points, match);
                     endLeg(match, currentPlayer, sockets);
                 }
                 
             }
             else{
+                if(isCheckoutAttempt){
+                  
+                    trackCheckoutAttempt(currentPlayer, false);
+                }
                 updateScore(currentPlayer, points, match);
                 mapPlayer(match, currentPlayer);
                 

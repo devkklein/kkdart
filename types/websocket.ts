@@ -1,4 +1,4 @@
-export interface PlayerScore {
+export interface PlayerScore { 
     currentScore: number;
     legsWon: number;
     setsWon: number;
@@ -76,7 +76,8 @@ export interface MatchSettings {
   }
   export interface PlayerStatistic{
     allPoints: number;
-    first9Points: number; // Neu hinzugefügt
+    first9Points: number; 
+    first9DartsThrown: number, // Neu hinzugefügt
     average: number;
     checkoutPercentage: number;
     first9Average: number;

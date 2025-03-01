@@ -7,7 +7,8 @@ function ensureStatsInitialized(player: Player) {
         player.stats = {
             average: 0,
             first9Average: 0,
-            first9Points: 0, // Neu für First 9 Score-Tracking
+            first9Points: 0,
+            first9DartsThrown: 0, // Neu für First 9 Score-Tracking
             checkoutPercentage: 0,
             checkouts: 0,
             checkoutsAttemps: 0,
@@ -42,8 +43,8 @@ export function handleMatchStats(player: Player, match: Match) {
         // Verwende first9Points direkt
         if (player.stats.first9Points && player.stats.first9Points > 0) {
             // Berechne, wie viele der ersten 9 Darts geworfen wurden
-            const dartsForFirst9 = Math.min(totalDartsThrown, 9);
-            player.stats.first9Average = Math.round((player.stats.first9Points / dartsForFirst9 * 3) * 10) / 10;
+            
+            player.stats.first9Average = Math.round((player.stats.first9Points / player.stats.first9DartsThrown )* 3  * 10) / 10;
         }
     }
     
@@ -94,9 +95,10 @@ export function trackRoundScore(player: Player, roundScore: number) {
 export function trackCheckoutAttempt(player: Player, isSuccessful: boolean) {
     ensureStatsInitialized(player);
     
-    player.stats.checkoutsAttemps += 1;
+    player.stats.checkoutsAttemps++;
     if (isSuccessful) {
-        player.stats.checkouts += 1;
+        player.stats.checkouts++;
+       
     }
     
     // Aktualisiere gleich die Prozentangabe
