@@ -694,7 +694,7 @@ onUnmounted(() => {
 
 <style scoped>
 .match-summary {
-  @apply bg-secondary-300 p-6 rounded-xl shadow-lg w-full;
+  @apply bg-black p-6 rounded-xl shadow-lg w-full;
 }
 
 .header {

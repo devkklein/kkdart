@@ -7,8 +7,11 @@ export function handleCreateMatch(socket: WebSocket, data: any) {
         const matchSettings = data.matchSettings._value;
         const matchId = crypto.randomUUID();
         console.log("Match erstellt:", matchId);
+
+
         matches[matchId] = {
           match: {
+         
           players: [],
           settings: matchSettings,
           currentLeg: 1,

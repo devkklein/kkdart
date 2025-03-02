@@ -1,29 +1,43 @@
 <template>
   <div>
-    <button @click="showId" type="button">crate match</button>
-    <button @click="createMatch" type="button">crate match</button>
+    <button @click="test" type="button">list matches</button>
+
+    <div v-if="matchHistory" v-for="match in matchHistory" :key="match.id">
+
+      <p>{{ new Date(match.createdAt).toLocaleString() }}</p>
+      <div v-for="player in match.players">
+        <p>{{ player.username }}</p>
+
+
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-const ws = ref<WebSocket | null>(null);
-const matchId = ref<string | null>(null);
+import { useUserStore } from '~/store/user';
+import type { Match } from '~/types/websocket';
+const matchHistory = ref<Match[]>([]);
+const store = useUserStore();
 
-const createMatch = () => {
-  ws.value = new WebSocket(`ws://${window.location.host}/api/ws`);
-  ws.value.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    if (data.type === "match-created") {
-      matchId.value = data.matchId;
-    }
-  };
-  ws.value.onopen = () => {
-    ws.value?.send(JSON.stringify({ type: "create-match" }));
-  };
-};
-const showId = () => {
-  alert(matchId.value);
-};
+async function test() {
+  const userId = store.id;
+  const { matches, error: apiError } = await $fetch(`https://${window.location.host}/api/user/getMatchHistory`, {
+    method: "POST",
+    body: { userId },
+  });
+  if (apiError) {
+    console.error("Error fetching match history:", apiError);
+
+  }
+  else {
+    console.log(matches);
+    matchHistory.value = matches;
+  }
+
+}
+
+
 </script>
 
 <style></style>

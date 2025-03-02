@@ -2,6 +2,15 @@
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: false },
+  runtimeConfig: {
+    public:{
+      
+      SUPABASE_URL: process.env.SUPABASE_URL
+    },
+    private:{
+      SUPABASE_KEY: process.env.SUPABASE_KEY
+    }
+  },
   modules: [
     "@nuxtjs/tailwindcss",
     "@pinia/nuxt",

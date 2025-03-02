@@ -9,6 +9,7 @@ export function handleX01Match(match: Match, sockets: Sockets, matchId: string, 
         if(match && !match.finished) {
             const points = score * multiplier;
             const newScore = currentPlayer.scores.currentScore - points;
+        
             
             // Add debug marker for checkout attempt checking
             const isCheckoutAttempt = isCheckoutAttemptDart(currentPlayer.scores.currentScore, match.settings.outMode);
@@ -26,7 +27,7 @@ export function handleX01Match(match: Match, sockets: Sockets, matchId: string, 
             }
             else if(newScore === 1 && match.settings.outMode === 'Double' || match.settings.outMode === 'Master'){
                      
-                    updateScore(currentPlayer, points, match);
+                    updateScore(currentPlayer, points, match, score, multiplier);
                     currentPlayer.scores.currentScore = currentPlayer.scores.currentScore + currentPlayer.scores.roundScore;
                     currentPlayer.scores.legScores[match.currentLeg].roundScores[match.currentRound] = {
                         scores: [],
@@ -44,7 +45,7 @@ export function handleX01Match(match: Match, sockets: Sockets, matchId: string, 
                     if(multiplier === 2){
                        
                         trackCheckoutAttempt(currentPlayer, true)
-                        updateScore(currentPlayer, points, match);
+                        updateScore(currentPlayer, points, match, score, multiplier);
                         endLeg(match, currentPlayer, sockets);
                     }
                     else{
@@ -63,15 +64,15 @@ export function handleX01Match(match: Match, sockets: Sockets, matchId: string, 
                     if(multiplier === 2 || multiplier === 3){
                         
                         trackCheckoutAttempt(currentPlayer, true)
-                        updateScore(currentPlayer, points, match);
+                        updateScore(currentPlayer, points, match, score, multiplier);
                         endLeg(match, currentPlayer, sockets);
                     }
                 }
                 else{
                     
                     trackCheckoutAttempt(currentPlayer, true)
-                    updateScore(currentPlayer, points, match);
-                    endLeg(match, currentPlayer, sockets);
+                    updateScore(currentPlayer, points, match, score, multiplier);
+                    endLeg(match, currentPlayer, sockets, );
                 }
                 
             }
@@ -80,7 +81,7 @@ export function handleX01Match(match: Match, sockets: Sockets, matchId: string, 
                   
                     trackCheckoutAttempt(currentPlayer, false);
                 }
-                updateScore(currentPlayer, points, match);
+                updateScore(currentPlayer, points, match, score, multiplier);
                 mapPlayer(match, currentPlayer);
                 
             }

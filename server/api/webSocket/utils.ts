@@ -1,5 +1,5 @@
 import type { Player, Match, Sockets, } from '~/types/websocket';
-import { handleMatchStats ,trackRoundScore} from './index';
+import { handleMatchStats ,trackRoundScore, handleSaveX01Match} from './index';
 
 export function resetPlayerDartScores(players: Player[]) {
   players.forEach((player) => {
@@ -88,11 +88,13 @@ export function mapPlayer(match: Match, player: Player) {
     return p;
   });
 }
-export function updateScore(player: Player, points: number, match: Match) {
+export function updateScore(player: Player, points: number, match: Match ,score: number, multiplier: number) {
+  updateDartsCount(player, score, multiplier, match);
   player.scores.currentScore -= points;
   player.scores.roundScore += points;
   player.stats.allPoints += points;
   player.scores.legScores[match.currentLeg].roundScores[match.currentRound].scores.push(points);
+ 
   handleMatchStats( player, match);
 
 }
@@ -184,7 +186,8 @@ export function endSet(match: Match, player: Player, sockets: Sockets) {
 }
 export function endMatch(match: Match, player: Player, sockets: Sockets) {
 
-
+  match.started = false;
+  handleSaveX01Match(match);
 
   sockets.ws.forEach((ws) => {
     ws.send(
@@ -196,4 +199,30 @@ export function endMatch(match: Match, player: Player, sockets: Sockets) {
     );
   });
 
+}
+export function updateDartsCount(currentPlayer: Player, score: number, multiplier: number, match: Match) {
+  if (!currentPlayer.scores.legDartsCount) {
+              currentPlayer.scores.legDartsCount = {};
+            }
+            if (!currentPlayer.scores.legDartsCount[match.currentLeg]) {
+              currentPlayer.scores.legDartsCount[match.currentLeg] = 0;
+            }
+            currentPlayer.scores.legDartsCount[match.currentLeg]++;
+         
+            // Aktualisiere first9Points
+            // Zähle die gesamte Anzahl der bisher geworfenen Darts in diesem Leg
+            const totalDartsInLeg = currentPlayer.scores.legDartsCount[match.currentLeg];
+            if (totalDartsInLeg <= 9) {
+              if (!currentPlayer.stats.first9Points) {
+                currentPlayer.stats.first9Points = 0;
+              }
+              currentPlayer.stats.first9Points += score * multiplier;
+              currentPlayer.stats.first9DartsThrown ++;
+            }
+            
+            currentPlayer.scores.dartScores[currentPlayer.scores.thrownDarts] = {
+              value: score,
+              multiplier,
+              points: score * multiplier,
+            };
 }
