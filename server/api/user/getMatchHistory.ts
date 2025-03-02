@@ -11,7 +11,7 @@ const supabase = createClient(url, key);
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  console.log(body)
+ 
   try {
     const { data: playerMatches, error: playerMatchesError } = await supabase
       .from('x01match_players')
@@ -22,11 +22,11 @@ export default defineEventHandler(async (event) => {
       console.error(playerMatchesError.message)
       return { error: playerMatchesError.message }
     }
-    console.log(playerMatches)
+  
 
     // Ensure matchIds is an array with values
     const matchIds = playerMatches?.map((match: any) => match.match_id) || []
-    console.log(matchIds)
+ 
     
     // Don't proceed if we don't have any match IDs
     if (matchIds.length === 0) {
@@ -189,6 +189,7 @@ function transformMatchData(matchPlayerRecords: any[]): Match[] {
     return {
       players,
       settings,
+      id: matchId,
       currentLeg: matchSettings.legs || 1,
       currentSet: matchSettings.sets || 1,
       finished: true, // Assuming historical matches are finished

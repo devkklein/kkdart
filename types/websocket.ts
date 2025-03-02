@@ -36,7 +36,7 @@ export interface Player {
 }
 
 export interface Match {
-    
+    id?: string;
     players: Player[];
     settings: MatchSettings;
     currentLeg: number;
