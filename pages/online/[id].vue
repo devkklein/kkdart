@@ -137,8 +137,9 @@
 
         </div>
       </div>
-      <div v-if="waitingForPlayer" class="flex flex-col h-full w-full justify-center items-center">
-        <h1>Waiting for Enemy player</h1>
+      <div v-if="waitingForPlayer && match && matchId" class="w-full h-full ">
+        <GameWaitingRoom :matchId="matchId" :settings="match.settings" :players="match.players"
+          @cancel="handleCancelMatch" @start="handleStartMatch" />
 
       </div>
 
@@ -153,14 +154,15 @@ import { useUserStore } from '~/store/user';
 
 
 
-const showLeave = ref<boolean>(false);
+const router = useRouter();
+
 
 const user = useUserStore();
 const route = useRoute();
 const matchId = ref<string | null>(null);
 const ws = ref<WebSocket | null>(null);
 const bullOffTie = ref<boolean>(false);
-const playerRole = ref<string>('');
+
 const currentPlayerIndex = ref<number>(0);
 const viewBullOffWinner = ref<boolean>(false);
 const bullOffWinner = ref<string>('');
@@ -315,9 +317,9 @@ const joinMatch = (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
   ws.value.onmessage = (event) => {
     const data = JSON.parse(event.data);
     if (data.type === "match-joined") {
-      if (!playerRole.value) {
-        playerRole.value = role ? role : 'Spieler2';
-      }
+      match.value = data.match;
+      matchId.value = data.matchId;
+
     }
     if (data.type === "match-start") {
 
@@ -448,8 +450,11 @@ onBeforeUnmount(() => {
 });
 
 // utility functions 
-function leaveMatch() {
-  showLeave.value = true;
+function handleCancelMatch() {
+  router.back();
+}
+function handleStartMatch() {
+  ws.value?.send(JSON.stringify({ type: 'start-match', matchId: matchId.value }));
 }
 
 function bullOffScoring(score: number, multiplier: number, points: number) {

@@ -1,5 +1,5 @@
 import type { Match, Sockets, Matches } from "~/types/websocket";
-import { handleBullOff,handleDartThrow,handleCreateMatch,handleJoinMatch,handleLeaveMatch, handleListMatches, handleX01Match } from "./index";
+import { handleBullOff,handleDartThrow,handleCreateMatch,handleJoinMatch,handleLeaveMatch, handleListMatches, handleX01Match, handleStartMatch } from "./index";
 
 
 
@@ -36,6 +36,10 @@ export default defineWebSocketHandler({
         case "join-match":
           handleJoinMatch(socket, data);
           break;
+        case "start-match":
+          handleStartMatch(socket, data);
+          break;
+          
         case "leave-match":
           handleLeaveMatch(socket, data);
           break;

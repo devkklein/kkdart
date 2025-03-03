@@ -60,26 +60,18 @@ export function handleJoinMatch(socket: WebSocket, data: any) {
         match.players.push(player);
         sockets.ws.push(ws);
 
-
-        socket.send(
+       sockets.ws.forEach((ws) => {
+          ws.send(
+        
           JSON.stringify({
             type: "match-joined",
+            matchId,
+            match,
           })
         );
+      }
+      );
 
-        if (match.players.length === 2) {
-          match.started = true;
-          sockets.ws.forEach((ws) => {
-
-            ws.send(
-              JSON.stringify({
-                type: "match-start",
-                matchId,
-                match,
-              })
-            );
-          });
-        }
       } else {
         socket.send(
           JSON.stringify({
