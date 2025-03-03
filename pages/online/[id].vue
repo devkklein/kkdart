@@ -139,7 +139,7 @@
       </div>
       <div v-if="waitingForPlayer" class="flex flex-col h-full w-full justify-center items-center">
         <h1>Waiting for Enemy player</h1>
-        <GameMatchList />
+
       </div>
 
     </div>
