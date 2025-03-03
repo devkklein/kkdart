@@ -1,93 +1,106 @@
 <template>
-  <div class="h-screen w-64 bg-secondary-300 text-white flex flex-col justify-between  border-r border-primary">
-    <div class=" h-full">
-      <SidebarProfile />
+  <div class="h-screen w-64 bg-secondary-300 text-white flex flex-col justify-between border-r border-primary">
+    <!-- Header with Profile -->
+    <div class="h-full flex flex-col">
+      <div class="flex items-center justify-between p-4 border-b border-primary mb-4">
+        <SidebarProfile />
+        <SidebarOptions />
+      </div>
 
-      <ul class=" space-y-3">
-        <div>
-          <div class=" p-1 space-y-2 bg-primary rounded-xl shadow-xl">
-        <li>
-          <div class="flex justify-center bg-yellow-600 rounded-full p-1">
-            <Icon name="simple-icons:dart" size="20" />
+      <!-- Navigation Menu -->
+      <div class=" px-3 flex-1 overflow-y-auto">
+        <!-- Home Section -->
+        <div class="mb-6">
+          <div class="p-2 bg-primary rounded-xl shadow-lg transition-all duration-200 hover:shadow-xl">
+            <router-link to="/"
+              class="flex items-center space-x-3 p-2 hover:bg-secondary-400 rounded-lg transition-all">
+              <div class="flex justify-center items-center bg-yellow-600 rounded-full p-2 min-w-8 min-h-8">
+                <Icon name="simple-icons:dart" size="16" />
+              </div>
+              <span class="text-sm">Home</span>
+            </router-link>
           </div>
-          <router-link to="/">Home</router-link>
-        </li>
+        </div>
+
+        <!-- Game Section -->
+        <div class="mb-6">
+          <p class="text-xs uppercase tracking-wider mb-2 px-2 opacity-70">Game</p>
+          <div class="p-2 bg-primary rounded-xl shadow-lg space-y-1">
+            <router-link to="/newMatch"
+              class="flex items-center space-x-3 p-2 hover:bg-secondary-400 rounded-lg transition-all">
+              <div class="flex justify-center items-center bg-blue-500 rounded-full p-2 min-w-8 min-h-8">
+                <Icon name="mdi:web" size="16" />
+              </div>
+              <span class="text-sm">Online</span>
+            </router-link>
+
+            <router-link to="/offline"
+              class="flex items-center space-x-3 p-2 hover:bg-secondary-400 rounded-lg transition-all">
+              <div class="flex justify-center items-center bg-green-500 rounded-full p-2 min-w-8 min-h-8">
+                <Icon name="game-icons:dart" size="16" />
+              </div>
+              <span class="text-sm">Offline</span>
+            </router-link>
+
+            <router-link to="/tournaments"
+              class="flex items-center space-x-3 p-2 hover:bg-secondary-400 rounded-lg transition-all">
+              <div class="flex justify-center items-center bg-yellow-500 rounded-full p-2 min-w-8 min-h-8">
+                <Icon name="game-icons:laurels-trophy" size="16" />
+              </div>
+              <span class="text-sm">Tournaments</span>
+            </router-link>
+          </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="mb-6">
+          <p class="text-xs uppercase tracking-wider mb-2 px-2 opacity-70">Stats</p>
+          <div class="p-2 bg-primary rounded-xl shadow-lg space-y-1">
+            <router-link to="/history"
+              class="flex items-center space-x-3 p-2 hover:bg-secondary-400 rounded-lg transition-all">
+              <div class="flex justify-center items-center bg-red-500 rounded-full p-2 min-w-8 min-h-8">
+                <Icon name="material-symbols:history" size="16" />
+              </div>
+              <span class="text-sm">History</span>
+            </router-link>
+
+            <router-link to="/statistics"
+              class="flex items-center space-x-3 p-2 hover:bg-secondary-400 rounded-lg transition-all">
+              <div class="flex justify-center items-center bg-purple-500 rounded-full p-2 min-w-8 min-h-8">
+                <Icon name="famicons:stats-chart" size="16" />
+              </div>
+              <span class="text-sm">Statistics</span>
+            </router-link>
+          </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div class="mb-6">
+          <p class="text-xs uppercase tracking-wider mb-2 px-2 opacity-70">Settings</p>
+          <div class="p-2 bg-primary rounded-xl shadow-lg">
+            <router-link to="/boards"
+              class="flex items-center space-x-3 p-2 hover:bg-secondary-400 rounded-lg transition-all">
+              <div class="flex justify-center items-center bg-blue-400 rounded-full p-2 min-w-8 min-h-8">
+                <Icon name="tdesign:dart-board" size="16" />
+              </div>
+              <span class="text-sm">Boards</span>
+            </router-link>
+          </div>
+        </div>
       </div>
-      </div>
-        <span></span>
-        <p>Game</p>
-        <div class=" p-1 space-y-2 bg-primary rounded-xl shadow-xl">
-        <li>
-          <div class="flex justify-center bg-blue-500 rounded-full p-1">
-            <Icon name="mdi:web" size="20" />
-          </div>
-          <router-link to="/newMatch">Online</router-link>
-        </li>
-        <li>
-          <div class="flex justify-center bg-green-500 rounded-full p-1">
-            <Icon name="game-icons:dart" size="20" />
-          </div>
-          <router-link to="/offline">Offline</router-link>
-        </li>
-        <li>
-          <div class="flex justify-center bg-yellow-500 rounded-full p-1">
-            <Icon name="game-icons:laurels-trophy" size="20" />
-          </div>
-          <router-link to="/tournaments">Tournaments</router-link>
-        </li>
-      </div>
-        <span></span>
-        <p>Stats</p>
-        <div class=" p-1 space-y-2 bg-primary rounded-xl shadow-xl">
-        <li>
-          <div class="flex justify-center bg-red-500 rounded-full p-1">
-            <Icon name="material-symbols:history" size="20" />
-          </div>
-          <router-link to="/history">History</router-link>
-        </li>
-        <li>
-          <div class="flex justify-center bg-purple-500 rounded-full p-1">
-            <Icon name="famicons:stats-chart" size="20" />
-          </div>
-          <router-link to="/statistics">Statistics</router-link>
-        </li>
-      </div>
-        <span></span>
-        <p>Settings</p>
-        <div class=" p-1 space-y-2 bg-primary rounded-xl shadow-xl">
-        <li>
-          <div class="flex justify-center bg-blue-400 rounded-full p-1">
-            <Icon name="tdesign:dart-board" size="20" />
-          </div>
-          <router-link to="/boards">Boards</router-link>
-        </li>
-      </div>
-      </ul>
     </div>
-    <div class="p-4">
-      <button
-        @click="logout"
-        class="flex flex-col justy-center items-center text-center w-full bg-primary text-white y-2 px-4 rounded hover:bg-secondary-300"
-      >
-        <Icon name="mdi:logout" size="20" class="scale-x-[-1]" />
-      </button>
-    </div>
+
+
   </div>
 </template>
 
 <script lang="ts" setup>
-const client = useSupabaseClient();
-const router = useRouter();
 
-async function logout() {
-  try {
-    const { error } = await client.auth.signOut();
-    if (error) throw error;
-    router.push("/login");
-  } catch (error) {
-    console.error(error);
-  }
-}
 </script>
 
-<style></style>
+<style scoped>
+.router-link-active {
+  background-color: #ffffff1a;
+  border-radius: 0.5rem;
+}
+</style>

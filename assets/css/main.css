@@ -14,11 +14,14 @@
 }
 
 @font-face {
-  font-family: "SF PRO";
-  src: url("/assets/fonts/sf-pro-display/SFPRODISPLAYREGULAR.OTF")
-    format("opentype");
+  font-family: "SF Pro";
+  src: 
+  url("/assets/fonts/sf-pro-display/SF-Pro-Display-Regular.otf") format("opentype"),
+  url("/assets/fonts/sf-pro-display/SF-Pro.ttf") format("truetype");
+ 
+    
   font-style: normal;
-  font-weight: 900; /* Making the font thinner */
+  font-weight: 600 /* Making the font thinner */
 }
 
 
@@ -79,12 +82,7 @@ label {
 button {
   @apply bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary-300;
 }
-ul {
-  @apply list-none items-center px-3 ;
-}
-li {
-  @apply items-center px-3 flex  space-x-4 text-lg bg-primary p-1  text-white hover:bg-secondary-300 cursor-pointer;
-}
+
 ul p {
   @apply text-gray-200 border-b-2 border-gray-500;
 }

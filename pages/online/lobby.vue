@@ -29,8 +29,7 @@ const matches = ref<Array<{ matchId: string; settings: any }>>([]);
 const ws = ref<WebSocket | null>(null);
 
 const joinMatch = (matchId: string) => {
-  // Navigiere zur Match-Seite. Eventuell kannst du hier auch gleich den
-  // join-match WS-Call implementieren, wenn der [id].vue das übernimmt.
+  
   router.push(`/online/${matchId}`);
 };
 

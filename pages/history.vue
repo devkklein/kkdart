@@ -22,14 +22,14 @@
             </div>
           </div>
 
-          <!-- Players display with VS -->
+
           <div class="flex items-center justify-center space-x-3 mb-3">
             <div class="player-card flex-1"
               :class="{ 'winner': getCurrentUserOrFirstPlayer(match).scores.setsWon > getOpponent(match).scores.setsWon }">
               <div class="flex flex-col">
                 <span class="font-bold">{{ getCurrentUserOrFirstPlayer(match).username }}</span>
                 <span class="text-neutral-400 text-xs">Average: {{ getCurrentUserOrFirstPlayer(match).stats.average
-                  }} | First9Avg: {{ getCurrentUserOrFirstPlayer(match).stats.first9Average }} | Checkout: {{
+                }} | First9Avg: {{ getCurrentUserOrFirstPlayer(match).stats.first9Average }} | Checkout: {{
                     getCurrentUserOrFirstPlayer(match).stats.checkoutPercentage }}%</span>
               </div>
               <span class="text-2xl font-semibold">{{ getCurrentUserOrFirstPlayer(match).scores.setsWon }}</span>
@@ -42,7 +42,7 @@
               <div class="flex flex-col">
                 <span class="font-bold">{{ getOpponent(match).username }}</span>
                 <span class="text-neutral-400 text-xs">Average: {{ getOpponent(match).stats.average
-                  }} | First9Avg: {{ getOpponent(match).stats.first9Average }} | Checkout: {{
+                }} | First9Avg: {{ getOpponent(match).stats.first9Average }} | Checkout: {{
                     getOpponent(match).stats.checkoutPercentage }}%</span>
               </div>
               <span class="text-2xl font-semibold">{{ getOpponent(match).scores.setsWon }}</span>
@@ -81,7 +81,7 @@ function formatDate(timestamp: number): string {
   });
 }
 
-// Get the current user if they're in the match, otherwise return the first player
+
 function getCurrentUserOrFirstPlayer(match: Match): Player {
   if (!user.value) return match.players[0];
 
@@ -89,7 +89,7 @@ function getCurrentUserOrFirstPlayer(match: Match): Player {
   return currentUser || match.players[0];
 }
 
-// Get the opponent (non-current user)
+
 function getOpponent(match: Match): Player {
   if (!user.value) return match.players[1];
 
@@ -97,16 +97,15 @@ function getOpponent(match: Match): Player {
   return opponent || match.players[1];
 }
 
-// Determine if the current user won the match
 function userWonMatch(match: Match): boolean {
   const currentUser = getCurrentUserOrFirstPlayer(match);
   const opponent = getOpponent(match);
 
-  // Compare sets won
+
   return currentUser.scores.setsWon > opponent.scores.setsWon;
 }
 
-// Navigate to match details page
+
 function viewMatchDetails(match: Match) {
   selectedMatch.value = match;
   router.push('/content/matchdetails');

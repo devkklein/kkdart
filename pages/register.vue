@@ -64,7 +64,7 @@ async function saveUserData(userId: string) {
   try {
     const { data, error } = await client
       .from("User")
-      .insert([{ id: userId, email: email.value, username: username.value }]);
+      .insert([{ id: userId, username: username.value }]);
     if (error) throw error;
 
     console.log("User data saved:", data);

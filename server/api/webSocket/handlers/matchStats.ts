@@ -37,7 +37,7 @@ export function handleMatchStats(player: Player, match: Match) {
     
     if (totalDartsThrown > 0) {
         // Berechne Overall Average mit 1 Dezimalstelle
-        player.stats.average = Math.round((player.stats.allPoints / totalDartsThrown *3 ) * 10) / 10;
+        player.stats.average = Math.round((player.stats.allPoints / totalDartsThrown * 3 ) * 10) / 10;
         
         // First 9 Average nur für die ersten 9 geworfenen Darts
         // Verwende first9Points direkt

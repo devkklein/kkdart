@@ -9,11 +9,11 @@ export const useUserStore = defineStore("user", () => {
   const id = ref<string | null>(null);
 
   async function fetchUserData() {
-    if (user.value?.email) {
+    if (user.value?.id) {
       const { data, error } = await client
         .from("User")
         .select("id, username, picture")
-        .eq("email", user.value.email);
+        .eq("id", user.value.id);
 
       if (error) {
         console.error("Error fetching user data:", error.message);
