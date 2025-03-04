@@ -1,41 +1,45 @@
-import { createClient } from '@supabase/supabase-js'
-import type { Match, Player, PlayerStatistic, MatchSettings } from '~/types/websocket';
+import { createClient } from "@supabase/supabase-js";
+import type {
+  Match,
+  Player,
+  PlayerStatistic,
+  MatchSettings,
+} from "~/types/websocket";
 const key = process.env.SUPABASE_KEY;
 const url = process.env.SUPABASE_URL;
 
 // Fix the string | undefined issue
 if (!url || !key) {
-  throw new Error('Supabase credentials missing');
+  throw new Error("Supabase credentials missing");
 }
 const supabase = createClient(url, key);
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event)
- 
+  const body = await readBody(event);
+
   try {
     const { data: playerMatches, error: playerMatchesError } = await supabase
-      .from('x01match_players')
-      .select('match_id')
-      .eq('user_id', body.userId)
-      
-    if(playerMatchesError){
-      console.error(playerMatchesError.message)
-      return { error: playerMatchesError.message }
+      .from("x01match_players")
+      .select("match_id")
+      .eq("user_id", body.userId);
+
+    if (playerMatchesError) {
+      console.error(playerMatchesError.message);
+      return { error: playerMatchesError.message };
     }
-  
 
     // Ensure matchIds is an array with values
-    const matchIds = playerMatches?.map((match: any) => match.match_id) || []
- 
-    
+    const matchIds = playerMatches?.map((match: any) => match.match_id) || [];
+
     // Don't proceed if we don't have any match IDs
     if (matchIds.length === 0) {
-      return { matches: [] }
+      return { matches: [] };
     }
 
     const { data: matchDetails, error: matchDetailsError } = await supabase
-      .from('x01match_players')
-      .select(`
+      .from("x01match_players")
+      .select(
+        `
         match_id,
         x01matches (
           id,
@@ -70,68 +74,69 @@ export default defineEventHandler(async (event) => {
         sets_won,
         leg_darts_count,
         leg_scores
-      `)
-      .in('match_id', matchIds)
-      .order('created_at', { ascending: false })
-      
+      `
+      )
+      .in("match_id", matchIds)
+      .order("created_at", { ascending: false });
+
     if (matchDetailsError) {
-      console.error(matchDetailsError.message)
-      return { error: matchDetailsError.message }
+      console.error(matchDetailsError.message);
+      return { error: matchDetailsError.message };
     }
-    
+
     // Transform the data into Match objects
     const formattedMatches: Match[] = transformMatchData(matchDetails);
-    
-    return { matches: formattedMatches }
+
+    return { matches: formattedMatches };
   } catch (error: any) {
-    console.error(error)
-    return { error: error.message || 'Unknown error occurred' }
+    console.error(error);
+    return { error: error.message || "Unknown error occurred" };
   }
-})
+});
 
 function transformMatchData(matchPlayerRecords: any[]): Match[] {
   // Group players by match_id
   const matchesMap: Record<string, any[]> = {};
-  
-  matchPlayerRecords.forEach(record => {
+
+  matchPlayerRecords.forEach((record) => {
     const matchId = record.match_id;
     if (!matchesMap[matchId]) {
       matchesMap[matchId] = [];
     }
     matchesMap[matchId].push(record);
   });
-  
+
   // Convert each match group to a Match object
   return Object.entries(matchesMap).map(([matchId, playerRecords]) => {
     // All player records for a match have the same match settings
     const matchSettings = playerRecords[0].x01matches;
-    
+
     // Create player objects
-    const players: Player[] = playerRecords.map(record => {
+    const players: Player[] = playerRecords.map((record) => {
       // Parse leg_scores if it exists and is a string
       let legScores = {};
       try {
-        if (typeof record.leg_scores === 'string') {
+        if (typeof record.leg_scores === "string") {
           legScores = JSON.parse(record.leg_scores);
         } else if (record.leg_scores) {
           legScores = record.leg_scores;
         }
       } catch (e) {
-        console.error('Error parsing leg_scores:', e);
+        console.error("Error parsing leg_scores:", e);
       }
-      
+
       // Parse leg_darts_count if it exists and is a string
       let legDartsCount = {};
       try {
-        if (typeof record.leg_darts_count === 'string') {
+        if (typeof record.leg_darts_count === "string") {
           legDartsCount = JSON.parse(record.leg_darts_count);
         } else if (record.leg_darts_count) {
           legDartsCount = record.leg_darts_count;
         }
       } catch (e) {
-        console.error('Error parsing leg_darts_count:', e);
+        console.error("Error parsing leg_darts_count:", e);
       }
-      
+
       // Create player statistics
       const playerStats: PlayerStatistic = {
         allPoints: record.all_points || 0,
@@ -147,7 +152,7 @@ function transformMatchData(matchPlayerRecords: any[]): Match[] {
         checkouts: record.checkouts || 0,
         checkoutsAttemps: record.checkouts_attempts || 0,
       };
-      
+
       // Create player scores
       return {
         id: record.user_id,
@@ -161,30 +166,30 @@ function transformMatchData(matchPlayerRecords: any[]): Match[] {
           dartScores: {
             "1": {},
             "2": {},
-            "3": {}
+            "3": {},
           },
           roundScore: 0,
           legScores: legScores,
           thrownDarts: 0,
           legDartsCount: legDartsCount,
           trackedRounds: { "1": { "1": true } },
-          currentVisitHasCheckoutAttempt: false
-        }
+          currentVisitHasCheckoutAttempt: false,
+        },
       };
     });
-    
+
     // Create match settings
     const settings: MatchSettings = {
       baseScore: matchSettings.base_score || 501,
-      inMode: matchSettings.in_mode || 'Singel',
-      outMode: matchSettings.out_mode || 'Double',
+      inMode: matchSettings.in_mode || "Singel",
+      outMode: matchSettings.out_mode || "Double",
       legCount: matchSettings.leg_count || 3,
       setCount: matchSettings.set_count || 1,
-      lobbyMode: matchSettings.lobby_mode || 'Public',
-      bullOff: matchSettings.bull_off || 'Normal',
-      maxRounds: matchSettings.max_rounds || 50
+      lobbyMode: matchSettings.lobby_mode || "Public",
+      bullOff: matchSettings.bull_off || "Normal",
+      maxRounds: matchSettings.max_rounds || 50,
     };
-    
+
     // Create complete match object
     return {
       players,
@@ -198,7 +203,7 @@ function transformMatchData(matchPlayerRecords: any[]): Match[] {
       bullOffFinished: true,
       currentPlayerIndex: 0,
       startPlayerIndex: 0,
-      currentRound: 1
+      currentRound: 1,
     };
   });
 }

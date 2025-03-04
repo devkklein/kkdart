@@ -1,45 +1,76 @@
 <template>
   <div class="flex h-screen">
-    <div class="w-1/2 bg-gray-200 min-h-full flex flex-col items-center justify-center">
-      <form class="bg-white flex flex-col items-right justify-center p-8 rounded-lg shadow-xl space-y-4">
+    <div
+      class="w-1/2 bg-gray-200 min-h-full flex flex-col items-center justify-center"
+    >
+      <form
+        class="bg-white flex flex-col items-right justify-center p-8 rounded-lg shadow-xl space-y-4"
+      >
         <h1 class="text-3xl text-black">Willkommen zu Open Darts</h1>
         <p class="text-gray-500 text-sm">Die opensource online Dartplatform</p>
 
         <div class="flex flex-col min-w-1/2">
           <label for="username">Benutzername</label>
-          <input class="text-black" v-model="username" type="text" placeholder="Benutzername" />
+          <input
+            class="text-black"
+            v-model="username"
+            type="text"
+            placeholder="Benutzername"
+          />
         </div>
 
         <div class="flex flex-col">
           <label for="email"> Emailadresse</label>
-          <input v-model="email" type="email" placeholder="Email" class="text-black" />
+          <input
+            v-model="email"
+            type="email"
+            placeholder="Email"
+            class="text-black"
+          />
         </div>
         <div class="flex items-center justify-center space-x-5">
           <div class="flex flex-col">
             <label for="password"> Passwort</label>
-            <input v-model="password" type="password" placeholder="Password" class="text-black" />
+            <input
+              v-model="password"
+              type="password"
+              placeholder="Password"
+              class="text-black"
+            />
           </div>
           <div class="flex flex-col">
             <label for="password"> Passwort Bestätigen</label>
-            <input v-model="password2" type="password" placeholder="Password" class="text-black" />
+            <input
+              v-model="password2"
+              type="password"
+              placeholder="Password"
+              class="text-black"
+            />
           </div>
         </div>
         <div>
           <p class="text-xs text-gray-500">
             Mit dem erstellen eines Accounts stimmen sie unserer
-            <a href="#" class="border-b border-gray-400 hover:text-blue-500">Nutzungsvereinbahrung</a>
+            <a href="#" class="border-b border-gray-400 hover:text-blue-500"
+              >Nutzungsvereinbahrung</a
+            >
             und
           </p>
           <p class="text-xs text-gray-500">
-            <a href="#" class="border-b border-gray-400 hover:text-blue-500">Datenschutzerklärung</a>
+            <a href="#" class="border-b border-gray-400 hover:text-blue-500"
+              >Datenschutzerklärung</a
+            >
             zu
           </p>
         </div>
         <button @click="signUp" type="button" class="">Registrieren</button>
         <div class="flex items-right space-x-2">
           <p class="text-xs text-gray-500">Bereits ein Account?</p>
-          <nuxt-link to="/login"
-            class="border-b border-gray-400 hover:text-blue-500 text-xs text-black">Einloggen</nuxt-link>
+          <nuxt-link
+            to="/login"
+            class="border-b border-gray-400 hover:text-blue-500 text-xs text-black"
+            >Einloggen</nuxt-link
+          >
         </div>
       </form>
     </div>

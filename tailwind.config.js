@@ -31,8 +31,8 @@ export default {
         red: {
           500: "#ec573f",
         },
-        blue:{
-          500:  "#192a56",
+        blue: {
+          500: "#192a56",
         },
         black: "#0f0f0f",
       },

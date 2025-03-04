@@ -8,8 +8,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { Match } from '~/types/websocket';
-const match = useState<Match>('selectedMatch');
+import type { Match } from "~/types/websocket";
+const match = useState<Match>("selectedMatch");
 </script>
 
 <style></style>

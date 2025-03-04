@@ -29,7 +29,6 @@ export const useStatsStore = defineStore("stasts", () => {
       if (error) {
         console.error("Error fetching user data:", error.message);
       } else if (data && data.length > 0) {
-        
         matches_played.value = data[0].matches_played;
         matches_won.value = data[0].matches_won;
         matches_lost.value = data[0].matches_lost;

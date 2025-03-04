@@ -13,7 +13,6 @@ export interface Player {
   average?: number;
   first9Average?: number;
   checkoutRate?: number;
-
 }
 export interface Players {
   users: Player[];

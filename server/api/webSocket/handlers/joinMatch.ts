@@ -4,13 +4,12 @@ import type { Player, Match } from "~/types/websocket";
 
 export function handleJoinMatch(socket: WebSocket, data: any) {
   try {
-
     const match = matches[data.matchId].match;
     const sockets = matches[data.matchId].sockets;
     const matchId = data.matchId;
     const player: Player = {
       ...data.player,
-      stats:{
+      stats: {
         average: 0,
         first9Average: 0,
         first9Points: 0,
@@ -23,7 +22,6 @@ export function handleJoinMatch(socket: WebSocket, data: any) {
         score140: 0,
         score180: 0,
         allPoints: 0,
-
       },
       scores: {
         currentScore: match.settings.baseScore,
@@ -48,30 +46,25 @@ export function handleJoinMatch(socket: WebSocket, data: any) {
                 scores: [],
               },
             },
-
           },
         },
       },
     };
     const ws = socket;
     if (match) {
-
       if (match.players.length < 2) {
         match.players.push(player);
         sockets.ws.push(ws);
 
-       sockets.ws.forEach((ws) => {
+        sockets.ws.forEach((ws) => {
           ws.send(
-        
-          JSON.stringify({
-            type: "match-joined",
-            matchId,
-            match,
-          })
-        );
-      }
-      );
-
+            JSON.stringify({
+              type: "match-joined",
+              matchId,
+              match,
+            })
+          );
+        });
       } else {
         socket.send(
           JSON.stringify({

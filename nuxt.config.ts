@@ -1,8 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
-  devtools: { enabled: false},
- 
+  devtools: { enabled: false },
+
   modules: [
     "@nuxtjs/tailwindcss",
     "@pinia/nuxt",
@@ -27,7 +27,7 @@ export default defineNuxtConfig({
     https: {
       key: "./assets/certificate/localhost-key.pem",
       cert: "./assets/certificate/localhost.pem",
-    }
+    },
   },
   css: ["~/assets/css/main.css"],
   icon: {

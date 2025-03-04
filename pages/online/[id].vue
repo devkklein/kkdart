@@ -1,66 +1,46 @@
 <template>
-  <div class="flex h-screen  ">
+  <div class="flex h-screen">
     <Sidebar />
-    <div class=" h-full w-full overflow-y-auto">
+    <div class="h-full w-full overflow-y-auto">
       <PopupsBullOffWinner v-if="viewBullOffWinner" :winner="bullOffWinner" />
-      <GameMatchSummary v-if="match?.finished && match" :match=match />
+      <GameMatchSummary v-if="match?.finished && match" :match="match" />
 
-      <div v-if="match?.started && match" class="w-full p-4 ">
+      <div v-if="match?.started && match" class="w-full p-4">
         <GameMatchSettings :match="match" />
         <div class="flex flex-col justify-end">
-          <div class="flex ">
+          <div class="flex">
             <div class="flex w-8/12 flex-col">
               <div class="grid grid-flow-col py-4 space-x-5">
                 <div v-for="(player, playerIndex) in sortedPlayers" :key="playerIndex">
                   <GameUserCard :player="player" :match="match" />
-
-
-
-
                 </div>
               </div>
 
               <GameInputButtons v-if="match.bullOffFinished" @score="score" />
               <GameInputBulloff v-if="!match.bullOffFinished" @bullOffScoring="bullOffScoring" />
             </div>
-            <div class=" w-8/12 flex py-4 pl-4  pr-0  rounded-xl ">
-              <div class="flex flex-col  w-full ">
-
-
+            <div class="w-8/12 flex py-4 pl-4 pr-0 rounded-xl">
+              <div class="flex flex-col w-full">
                 <GameScoreChart :player="match.players[getPlayerIndex(match)]" />
-
-
-
               </div>
-              <div>
-
-              </div>
-
+              <div></div>
             </div>
-
           </div>
-
         </div>
       </div>
-      <div v-if="waitingForPlayer && match && matchId" class="w-full h-full ">
+      <div v-if="waitingForPlayer && match && matchId" class="w-full h-full">
         <GameWaitingRoom :matchId="matchId" :settings="match.settings" :players="match.players"
           @cancel="handleCancelMatch" @start="handleStartMatch" />
-
       </div>
-
     </div>
-
   </div>
 </template>
 
 <script lang="ts" setup>
-import type { DartScore, Match } from '~/types/websocket';
-import { useUserStore } from '~/store/user';
-
-
+import type { DartScore, Match } from "~/types/websocket";
+import { useUserStore } from "~/store/user";
 
 const router = useRouter();
-
 
 const user = useUserStore();
 const route = useRoute();
@@ -70,11 +50,10 @@ const bullOffTie = ref<boolean>(false);
 
 const currentPlayerIndex = ref<number>(0);
 const viewBullOffWinner = ref<boolean>(false);
-const bullOffWinner = ref<string>('');
-const matchWinner = ref<string>('');
+const bullOffWinner = ref<string>("");
+const matchWinner = ref<string>("");
 const waitingForPlayer = ref<boolean>(true);
 const match = ref<Match | null>(null);
-
 
 /*const match: Match = {
   players: [
@@ -212,11 +191,10 @@ const match = ref<Match | null>(null);
 };*/
 //const match = ref<Match | null>(null);
 // websocket functions
-const joinMatch = (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
-
-
+const joinMatch = (matchIdVal: string, role?: "Spieler1" | "Spieler2") => {
   ws.value = new WebSocket(
-    `${window.location.protocol === 'https:' ? 'wss://' : 'ws://'}${window.location.host}/api/webSocket/ws`
+    `${window.location.protocol === "https:" ? "wss://" : "ws://"}${window.location.host
+    }/api/webSocket/ws`
   );
 
   ws.value.onmessage = (event) => {
@@ -224,24 +202,18 @@ const joinMatch = (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
     if (data.type === "match-joined") {
       match.value = data.match;
       matchId.value = data.matchId;
-
     }
     if (data.type === "match-start") {
-
       waitingForPlayer.value = false;
       matchId.value = data.matchId;
       match.value = data.match;
       currentPlayerIndex.value = data.match.currentPlayerIndex;
     }
     if (data.type === "bulloff-update") {
-
       match.value = data.match;
-
     }
     if (data.type === "switch-turn") {
-
       match.value = data.match;
-
     }
     if (data.type === "bulloff-tie") {
       bullOffTie.value = true;
@@ -250,10 +222,8 @@ const joinMatch = (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
         currentPlayerIndex.value = 0;
         match.value = data.match;
       }, 3000);
-
     }
     if (data.type === "bulloff-winner") {
-
       bullOffWinner.value = data.winner;
       match.value = data.match;
 
@@ -266,8 +236,7 @@ const joinMatch = (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
         viewBullOffWinner.value = false;
         if (!data.match.currentPlayerIndex) {
           match.value?.currentPlayerIndex === 0;
-        }
-        else {
+        } else {
           match.value?.currentPlayerIndex === 1;
         }
         match.value = data.match;
@@ -275,30 +244,36 @@ const joinMatch = (matchIdVal: string, role?: 'Spieler1' | 'Spieler2') => {
     }
     if (data.type === "dart-update") {
       match.value = data.match;
-
     }
-
 
     if (data.type === "leg-update") {
       match.value = data.match;
-
     }
     if (data.type === "match-finished") {
       match.value = data.match;
 
       matchWinner.value = data.winner;
     }
-
-
   };
 
   ws.value.onopen = () => {
-    ws.value?.send(JSON.stringify({ type: 'join-match', matchId: matchIdVal, player: { id: user.id, username: user.username, image: user.profileImage || null } }));
+    ws.value?.send(
+      JSON.stringify({
+        type: "join-match",
+        matchId: matchIdVal,
+        player: {
+          id: user.id,
+          username: user.username,
+          image: user.profileImage || null,
+        },
+      })
+    );
   };
 };
 const sortedPlayers = computed(() => {
-
-  if (!match.value || !match.value.players) { return []; }
+  if (!match.value || !match.value.players) {
+    return [];
+  }
 
   const players = [...match.value.players];
 
@@ -311,56 +286,86 @@ const sortedPlayers = computed(() => {
   return players;
 });
 
-
-
-// mount functions 
+// mount functions
 onMounted(() => {
   matchId.value = route.params.id as string;
 
   if (matchId.value) {
-    if (route.query.creator === 'true') {
-      joinMatch(matchId.value, 'Spieler1');
+    if (route.query.creator === "true") {
+      joinMatch(matchId.value, "Spieler1");
     } else {
       //
       joinMatch(matchId.value);
     }
   }
 
-  window.addEventListener('beforeunload', () => {
+  window.addEventListener("beforeunload", () => {
     if (ws.value) {
-      ws.value.send(JSON.stringify({ type: 'leave-match', matchId: matchId.value, player: { id: user.id, username: user.username } }));
+      ws.value.send(
+        JSON.stringify({
+          type: "leave-match",
+          matchId: matchId.value,
+          player: { id: user.id, username: user.username },
+        })
+      );
     }
   });
 });
 
-
-
-
-
 onBeforeUnmount(() => {
   if (ws.value) {
-    ws.value.send(JSON.stringify({ type: 'leave-match', matchId: matchId.value, player: { id: user.id, username: user.username } }));
+    ws.value.send(
+      JSON.stringify({
+        type: "leave-match",
+        matchId: matchId.value,
+        player: { id: user.id, username: user.username },
+      })
+    );
     ws.value.close();
   }
 });
 
-// utility functions 
+// utility functions
 function handleCancelMatch() {
   router.back();
 }
 function handleStartMatch() {
-  ws.value?.send(JSON.stringify({ type: 'start-match', matchId: matchId.value }));
+  ws.value?.send(
+    JSON.stringify({ type: "start-match", matchId: matchId.value })
+  );
 }
 
 function bullOffScoring(score: number, multiplier: number, points: number) {
-  const currentPlayer = match.value?.players.find((player: any) => player.id === user.id);
+  const currentPlayer = match.value?.players.find(
+    (player: any) => player.id === user.id
+  );
 
-  ws.value?.send(JSON.stringify({ type: 'bulloff-dart', matchId: matchId.value, player: currentPlayer, score, multiplier, points }));
+  ws.value?.send(
+    JSON.stringify({
+      type: "bulloff-dart",
+      matchId: matchId.value,
+      player: currentPlayer,
+      score,
+      multiplier,
+      points,
+    })
+  );
 }
 function score(score: number, multiplier: number, points: number) {
-  const currentPlayer = match.value?.players.find((player: any) => player.id === user.id);
+  const currentPlayer = match.value?.players.find(
+    (player: any) => player.id === user.id
+  );
 
-  ws.value?.send(JSON.stringify({ type: 'dart-throw', matchId: matchId.value, player: currentPlayer, score, multiplier, points }));
+  ws.value?.send(
+    JSON.stringify({
+      type: "dart-throw",
+      matchId: matchId.value,
+      player: currentPlayer,
+      score,
+      multiplier,
+      points,
+    })
+  );
   //ws.value?.send(JSON.stringify({ type: 'x01-match', matchId: matchId.value, player: currentPlayer, score, multiplier, points }));
 }
 </script>

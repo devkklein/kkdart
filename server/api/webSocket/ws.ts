@@ -1,12 +1,18 @@
 import type { Match, Sockets, Matches } from "~/types/websocket";
-import { handleBullOff,handleDartThrow,handleCreateMatch,handleJoinMatch,handleLeaveMatch, handleListMatches, handleX01Match, handleStartMatch } from "./index";
-
-
+import {
+  handleBullOff,
+  handleDartThrow,
+  handleCreateMatch,
+  handleJoinMatch,
+  handleLeaveMatch,
+  handleListMatches,
+  handleX01Match,
+  handleStartMatch,
+} from "./index";
 
 export const matches = {} as Matches;
 
 // Dummy-Funktion für DB-Speicherung
-
 
 // Überprüfe alle 1 Sekunde, ob Matches gelöscht werden sollen
 
@@ -28,7 +34,6 @@ export default defineWebSocketHandler({
     }
 
     try {
-     
       switch (data.type) {
         case "create-match":
           handleCreateMatch(socket, data);
@@ -39,7 +44,7 @@ export default defineWebSocketHandler({
         case "start-match":
           handleStartMatch(socket, data);
           break;
-          
+
         case "leave-match":
           handleLeaveMatch(socket, data);
           break;
@@ -55,7 +60,7 @@ export default defineWebSocketHandler({
         case "x01-match":
           handleDartThrow(socket, data);
           break;
-          
+
         default:
           console.log("Unbekannter Nachrichtentyp:", data.type);
       }
@@ -68,7 +73,7 @@ export default defineWebSocketHandler({
 setInterval(() => {
   try {
     const now = Date.now();
-    Object.entries(matches).forEach(([matchId,{match, sockets} ]) => {
+    Object.entries(matches).forEach(([matchId, { match, sockets }]) => {
       // Lösche Matches, die nicht beendet sind, weniger als 2 Spieler haben
       // und älter als 5 Sekunden sind
       if (

@@ -68,8 +68,12 @@
             </tr>
             <tr>
               <td>First 9 Avg</td>
-              <td>{{ match.players[0].stats?.first9Average?.toFixed(1) || 0 }}</td>
-              <td>{{ match.players[1].stats?.first9Average?.toFixed(1) || 0 }}</td>
+              <td>
+                {{ match.players[0].stats?.first9Average?.toFixed(1) || 0 }}
+              </td>
+              <td>
+                {{ match.players[1].stats?.first9Average?.toFixed(1) || 0 }}
+              </td>
             </tr>
             <tr>
               <td>180s</td>
@@ -94,7 +98,11 @@
       <div class="stat-card">
         <h3>Match Highlights</h3>
         <div class="highlights">
-          <div class="highlight-item" v-for="(highlight, index) in matchHighlights" :key="index">
+          <div
+            class="highlight-item"
+            v-for="(highlight, index) in matchHighlights"
+            :key="index"
+          >
             <div class="highlight-icon" :class="highlight.type">
               <Icon :name="highlight.icon" size="24" />
             </div>
@@ -113,14 +121,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed, onUnmounted, nextTick } from 'vue';
-import type { Ref } from 'vue';
-import * as echarts from 'echarts';
-import type { ECharts } from 'echarts';
-import type { Match, Player } from '~/types/websocket';
+import { ref, onMounted, computed, onUnmounted, nextTick } from "vue";
+import type { Ref } from "vue";
+import * as echarts from "echarts";
+import type { ECharts } from "echarts";
+import type { Match, Player } from "~/types/websocket";
 
 const props = defineProps<{
-  match: Match
+  match: Match;
 }>();
 
 // Chart references
@@ -144,9 +152,9 @@ const matchHighlights = computed(() => {
     if (player.stats?.score180 && player.stats.score180 > 0) {
       highlights.push({
         player: player.username,
-        type: 'score180',
-        icon: 'mdi:target',
-        description: `Hit ${player.stats.score180} 180s!`
+        type: "score180",
+        icon: "mdi:target",
+        description: `Hit ${player.stats.score180} 180s!`,
       });
     }
 
@@ -157,9 +165,9 @@ const matchHighlights = computed(() => {
       if (player.stats.checkouts > 0) {
         highlights.push({
           player: player.username,
-          type: 'checkout',
-          icon: 'mdi:bullseye-arrow',
-          description: `${player.stats.checkouts} successful checkouts (${player.stats.checkoutPercentage}%)`
+          type: "checkout",
+          icon: "mdi:bullseye-arrow",
+          description: `${player.stats.checkouts} successful checkouts (${player.stats.checkoutPercentage}%)`,
         });
       }
     }
@@ -172,7 +180,7 @@ const matchHighlights = computed(() => {
 function initializeCharts() {
   // Clean up any existing charts
   if (charts.length > 0) {
-    charts.forEach(chart => chart.dispose());
+    charts.forEach((chart) => chart.dispose());
     charts = [];
   }
 
@@ -210,98 +218,101 @@ function initializeCharts() {
 
 // Render player averages comparison chart
 function renderAveragesChart(chart: ECharts) {
-  const players = [props.match.players[0].username, props.match.players[1].username];
+  const players = [
+    props.match.players[0].username,
+    props.match.players[1].username,
+  ];
   const avgData = [
     props.match.players[0].stats?.average || 0,
-    props.match.players[1].stats?.average || 0
+    props.match.players[1].stats?.average || 0,
   ];
   const first9Data = [
     props.match.players[0].stats?.first9Average || 0,
-    props.match.players[1].stats?.first9Average || 0
+    props.match.players[1].stats?.first9Average || 0,
   ];
 
   const option = {
     tooltip: {
-      trigger: 'axis',
+      trigger: "axis",
       axisPointer: {
-        type: 'shadow'
-      }
+        type: "shadow",
+      },
     },
     legend: {
-      data: ['Average', 'First 9 Avg'],
+      data: ["Average", "First 9 Avg"],
       textStyle: {
-        color: '#cccccc'
+        color: "#cccccc",
       },
-      bottom: 0
+      bottom: 0,
     },
     grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '15%',
-      top: '3%',
-      containLabel: true
+      left: "3%",
+      right: "4%",
+      bottom: "15%",
+      top: "3%",
+      containLabel: true,
     },
     xAxis: [
       {
-        type: 'category',
+        type: "category",
         data: players,
         axisTick: {
-          alignWithLabel: true
+          alignWithLabel: true,
         },
         axisLine: {
           lineStyle: {
-            color: '#555'
-          }
+            color: "#555",
+          },
         },
         axisLabel: {
-          color: '#ddd'
-        }
-      }
+          color: "#ddd",
+        },
+      },
     ],
     yAxis: [
       {
-        type: 'value',
+        type: "value",
         axisLine: {
           lineStyle: {
-            color: '#555'
-          }
+            color: "#555",
+          },
         },
         axisLabel: {
-          color: '#ddd'
+          color: "#ddd",
         },
         splitLine: {
           lineStyle: {
-            color: '#333'
-          }
-        }
-      }
+            color: "#333",
+          },
+        },
+      },
     ],
     series: [
       {
-        name: 'Average',
-        type: 'bar',
-        barWidth: '30%',
+        name: "Average",
+        type: "bar",
+        barWidth: "30%",
         data: avgData,
         itemStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: '#4facfe' },
-            { offset: 1, color: '#00f2fe' }
-          ])
-        }
+            { offset: 0, color: "#4facfe" },
+            { offset: 1, color: "#00f2fe" },
+          ]),
+        },
       },
       {
-        name: 'First 9 Avg',
-        type: 'bar',
-        barWidth: '30%',
+        name: "First 9 Avg",
+        type: "bar",
+        barWidth: "30%",
         data: first9Data,
         itemStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: '#fa709a' },
-            { offset: 1, color: '#fee140' }
-          ])
-        }
-      }
-    ]
+            { offset: 0, color: "#fa709a" },
+            { offset: 1, color: "#fee140" },
+          ]),
+        },
+      },
+    ],
   };
 
   chart.setOption(option);
@@ -315,11 +326,11 @@ function renderCheckoutChart(chart: ECharts, playerIndex: number) {
   const option = {
     series: [
       {
-        type: 'gauge',
+        type: "gauge",
         startAngle: 90,
         endAngle: -270,
         pointer: {
-          show: false
+          show: false,
         },
         progress: {
           show: true,
@@ -328,62 +339,62 @@ function renderCheckoutChart(chart: ECharts, playerIndex: number) {
           clip: false,
           itemStyle: {
             color: {
-              type: 'linear',
+              type: "linear",
               x: 0,
               y: 0,
               x2: 0,
               y2: 1,
               colorStops: [
-                { offset: 0, color: '#8e2de2' },
-                { offset: 1, color: '#4a00e0' }
-              ]
-            }
-          }
+                { offset: 0, color: "#8e2de2" },
+                { offset: 1, color: "#4a00e0" },
+              ],
+            },
+          },
         },
         axisLine: {
           lineStyle: {
             width: 15,
-            color: [[1, 'rgba(255,255,255,0.1)']]
-          }
+            color: [[1, "rgba(255,255,255,0.1)"]],
+          },
         },
         splitLine: {
-          show: false
+          show: false,
         },
         axisTick: {
-          show: false
+          show: false,
         },
         axisLabel: {
-          show: false
+          show: false,
         },
         data: [
           {
             value: checkoutPercentage,
-            name: '',
+            name: "",
             title: {
-              offsetCenter: ['0%', '0%']
+              offsetCenter: ["0%", "0%"],
             },
             detail: {
               valueAnimation: true,
-              offsetCenter: ['0%', '0%']
-            }
-          }
+              offsetCenter: ["0%", "0%"],
+            },
+          },
         ],
         title: {
           fontSize: 14,
-          color: '#ccc',
-          offsetCenter: ['0%', '20%']
+          color: "#ccc",
+          offsetCenter: ["0%", "20%"],
         },
         detail: {
           width: 50,
           height: 14,
           fontSize: 20,
-          color: '#fff',
-          backgroundColor: 'transparent',
+          color: "#fff",
+          backgroundColor: "transparent",
           borderRadius: 20,
-          formatter: '{value}%'
-        }
-      }
-    ]
+          formatter: "{value}%",
+        },
+      },
+    ],
   };
 
   chart.setOption(option);
@@ -391,114 +402,117 @@ function renderCheckoutChart(chart: ECharts, playerIndex: number) {
 
 // Render high scores chart
 function renderHighScoresChart(chart: ECharts) {
-  const players = [props.match.players[0].username, props.match.players[1].username];
+  const players = [
+    props.match.players[0].username,
+    props.match.players[1].username,
+  ];
   const score180Data = [
     props.match.players[0].stats?.score180 || 0,
-    props.match.players[1].stats?.score180 || 0
+    props.match.players[1].stats?.score180 || 0,
   ];
   const score140Data = [
     props.match.players[0].stats?.score140 || 0,
-    props.match.players[1].stats?.score140 || 0
+    props.match.players[1].stats?.score140 || 0,
   ];
   const score100Data = [
     props.match.players[0].stats?.score100 || 0,
-    props.match.players[1].stats?.score100 || 0
+    props.match.players[1].stats?.score100 || 0,
   ];
 
   const option = {
     tooltip: {
-      trigger: 'axis',
+      trigger: "axis",
       axisPointer: {
-        type: 'shadow'
-      }
+        type: "shadow",
+      },
     },
     legend: {
-      data: ['180s', '140+', '100+'],
+      data: ["180s", "140+", "100+"],
       textStyle: {
-        color: '#cccccc'
+        color: "#cccccc",
       },
-      bottom: 0
+      bottom: 0,
     },
     grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '15%',
-      top: '3%',
-      containLabel: true
+      left: "3%",
+      right: "4%",
+      bottom: "15%",
+      top: "3%",
+      containLabel: true,
     },
     xAxis: [
       {
-        type: 'category',
+        type: "category",
         data: players,
         axisTick: {
-          alignWithLabel: true
+          alignWithLabel: true,
         },
         axisLine: {
           lineStyle: {
-            color: '#555'
-          }
+            color: "#555",
+          },
         },
         axisLabel: {
-          color: '#ddd'
-        }
-      }
+          color: "#ddd",
+        },
+      },
     ],
     yAxis: [
       {
-        type: 'value',
+        type: "value",
         axisLine: {
           lineStyle: {
-            color: '#555'
-          }
+            color: "#555",
+          },
         },
         axisLabel: {
-          color: '#ddd'
+          color: "#ddd",
         },
         splitLine: {
           lineStyle: {
-            color: '#333'
-          }
-        }
-      }
+            color: "#333",
+          },
+        },
+      },
     ],
     series: [
       {
-        name: '180s',
-        type: 'bar',
-        stack: 'scores',
+        name: "180s",
+        type: "bar",
+        stack: "scores",
         emphasis: {
-          focus: 'series'
+          focus: "series",
         },
         data: score180Data,
         itemStyle: {
-          color: '#e74c3c'
-        }
+          color: "#e74c3c",
+        },
       },
       {
-        name: '140+',
-        type: 'bar',
-        stack: 'scores',
+        name: "140+",
+        type: "bar",
+        stack: "scores",
         emphasis: {
-          focus: 'series'
+          focus: "series",
         },
         data: score140Data,
         itemStyle: {
-          color: '#f39c12'
-        }
+          color: "#f39c12",
+        },
       },
       {
-        name: '100+',
-        type: 'bar',
-        stack: 'scores',
+        name: "100+",
+        type: "bar",
+        stack: "scores",
         emphasis: {
-          focus: 'series'
+          focus: "series",
         },
         data: score100Data,
         itemStyle: {
-          color: '#3498db'
-        }
-      }
-    ]
+          color: "#3498db",
+        },
+      },
+    ],
   };
 
   chart.setOption(option);
@@ -523,121 +537,121 @@ function renderLegPerformanceChart(chart: ECharts) {
 
   const option = {
     tooltip: {
-      trigger: 'axis',
+      trigger: "axis",
       axisPointer: {
-        type: 'cross',
+        type: "cross",
         label: {
-          backgroundColor: '#6a7985'
-        }
-      }
+          backgroundColor: "#6a7985",
+        },
+      },
     },
     legend: {
       data: [props.match.players[0].username, props.match.players[1].username],
       textStyle: {
-        color: '#cccccc'
-      }
+        color: "#cccccc",
+      },
     },
     grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
-      containLabel: true
+      left: "3%",
+      right: "4%",
+      bottom: "3%",
+      containLabel: true,
     },
     xAxis: [
       {
-        type: 'category',
+        type: "category",
         boundaryGap: false,
         data: Array.from({ length: legCount }, (_, i) => `Leg ${i + 1}`),
         axisLine: {
           lineStyle: {
-            color: '#555'
-          }
+            color: "#555",
+          },
         },
         axisLabel: {
-          color: '#ddd'
-        }
-      }
+          color: "#ddd",
+        },
+      },
     ],
     yAxis: [
       {
-        type: 'value',
+        type: "value",
         axisLine: {
           lineStyle: {
-            color: '#555'
-          }
+            color: "#555",
+          },
         },
         axisLabel: {
-          color: '#ddd'
+          color: "#ddd",
         },
         splitLine: {
           lineStyle: {
-            color: '#333'
-          }
-        }
-      }
+            color: "#333",
+          },
+        },
+      },
     ],
     series: [
       {
         name: props.match.players[0].username,
-        type: 'line',
-        stack: 'Total',
+        type: "line",
+        stack: "Total",
         smooth: true,
         lineStyle: {
-          width: 3
+          width: 3,
         },
         showSymbol: true,
         emphasis: {
-          focus: 'series'
+          focus: "series",
         },
         data: player1LegAverages,
         itemStyle: {
-          color: '#4facfe'
+          color: "#4facfe",
         },
         areaStyle: {
           opacity: 0.2,
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
             {
               offset: 0,
-              color: 'rgba(79, 172, 254, 0.8)'
+              color: "rgba(79, 172, 254, 0.8)",
             },
             {
               offset: 1,
-              color: 'rgba(0, 242, 254, 0.1)'
-            }
-          ])
-        }
+              color: "rgba(0, 242, 254, 0.1)",
+            },
+          ]),
+        },
       },
       {
         name: props.match.players[1].username,
-        type: 'line',
-        stack: 'Total',
+        type: "line",
+        stack: "Total",
         smooth: true,
         lineStyle: {
-          width: 3
+          width: 3,
         },
         showSymbol: true,
         emphasis: {
-          focus: 'series'
+          focus: "series",
         },
         data: player2LegAverages,
         itemStyle: {
-          color: '#fa709a'
+          color: "#fa709a",
         },
         areaStyle: {
           opacity: 0.2,
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
             {
               offset: 0,
-              color: 'rgba(250, 112, 154, 0.8)'
+              color: "rgba(250, 112, 154, 0.8)",
             },
             {
               offset: 1,
-              color: 'rgba(254, 225, 64, 0.1)'
-            }
-          ])
-        }
-      }
-    ]
+              color: "rgba(254, 225, 64, 0.1)",
+            },
+          ]),
+        },
+      },
+    ],
   };
 
   chart.setOption(option);
@@ -651,17 +665,13 @@ function calculateLegAverage(player: Player, legIndex: number): number {
   for (const roundIndex in rounds) {
     const roundScores = rounds[roundIndex].scores;
     total += roundScores.reduce((acc, score) => acc + score, 0);
-
   }
   const legDarts = player.scores.legDartsCount[legIndex];
-  return total / legDarts * 3;
-
+  return (total / legDarts) * 3;
 }
 
 // Set up resize handler
 let resizeHandler: (() => void) | null = null;
-
-
 
 onMounted(async () => {
   await nextTick();
@@ -673,20 +683,20 @@ onMounted(async () => {
     // Set up resize handler
     if (!resizeHandler) {
       resizeHandler = () => {
-        charts.forEach(chart => chart?.resize());
+        charts.forEach((chart) => chart?.resize());
       };
-      window.addEventListener('resize', resizeHandler);
+      window.addEventListener("resize", resizeHandler);
     }
   }, 100);
 });
 
 onUnmounted(() => {
   // Clean up
-  charts.forEach(chart => chart?.dispose());
+  charts.forEach((chart) => chart?.dispose());
   charts = [];
 
   if (resizeHandler) {
-    window.removeEventListener('resize', resizeHandler);
+    window.removeEventListener("resize", resizeHandler);
     resizeHandler = null;
   }
 });
