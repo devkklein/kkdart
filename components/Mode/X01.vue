@@ -1,27 +1,19 @@
 <template>
   <div
-    class="p-6 bg-secondary-300 rounded-xl shadow-lg backdrop-blur-sm backdrop-filter relative overflow-hidden"
-  >
+    class="p-6 bg-secondary-300 rounded-xl shadow-lg backdrop-blur-sm backdrop-filter relative overflow-hidden border-2 border-primary">
     <!-- Background decorative elements -->
 
     <div class="flex flex-col md:flex-row gap-8 relative z-10">
       <!-- In/Out Mode Section -->
       <div class="flex flex-col flex-1 space-y-4">
         <div class="space-y-2">
-          <label
-            class="text-sm text-gray-300 uppercase tracking-wider font-medium flex items-center"
-          >
-            <Icon
-              name="material-symbols:login-rounded"
-              class="w-4 h-4 mr-2 text-blue-400"
-            />
+          <label class="text-sm text-gray-300 uppercase tracking-wider font-medium flex items-center">
+            <Icon name="material-symbols:login-rounded" class="w-4 h-4 mr-2 text-blue-400" />
             In Mode
           </label>
           <div class="custom-select-wrapper">
-            <select
-              v-model="inMode"
-              class="w-full rounded-lg p-3 bg-primary bg-opacity-60 border-2 border-primary hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none custom-select"
-            >
+            <select v-model="inMode"
+              class="w-full rounded-lg p-3 bg-primary bg-opacity-60 border-2 border-primary hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none custom-select">
               <option value="Singel">Singel</option>
               <option value="Double">Double</option>
               <option value="Master">Master</option>
@@ -31,20 +23,13 @@
         </div>
 
         <div class="space-y-2">
-          <label
-            class="text-sm text-gray-300 uppercase tracking-wider font-medium flex items-center"
-          >
-            <Icon
-              name="material-symbols:logout-rounded"
-              class="w-4 h-4 mr-2 text-green-400 scale-x-[-1]"
-            />
+          <label class="text-sm text-gray-300 uppercase tracking-wider font-medium flex items-center">
+            <Icon name="material-symbols:logout-rounded" class="w-4 h-4 mr-2 text-green-400 scale-x-[-1]" />
             Out Mode
           </label>
           <div class="custom-select-wrapper">
-            <select
-              v-model="outMode"
-              class="w-full rounded-lg p-3 bg-primary bg-opacity-60 border-2 border-primary hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none custom-select"
-            >
+            <select v-model="outMode"
+              class="w-full rounded-lg p-3 bg-primary bg-opacity-60 border-2 border-primary hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none custom-select">
               <option value="Singel">Singel</option>
               <option value="Double">Double</option>
               <option value="Master">Master</option>
@@ -58,20 +43,13 @@
       <div class="flex flex-col md:flex-row flex-1 gap-6">
         <div class="flex flex-col space-y-4 flex-1">
           <div class="space-y-2">
-            <label
-              class="text-sm text-gray-300 uppercase tracking-wider font-medium flex items-center"
-            >
-              <Icon
-                name="heroicons:chart-bar"
-                class="w-4 h-4 mr-2 text-yellow-400"
-              />
+            <label class="text-sm text-gray-300 uppercase tracking-wider font-medium flex items-center">
+              <Icon name="heroicons:chart-bar" class="w-4 h-4 mr-2 text-yellow-400" />
               Base Score
             </label>
             <div class="custom-select-wrapper">
-              <select
-                v-model="baseScore"
-                class="w-full rounded-lg p-3 bg-primary bg-opacity-60 border-2 border-primary hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none custom-select"
-              >
+              <select v-model="baseScore"
+                class="w-full rounded-lg p-3 bg-primary bg-opacity-60 border-2 border-primary hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none custom-select">
                 <option value="121">121</option>
                 <option value="170">170</option>
                 <option value="301">301</option>
@@ -85,17 +63,13 @@
           </div>
 
           <div class="space-y-2">
-            <label
-              class="text-sm text-gray-300 uppercase tracking-wider font-medium flex items-center"
-            >
+            <label class="text-sm text-gray-300 uppercase tracking-wider font-medium flex items-center">
               <Icon name="heroicons:clock" class="w-4 h-4 mr-2 text-red-400" />
               Max Rounds
             </label>
             <div class="custom-select-wrapper">
-              <select
-                v-model="maxRounds"
-                class="w-full rounded-lg p-3 bg-primary bg-opacity-60 border-2 border-primary hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none custom-select"
-              >
+              <select v-model="maxRounds"
+                class="w-full rounded-lg p-3 bg-primary bg-opacity-60 border-2 border-primary hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none custom-select">
                 <option value="15">15</option>
                 <option value="20">20</option>
                 <option value="50">50</option>
@@ -109,20 +83,13 @@
 
         <div class="flex flex-col space-y-4 flex-1">
           <div class="space-y-2">
-            <label
-              class="text-sm text-gray-300 uppercase tracking-wider font-medium flex items-center"
-            >
-              <Icon
-                name="game-icons:bullseye"
-                class="w-4 h-4 mr-2 text-purple-400"
-              />
+            <label class="text-sm text-gray-300 uppercase tracking-wider font-medium flex items-center">
+              <Icon name="game-icons:bullseye" class="w-4 h-4 mr-2 text-purple-400" />
               Bull-Off
             </label>
             <div class="custom-select-wrapper">
-              <select
-                v-model="bullOff"
-                class="w-full rounded-lg p-3 bg-primary bg-opacity-60 border-2 border-primary hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none custom-select"
-              >
+              <select v-model="bullOff"
+                class="w-full rounded-lg p-3 bg-primary bg-opacity-60 border-2 border-primary hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none custom-select">
                 <option value="Off">Off</option>
                 <option value="Normal">Normal</option>
                 <option value="Offical">Offical</option>
@@ -132,20 +99,13 @@
           </div>
 
           <div class="space-y-2">
-            <label
-              class="text-sm text-gray-300 uppercase tracking-wider font-medium flex items-center"
-            >
-              <Icon
-                name="heroicons:user-group"
-                class="w-4 h-4 mr-2 text-indigo-400"
-              />
+            <label class="text-sm text-gray-300 uppercase tracking-wider font-medium flex items-center">
+              <Icon name="heroicons:user-group" class="w-4 h-4 mr-2 text-indigo-400" />
               Lobby
             </label>
-            <div class="custom-select-wrapper">
-              <select
-                v-model="lobbyMode"
-                class="w-full rounded-lg p-3 bg-primary bg-opacity-60 border-2 border-primary hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none custom-select"
-              >
+            <div v-if="props.public" class="custom-select-wrapper">
+              <select v-model="lobbyMode"
+                class="w-full rounded-lg p-3 bg-primary bg-opacity-60 border-2 border-primary hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none custom-select">
                 <option value="Public">Public</option>
                 <option value="Private">Private</option>
               </select>
@@ -159,52 +119,29 @@
       <div class="flex flex-col flex-1">
         <div class="">
           <div class="flex justify-between items-center">
-            <label
-              class="text-sm text-gray-300 uppercase tracking-wider font-medium flex items-center"
-            >
+            <label class="text-sm text-gray-300 uppercase tracking-wider font-medium flex items-center">
               <Icon name="ci:line-l" class="w-4 h-4 mr-2 text-teal-400" />
               Legs
             </label>
-            <span
-              class="text-lg font-bold bg-primary/60 border-2 border-primary px-3 py-1 rounded-md shadow-inner"
-              >{{ countLegs }}</span
-            >
+            <span class="text-lg font-bold bg-primary/60 border-2 border-primary px-3 py-1 rounded-md shadow-inner">{{
+              countLegs }}</span>
           </div>
           <div class="slider-container">
-            <input
-              type="range"
-              v-model="countLegs"
-              min="1"
-              max="10"
-              class="custom-range"
-            />
+            <input type="range" v-model="countLegs" min="1" max="10" class="custom-range" />
           </div>
         </div>
 
         <div class="">
           <div class="flex justify-between items-center">
-            <label
-              class="text-sm text-gray-300 uppercase tracking-wider font-medium flex items-center"
-            >
-              <Icon
-                name="material-symbols:check-rounded"
-                class="w-4 h-4 mr-2 text-pink-400"
-              />
+            <label class="text-sm text-gray-300 uppercase tracking-wider font-medium flex items-center">
+              <Icon name="material-symbols:check-rounded" class="w-4 h-4 mr-2 text-pink-400" />
               Sets
             </label>
-            <span
-              class="text-lg font-bold bg-primary/60 border-2 border-primary px-3 py-1 rounded-md shadow-inner"
-              >{{ countSets }}</span
-            >
+            <span class="text-lg font-bold bg-primary/60 border-2 border-primary px-3 py-1 rounded-md shadow-inner">{{
+              countSets }}</span>
           </div>
           <div class="slider-container">
-            <input
-              type="range"
-              v-model="countSets"
-              min="1"
-              max="10"
-              class="custom-range"
-            />
+            <input type="range" v-model="countSets" min="1" max="10" class="custom-range" />
           </div>
         </div>
       </div>
@@ -214,6 +151,10 @@
 
 <script lang="ts" setup>
 import { ref, watch, onMounted } from "vue";
+
+const props = defineProps<{
+  public: boolean;
+}>();
 
 const emit = defineEmits();
 
@@ -289,7 +230,7 @@ onMounted(() => {
   pointer-events: none;
 }
 
-.custom-select:hover + .custom-select-arrow {
+.custom-select:hover+.custom-select-arrow {
   border-top-color: rgba(96, 165, 250, 0.8);
 }
 

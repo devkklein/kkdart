@@ -2,69 +2,35 @@
   <div class="flex h-screen">
     <Sidebar />
     <div class="w-full justify-center items-center p-10">
-      <h1
-        class="uppercase tracking-wider mb-2 px-2 opacity-70 font-bold mb-2 border-b-2 border-primary"
-      >
+      <h1 class="uppercase tracking-wider mb-2 px-2 opacity-70 font-bold mb-2 border-b-2 border-primary">
         Create a new Match
       </h1>
-      <form
-        type="submit"
-        class="p-8 bg-secondary-300 shadow-md border-2 border-primary rounded-xl w-full flex flex-col overflow-hidden"
-      >
+      <form type="submit"
+        class="p-8 bg-secondary-300 shadow-md border-2 border-primary rounded-xl w-full flex flex-col overflow-hidden">
         <div class="mb-4 justify-center items-center w-full">
           <div class="w-full flex flex-col justify-start">
             <h1 class="text-white text-xl font-bold mb-2">Match Name:</h1>
-            <input
-              v-model="matchName"
+            <input v-model="matchName"
               class="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="matchName"
-              type="text"
-              placeholder="Enter match name"
-            />
+              id="matchName" type="text" placeholder="Enter match name" />
           </div>
         </div>
 
-        <div
-          class="flex justify-center space-x-4 border-b-2 border-primary py-6"
-        >
-          <button
-            type="button"
-            class="bg-secondary-300 border-2 rounded-lg p-4 w-1/4 hover:border-primary"
-            :class="
-              gameMode === 'x01' ? 'border-primary' : 'border-secondary-300'
-            "
-            @click="setMode('x01')"
-          >
+        <div class="flex justify-center space-x-4 border-b-2 border-primary py-6">
+          <button type="button" class="bg-secondary-300 border-2 rounded-lg p-4 w-1/4 hover:border-primary" :class="gameMode === 'x01' ? 'border-primary' : 'border-secondary-300'
+            " @click="setMode('x01')">
             X01
           </button>
-          <button
-            type="button"
-            class="bg-secondary-300 border-2 rounded-lg p-4 w-1/4 hover:border-primary"
-            :class="
-              gameMode === 'cricket' ? 'border-primary' : 'border-secondary-300'
-            "
-            @click="setMode('cricket')"
-          >
+          <button type="button" class="bg-secondary-300 border-2 rounded-lg p-4 w-1/4 hover:border-primary" :class="gameMode === 'cricket' ? 'border-primary' : 'border-secondary-300'
+            " @click="setMode('cricket')">
             Cricket
           </button>
-          <button
-            type="button"
-            class="bg-secondary-300 border-2 rounded-lg p-4 w-1/4 hover:border-primary"
-            :class="
-              gameMode === 'clock' ? 'border-primary' : 'border-secondary-300'
-            "
-            @click="setMode('clock')"
-          >
+          <button type="button" class="bg-secondary-300 border-2 rounded-lg p-4 w-1/4 hover:border-primary" :class="gameMode === 'clock' ? 'border-primary' : 'border-secondary-300'
+            " @click="setMode('clock')">
             A round the Clock
           </button>
-          <button
-            type="button"
-            class="bg-secondary-300 border-2 rounded-lg p-4 w-1/4 hover:border-primary"
-            :class="
-              gameMode === '121' ? 'border-primary' : 'border-secondary-300'
-            "
-            @click="setMode('121')"
-          >
+          <button type="button" class="bg-secondary-300 border-2 rounded-lg p-4 w-1/4 hover:border-primary" :class="gameMode === '121' ? 'border-primary' : 'border-secondary-300'
+            " @click="setMode('121')">
             121
           </button>
         </div>
@@ -72,28 +38,17 @@
         <div class="flex-grow overflow-y-auto">
           <div class="bg-secondary-300 rounded-xl p-4">
             <ModeClock v-if="gameMode === 'clock'" />
-            <ModeX01
-              @sendMatchdata="updateSettings"
-              v-if="gameMode === 'x01'"
-            />
+            <ModeX01 :public="true" @sendMatchdata="updateSettings" v-if="gameMode === 'x01'" />
             <ModeCricket v-if="gameMode === 'cricket'" />
             <ModeX121 v-if="gameMode === '121'" />
           </div>
         </div>
 
         <div class="flex w-full justify-between items-center mt-4">
-          <button
-            type="button"
-            class="flex items-center text-white"
-            @click="$router.back()"
-          >
+          <button type="button" class="flex items-center text-white" @click="$router.back()">
             <Icon name="ic:round-arrow-back-ios" size="24" />
           </button>
-          <button
-            @click="createGame"
-            type="button"
-            class="bg-secondary-300 text-white rounded-lg p-2"
-          >
+          <button @click="createGame" type="button" class="bg-secondary-300 text-white rounded-lg p-2">
             Create Game
           </button>
         </div>

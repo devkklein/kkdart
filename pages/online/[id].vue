@@ -2,7 +2,7 @@
   <div class="flex h-screen">
     <Sidebar />
     <div class="h-full w-full overflow-y-auto">
-      <PopupsBullOffWinner v-if="viewBullOffWinner" :winner="bullOffWinner" />
+
       <GameMatchSummary v-if="match?.finished && match" :match="match" />
 
       <div v-if="match?.started && match" class="w-full p-4">
@@ -49,7 +49,7 @@ const ws = ref<WebSocket | null>(null);
 const bullOffTie = ref<boolean>(false);
 
 const currentPlayerIndex = ref<number>(0);
-const viewBullOffWinner = ref<boolean>(false);
+
 const bullOffWinner = ref<string>("");
 const matchWinner = ref<string>("");
 const waitingForPlayer = ref<boolean>(true);
@@ -228,19 +228,17 @@ const joinMatch = (matchIdVal: string, role?: "Spieler1" | "Spieler2") => {
       match.value = data.match;
 
       match.value?.currentPlayerIndex === 2;
-      setTimeout(() => {
-        viewBullOffWinner.value = true;
-      }, 1000);
 
-      setTimeout(() => {
-        viewBullOffWinner.value = false;
-        if (!data.match.currentPlayerIndex) {
-          match.value?.currentPlayerIndex === 0;
-        } else {
-          match.value?.currentPlayerIndex === 1;
-        }
-        match.value = data.match;
-      }, 3000);
+
+
+
+      if (!data.match.currentPlayerIndex) {
+        match.value?.currentPlayerIndex === 0;
+      } else {
+        match.value?.currentPlayerIndex === 1;
+      }
+      match.value = data.match;
+
     }
     if (data.type === "dart-update") {
       match.value = data.match;
