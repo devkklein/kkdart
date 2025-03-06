@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { DartScore, Match } from "~/types/websocket";
+import type { DartScore, Match, Player } from "~/types/websocket";
 import { useUserStore } from "~/store/user";
 
 const router = useRouter();
@@ -322,6 +322,20 @@ onBeforeUnmount(() => {
     ws.value.close();
   }
 });
+
+function getPlayerIndex(match: Match) {
+  if (!match || !user.id) return -1;
+
+  const index = match.players.findIndex(
+    (player) => player.id === user.id
+  );
+  return index;
+}
+function getOriginalPlayerIndex(match: Match, player: Player): number {
+  if (!match || !match.players) return -1;
+
+  return match.players.findIndex((p) => p.id === player.id);
+}
 
 // utility functions
 function handleCancelMatch() {

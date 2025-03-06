@@ -35,89 +35,15 @@
 
 <script lang="ts" setup>
 import type { Match, Player } from '~/types/websocket';
-import { DartBot } from '~/service/bot';
+
 import { watchEffect, nextTick } from 'vue';
 
 const match = useState<Match>("offlineMatch");
 const matchWinner = ref<string>("");
-const botInstances = ref<Map<string, DartBot>>(new Map());
 
-// Initialisiere Bot-Instanzen für jeden Bot-Spieler
-onMounted(() => {
-  if (match.value) {
-    match.value.players.forEach(player => {
-      if (player.isBot && player.botLevel) {
-        botInstances.value.set(
-          player.id,
-          DartBot.createByLevel(player.botLevel)
-        );
-      }
-    });
-  }
-});
 
-// Überwache den aktuellen Spieler und löse Bot-Aktionen aus, wenn nötig
-watchEffect(() => {
-  if (match.value?.started && match.value?.bullOffFinished) {
-    const currentPlayer = match.value.players[match.value.currentPlayerIndex];
-    if (currentPlayer?.isBot) {
-      // Kleine Verzögerung für bessere UX
-      setTimeout(() => {
-        handleBotTurn(currentPlayer);
-      }, 1000);
-    }
-  }
-});
 
-// Bot-Bulloff-Logik
-watchEffect(() => {
-  if (match.value?.started && !match.value?.bullOffFinished) {
-    const currentPlayer = match.value.players[match.value.currentPlayerIndex];
-    if (currentPlayer?.isBot) {
-      // Kleine Verzögerung für bessere UX
-      setTimeout(() => {
-        handleBotBulloff(currentPlayer);
-      }, 1000);
-    }
-  }
-});
 
-// Funktion zum Ausführen eines Bot-Bulloffs
-function handleBotBulloff(botPlayer: Player) {
-  const bot = botInstances.value.get(botPlayer.id);
-  if (bot) {
-    const throw1 = bot.throwBullOff();
-    bullOffScoring(throw1.value, throw1.multiplier, throw1.points);
-  }
-}
-
-// Funktion zum Ausführen eines Bot-Zugs
-async function handleBotTurn(botPlayer: Player) {
-  const bot = botInstances.value.get(botPlayer.id);
-  if (!bot) return;
-
-  // Simuliere drei Würfe mit Verzögerungen dazwischen
-  for (let i = 1; i <= 3; i++) {
-    // Prüfe, ob wir noch im selben Zug sind (falls ein Leg beendet wurde)
-    if (match.value.players[match.value.currentPlayerIndex].id !== botPlayer.id) {
-      break;
-    }
-
-    const dartThrow = bot.throwX01Dart(
-      botPlayer.scores.currentScore,
-      botPlayer.scores.thrownDarts + 1
-    );
-
-    // Führe den Wurf aus
-    await nextTick();
-    score(dartThrow.value, dartThrow.multiplier, dartThrow.points);
-
-    // Warte zwischen den Würfen
-    if (i < 3 && botPlayer.scores.thrownDarts < 3) {
-      await new Promise(resolve => setTimeout(resolve, 800));
-    }
-  }
-}
 
 // Function to get the current player index for score chart display
 function getPlayerIndex(match: Match) {
@@ -137,7 +63,7 @@ function bullOffScoring(score: number, multiplier: number, points: number) {
   };
 
   // Check if bull-off should be completed
-  if (currentPlayer.scores.thrownDarts === 3 || currentPlayer.isBot) {
+  if (currentPlayer.scores.thrownDarts === 3) {
     // Bei Bots immer nach dem ersten Wurf wechseln
     const nextPlayerIndex = match.value.currentPlayerIndex === match.value.players.length - 1
       ? 0
@@ -185,95 +111,93 @@ function score(score: number, multiplier: number, points: number) {
   // Update player's dart count
   currentPlayer.scores.thrownDarts++;
 
-  // Process the throw using X01 rules
-  handleX01Match(currentPlayer, score, multiplier);
-}
-
-// Handle X01 dart throw
-function handleX01Match(currentPlayer: Player, score: number, multiplier: number) {
-  const points = score * multiplier;
-  const newScore = currentPlayer.scores.currentScore - points;
-
-  // Always store the actual dart that was thrown, regardless of outcome
   currentPlayer.scores.dartScores[currentPlayer.scores.thrownDarts] = {
     value: score,
     multiplier,
-    points: score * multiplier
+    points
   };
+  handleX01Game(match.value, currentPlayer, score, multiplier, points)
 
-  // Check if this dart is a potential checkout
-  const isCheckoutAttempt = isCheckoutAttemptDart(
-    currentPlayer.scores.currentScore,
-    match.value.settings.outMode
-  );
+  if (currentPlayer.scores.thrownDarts === 3) {
+    switchPlayers(match.value) // Process the throw using X01 rules
+  }
+  // Process the throw using X01 rules
+}
+
+function handleX01Game(match: Match, player: Player, score: number, multiplayer: number, points: number) {
+  const currentScore = player.scores.currentScore;
+  const newScore = currentScore - points;
+  const currentLeg = match.currentLeg
+  const currentRound = match.currentRound
+
 
   if (newScore < 0) {
-    // Bust - reset the round score
-    currentPlayer.scores.currentScore = currentPlayer.scores.currentScore + currentPlayer.scores.roundScore;
-    currentPlayer.scores.legScores[match.value.currentLeg].roundScores[match.value.currentRound] = {
-      scores: []
-    };
-
-    if (currentPlayer.scores.thrownDarts < 3) {
-      switchPlayers(match.value);
+    resetBustedRound(player)
+    if (isCheckoutAttemptDart(newScore, match.settings.outMode)) {
+      trackCheckoutAttempt(player, false)
     }
-  } else if (newScore === 1 && (match.value.settings.outMode === "Double" || match.value.settings.outMode === "Master")) {
-    // Can't finish on 1 in double or master out mode
-    // Add points to round score even though it will be reset
-    currentPlayer.scores.roundScore += points;
-
-    currentPlayer.scores.currentScore = currentPlayer.scores.currentScore + currentPlayer.scores.roundScore;
-    currentPlayer.scores.legScores[match.value.currentLeg].roundScores[match.value.currentRound] = {
-      scores: []
-    };
-
-    if (currentPlayer.scores.thrownDarts < 3) {
-      switchPlayers(match.value);
+    if (player.scores.thrownDarts < 3) {
+      switchPlayers(match)
     }
-  } else if (newScore === 0) {
-    // Potential checkout
-    if (match.value.settings.outMode === "Double") {
-      if (multiplier === 2) {
-        // Valid double out
-        trackCheckoutAttempt(currentPlayer, true);
-        updateScore(currentPlayer, points, match.value, score, multiplier);
-        endLeg(match.value, currentPlayer);
-      } else {
-        // Invalid checkout - must finish on a double
-        currentPlayer.scores.currentScore = currentPlayer.scores.currentScore + currentPlayer.scores.roundScore;
-        currentPlayer.scores.legScores[match.value.currentLeg].roundScores[match.value.currentRound] = {
-          scores: []
-        };
 
-        if (currentPlayer.scores.thrownDarts < 3) {
-          switchPlayers(match.value);
-        }
-      }
-    } else if (match.value.settings.outMode === "Master") {
-      if (multiplier === 2 || multiplier === 3) {
-        // Valid master out (double or triple)
-        trackCheckoutAttempt(currentPlayer, true);
-        updateScore(currentPlayer, points, match.value, score, multiplier);
-        endLeg(match.value, currentPlayer);
-      }
-    } else {
-      // Single out - any checkout is valid
-      trackCheckoutAttempt(currentPlayer, true);
-      updateScore(currentPlayer, points, match.value, score, multiplier);
-      endLeg(match.value, currentPlayer);
+  }
+  else if (newScore === 1 && match.settings.outMode === "Double" || match.settings.outMode === "Master") {
+    resetBustedRound(player)
+    if (isCheckoutAttemptDart(newScore, match.settings.outMode)) {
+      trackCheckoutAttempt(player, false)
     }
-  } else {
-    // Normal score
-    if (isCheckoutAttempt) {
-      trackCheckoutAttempt(currentPlayer, false);
+    if (player.scores.thrownDarts < 3) {
+      switchPlayers(match)
     }
-    updateScore(currentPlayer, points, match.value, score, multiplier);
 
-    if (currentPlayer.scores.thrownDarts === 3) {
-      switchPlayers(match.value);
+  }
+  else if (newScore === 0) {
+    if (isValidCheckout(match.settings.outMode, multiplayer)) {
+      trackCheckoutAttempt(player, true)
+      updateScore(player, score, match, multiplayer, points)
+      endLeg(match, player)
     }
+
+
+  }
+  else {
+    if (isCheckoutAttemptDart(newScore, match.settings.outMode)) {
+      trackCheckoutAttempt(player, false)
+    }
+
+
+    updateScore(player, points, match, score, multiplayer)
+  }
+
+
+
+}
+function resetBustedRound(player: Player): void {
+  // Aktuellen Rundenwert zurücksetzen
+  player.scores.currentScore = player.scores.currentScore + player.scores.roundScore;
+  player.scores.roundScore = 0;
+
+  // Rundenscore im Leg zurücksetzen
+  const currentLeg = match.value.currentLeg;
+  const currentRound = match.value.currentRound;
+  player.scores.legScores[currentLeg].roundScores[currentRound] = { scores: [] };
+}
+function isValidCheckout(outMode: string, multiplier: number): boolean {
+  switch (outMode) {
+    case "Single":
+      return true; // Jeder Multiplikator erlaubt
+    case "Double":
+      return multiplier === 2; // Nur Double erlaubt
+    case "Master":
+      return multiplier === 2 || multiplier === 3; // Double oder Triple erlaubt
+    default:
+      return true;
   }
 }
+
+
+
+
 
 // Helper functions
 function resetPlayerDartScores(players: Player[]) {
@@ -297,20 +221,7 @@ function isCheckoutAttemptDart(currentScore: number, outMode: string): boolean {
   return false;
 }
 
-// Trigger bot turn after a leg is initialized
-watch(() => match.value?.currentLeg, (newLeg, oldLeg) => {
-  if (newLeg !== oldLeg && match.value?.started && match.value?.bullOffFinished) {
-    nextTick(() => {
-      const currentPlayer = match.value.players[match.value.currentPlayerIndex];
-      if (currentPlayer?.isBot) {
-        // Small delay for UX
-        setTimeout(() => {
-          handleBotTurn(currentPlayer);
-        }, 1000);
-      }
-    });
-  }
-});
+
 </script>
 
 <style></style>

@@ -60,6 +60,7 @@ async function saveMatchPlayer(matchId: string, match: Match) {
       sets_won: player.scores.setsWon,
       leg_darts_count: player.scores.legDartsCount,
       leg_scores: player.scores.legScores,
+      winner: player.stats.winner,
     };
   });
   const { error: playerError } = await supabase

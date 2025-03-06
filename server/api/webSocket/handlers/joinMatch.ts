@@ -22,6 +22,7 @@ export function handleJoinMatch(socket: WebSocket, data: any) {
         score140: 0,
         score180: 0,
         allPoints: 0,
+        winner: false,
       },
       scores: {
         currentScore: match.settings.baseScore,

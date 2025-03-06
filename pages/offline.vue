@@ -109,7 +109,7 @@ const user = useUserStore();
 const newPlayerName = ref('');
 const inputError = ref('');
 const matchSettings = ref<any>({});
-const addBot = ref(true);
+const addBot = ref(false);
 
 const offlineMatch = useState<Match>("offlineMatch", () => ({} as Match))
 // Default to adding a bot

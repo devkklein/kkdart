@@ -73,7 +73,8 @@ export default defineEventHandler(async (event) => {
         legs_won,
         sets_won,
         leg_darts_count,
-        leg_scores
+        leg_scores,
+        winner
       `
       )
       .in("match_id", matchIds)
@@ -151,6 +152,7 @@ function transformMatchData(matchPlayerRecords: any[]): Match[] {
         score180: record.score180 || 0,
         checkouts: record.checkouts || 0,
         checkoutsAttemps: record.checkouts_attempts || 0,
+        winner: record.winner || false,
       };
 
       // Create player scores

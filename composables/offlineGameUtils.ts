@@ -276,6 +276,7 @@ function ensureStatsInitialized(player: Player) {
   if (player.stats.first9Points === undefined) player.stats.first9Points = 0;
 }
 
+
 export const useOfflineGameUtils = () => {
   return ref()
 }

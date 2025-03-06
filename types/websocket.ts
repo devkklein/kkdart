@@ -93,4 +93,5 @@ export interface MatchSettings {
     score180: number;
     checkouts: number;
     checkoutsAttemps: number;
+    winner?: boolean;
   }
