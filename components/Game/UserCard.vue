@@ -1,12 +1,10 @@
 <template>
   <div
     class="flex w-full flex-col items-center bg-secondary-300 justify-center bg-secondary border-2 p-4 rounded-xl shadow-xl"
-    :class="
-      match.currentPlayerIndex === getOriginalPlayerIndex(match, player)
+    :class="match.currentPlayerIndex === getOriginalPlayerIndex(match, player)
         ? 'border-blue-500'
         : 'border-primary'
-    "
-  >
+      ">
     <div class="flex">
       <div class="flex flex-col items-center justify-end stat-column">
         <div class="stat-container">
@@ -32,57 +30,35 @@
         </div>
         <h1 class="text-8xl">{{ player.scores.currentScore }}</h1>
       </div>
-      <div
-        class="w-16 h-auto max-h-80 overflow-hidden relative flex flex-col items-center justify-end"
-      >
-        <div
-          class="absolute top-0 left-0 w-full h-16 bg-gradient-to-b from-secondary-300 to-transparent"
-        ></div>
+      <div class="w-16 h-auto max-h-80 overflow-hidden relative flex flex-col items-center justify-end">
+        <div class="absolute top-0 left-0 w-full h-16 bg-gradient-to-b from-secondary-300 to-transparent"></div>
         <div v-for="(score, index) in player.scores.legScores" :key="index">
           <h1 class="text-gray-300 text-xs text-nowrap">Leg: {{ index }}</h1>
           <div v-for="(s, i) in score.roundScores" :key="i" class="text-xl">
-            <p>{{ s.scores.reduce((acc, val) => acc + val, 0) }}</p>
+            <p>{{s.scores.reduce((acc, val) => acc + val, 0)}}</p>
           </div>
         </div>
       </div>
     </div>
 
     <div class="flex w-full justify-center space-x-2 mt-4">
-      <div
-        v-for="dartNum in 3"
-        :key="dartNum"
-        class="w-24 h-20 p-1 border-2 border-primary rounded flex items-center justify-center"
-      >
-        <div
-          v-if="player.scores.dartScores[dartNum].multiplier"
-          class="flex flex-col justify-center items-center"
-        >
-          <div
-            v-if="player.scores.dartScores[dartNum].value != 0"
-            class="flex flex-col justify-center items-center"
-          >
+      <div v-for="dartNum in 3" :key="dartNum"
+        class="w-24 h-20 p-1 border-2 border-primary rounded flex items-center justify-center">
+        <div v-if="player.scores.dartScores[dartNum].multiplier" class="flex flex-col justify-center items-center">
+          <div v-if="player.scores.dartScores[dartNum].value != 0" class="flex flex-col justify-center items-center">
             <p class="text-3xl">
               {{
                 (player.scores.dartScores[dartNum].value ?? 0) *
                 player.scores.dartScores[dartNum].multiplier
               }}
             </p>
-            <p
-              class="text-sm text-gray-200"
-              v-if="player.scores.dartScores[dartNum].multiplier === 1"
-            >
+            <p class="text-sm text-gray-200" v-if="player.scores.dartScores[dartNum].multiplier === 1">
               S{{ player.scores.dartScores[dartNum].value }}
             </p>
-            <p
-              class="text-sm text-gray-200"
-              v-if="player.scores.dartScores[dartNum].multiplier === 2"
-            >
+            <p class="text-sm text-gray-200" v-if="player.scores.dartScores[dartNum].multiplier === 2">
               D{{ player.scores.dartScores[dartNum].value }}
             </p>
-            <p
-              class="text-sm text-gray-200"
-              v-if="player.scores.dartScores[dartNum].multiplier === 3"
-            >
+            <p class="text-sm text-gray-200" v-if="player.scores.dartScores[dartNum].multiplier === 3">
               T{{ player.scores.dartScores[dartNum].value }}
             </p>
           </div>

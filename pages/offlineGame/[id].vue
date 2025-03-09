@@ -19,12 +19,7 @@
               <GameInputButtons v-if="match.bullOffFinished" @score="score" />
               <GameInputBulloff v-if="!match.bullOffFinished" @bullOffScoring="bullOffScoring" />
             </div>
-            <div class="w-8/12 flex py-4 pl-4 pr-0 rounded-xl">
-              <div class="flex flex-col w-full">
-                <GameScoreChart :player="match.players[getPlayerIndex(match)]" />
-              </div>
-              <div></div>
-            </div>
+
           </div>
         </div>
       </div>

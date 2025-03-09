@@ -14,7 +14,7 @@
           <div class="custom-select-wrapper">
             <select v-model="inMode"
               class="w-full rounded-lg p-3 bg-primary bg-opacity-60 border-2 border-primary hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none custom-select">
-              <option value="Singel">Singel</option>
+              <option value="Single">Single</option>
               <option value="Double">Double</option>
               <option value="Master">Master</option>
             </select>
@@ -30,7 +30,7 @@
           <div class="custom-select-wrapper">
             <select v-model="outMode"
               class="w-full rounded-lg p-3 bg-primary bg-opacity-60 border-2 border-primary hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none custom-select">
-              <option value="Singel">Singel</option>
+              <option value="Single">Single</option>
               <option value="Double">Double</option>
               <option value="Master">Master</option>
             </select>
@@ -161,7 +161,7 @@ const emit = defineEmits();
 const countLegs = ref<number>(3);
 const countSets = ref<number>(1);
 
-const inMode = ref<string>("Singel");
+const inMode = ref<string>("Single");
 const outMode = ref<string>("Double");
 const baseScore = ref<number>(501);
 const maxRounds = ref<number>(50);

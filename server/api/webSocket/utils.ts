@@ -173,6 +173,8 @@ export function endLeg(match: Match, player: Player, sockets: Sockets) {
     updateMatch(match, sockets);
     if (player.scores.setsWon === match.settings.setCount) {
       match.finished = true;
+      player.stats.winner = true;
+      mapPlayer(match, player);
       endMatch(match, player, sockets);
     }
   } else {
@@ -189,6 +191,7 @@ export function endSet(match: Match, player: Player, sockets: Sockets) {
 }
 export function endMatch(match: Match, player: Player, sockets: Sockets) {
   match.started = false;
+
   handleSaveX01Match(match);
 
   sockets.ws.forEach((ws) => {

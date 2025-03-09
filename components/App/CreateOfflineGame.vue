@@ -25,36 +25,7 @@
       </div>
       <div class="flex flex-row space-x-5">
         <div v-for="player in players" :key="player.id" class="">
-          <div
-            class="w-13 h-13 rounded-full overflow-hiddenflex items-center justify-center text-center"
-          >
-            <img
-              v-if="player.profileImage"
-              :src="player.profileImage"
-              alt="Profilbild"
-              class="w-full h-full object-cover"
-            />
-            <img
-              v-else
-              src="/blankPb.png"
-              alt="Profilbild"
-              class="w-20 h-20 rounded-full object-fill"
-            />
-          </div>
-          <div class="flex justify-center text-center items-center space-x-2">
-            <p class="text-lg font-semibold">{{ player.username }}</p>
-            <div
-              v-if="player.id !== userStore.id"
-              class="flex items-center justify-center"
-            >
-              <Icon
-                name="material-symbols:delete-outline-rounded"
-                size="20"
-                class="cursor-pointer text-red-500"
-                @click="removePlayer(player.id)"
-              />
-            </div>
-          </div>
+         
         </div>
       </div>
       <div class="flex flex-col justify-start items-center space-y-2 w-full">

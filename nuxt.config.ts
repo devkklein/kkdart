@@ -29,13 +29,7 @@ export default defineNuxtConfig({
       cert: "./assets/certificate/localhost.pem",
     },
   },
-  server: {
   
-    https: {
-      key: "./assets/certificate/localhost-key.pem",
-      cert: "./assets/certificate/localhost.pem",
-    },
-  },
   css: ["~/assets/css/main.css"],
   icon: {
     serverBundle: {

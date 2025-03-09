@@ -9,4 +9,5 @@ export interface userStats  {
     average:number,
     first9Average:number,
     checkoutPercentage:number,
+    winnrate:number,
 }

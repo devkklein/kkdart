@@ -103,7 +103,7 @@ export function handleX01Match(
 
 // Hilfsfunktionen für Checkout-Tracking
 function isCheckoutAttemptDart(currentScore: number, outMode: string): boolean {
-  if (outMode === "Singel") {
+  if (outMode === "Single") {
     return currentScore <= 40; // Für Single-Out: Jeder Wert unter 40 ist ein möglicher Checkout
   } else if (outMode === "Double") {
     return (
@@ -117,7 +117,7 @@ function isCheckoutAttemptDart(currentScore: number, outMode: string): boolean {
 }
 
 function isValidOutshot(multiplier: number, outMode: string): boolean {
-  if (outMode === "Singel") {
+  if (outMode === "Single") {
     return true; // Jeder Treffer ist gültig
   } else if (outMode === "Double") {
     return multiplier === 2; // Nur Double ist gültig
